@@ -1,0 +1,2238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PEARLIQ — Dental Practice Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg: #F5F3EF;
+  --bg-2: #FFFFFF;
+  --bg-3: #FAF9F7;
+  --bg-4: #F0EDE8;
+  --bg-5: #E8E4DE;
+  --pearl: #1C1C1C;
+  --pearl-dim: #6B6B6B;
+  --green: #1A3D2E;
+  --green-light: #2A5E46;
+  --green-dim: rgba(26,61,46,0.08);
+  --green-glow: rgba(26,61,46,0.06);
+  --cream: #1C1C1C;
+  --text: #4A4A4A;
+  --text-dim: #8A8A8A;
+  --text-bright: #2C2C2C;
+  --emerald: #1A3D2E;
+  --emerald-dim: rgba(26,61,46,0.08);
+  --rose: #C4443A;
+  --rose-dim: rgba(196,68,58,0.08);
+  --amber: #B8860B;
+  --amber-dim: rgba(184,134,11,0.08);
+  --violet: #5B4A8A;
+  --violet-dim: rgba(91,74,138,0.08);
+  --border: rgba(0,0,0,0.07);
+  --border-green: rgba(26,61,46,0.15);
+  --sidebar-w: 220px;
+  --header-h: 58px;
+  --radius: 6px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Figtree', sans-serif; font-size: 14px; line-height: 1.6; overflow: hidden; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-5); border-radius: 2px; }
+
+/* AUTH */
+#auth-screen {
+  position: fixed; inset: 0; z-index: 1000;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 20% 50%, rgba(26,61,46,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 70% at 80% 30%, rgba(26,61,46,0.03) 0%, transparent 60%);
+}
+.auth-dots {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.auth-panel {
+  position: relative; z-index: 2; width: 460px;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  animation: panelIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes panelIn { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+.auth-header { padding: 36px 40px 28px; border-bottom: 1px solid var(--border); text-align: center; }
+.auth-logo { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.auth-logo-mark {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--green);
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-logo-mark svg { width: 20px; height: 20px; }
+.auth-logo-text { font-family: 'Fraunces', serif; font-size: 24px; color: var(--cream); letter-spacing: 0.08em; }
+.auth-title { font-family: 'Fraunces', serif; font-size: 22px; color: var(--cream); margin-bottom: 4px; }
+.auth-subtitle { font-size: 12px; color: var(--text-dim); }
+.auth-body { padding: 28px 40px 36px; }
+.role-selector { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+.role-btn { padding: 10px 6px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-family: 'Figtree', sans-serif; font-size: 11px; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; text-align: center; border-radius: var(--radius); }
+.role-btn.active { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+.form-group { margin-bottom: 18px; }
+.form-label { display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 7px; font-weight: 500; }
+.form-input { width: 100%; background: var(--bg-3); border: 1px solid var(--border); color: var(--text-bright); font-family: 'Figtree', sans-serif; font-size: 13px; padding: 11px 14px; outline: none; transition: border-color 0.2s; border-radius: var(--radius); }
+.form-input:focus { border-color: var(--green); }
+.form-input::placeholder { color: var(--text-dim); }
+.form-input-row { display: flex; gap: 8px; align-items: center; }
+.form-input-row .form-input { flex: 1; min-width: 0; }
+.btn-auth { width: 100%; padding: 13px; background: var(--green); color: white; border: none; font-family: 'Figtree', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; margin-top: 6px; border-radius: var(--radius); }
+.btn-auth:hover { background: var(--green-light); }
+.auth-note { display: flex; align-items: center; gap: 8px; margin-top: 18px; padding: 11px 14px; background: var(--green-glow); border: 1px solid var(--border-green); font-size: 11px; color: var(--green); border-radius: var(--radius); }
+
+/* APP */
+#app { display: none; height: 100vh; flex-direction: column; }
+#app.visible { display: flex; }
+
+/* HEADER */
+.app-header { height: var(--header-h); background: var(--bg-2); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 22px; gap: 18px; flex-shrink: 0; position: relative; z-index: 100; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+.header-logo { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+.header-logo-mark { width: 28px; height: 28px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; }
+.header-logo-mark svg { width: 14px; height: 14px; }
+.header-logo-text { font-family: 'Fraunces', serif; font-size: 17px; color: var(--cream); letter-spacing: 0.08em; }
+.header-logo-sub { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+.header-search { flex: 1; max-width: 340px; background: var(--bg-3); border: 1px solid var(--border); display: flex; align-items: center; gap: 9px; padding: 7px 13px; border-radius: var(--radius); }
+.header-search input { background: transparent; border: none; outline: none; color: var(--text-bright); font-family: 'Figtree', sans-serif; font-size: 13px; flex: 1; }
+.header-search input::placeholder { color: var(--text-dim); }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.h-action { width: 34px; height: 34px; border: 1px solid var(--border); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dim); font-size: 14px; transition: all 0.2s; position: relative; border-radius: var(--radius); }
+.h-action:hover { border-color: var(--green); color: var(--green); }
+.h-action svg { width: 16px; height: 16px; }
+.notif-badge { position: absolute; top: -3px; right: -3px; width: 13px; height: 13px; background: var(--rose); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; color: white; font-weight: 700; }
+.secure-pill { display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: var(--green-glow); border: 1px solid var(--border-green); border-radius: 20px; }
+.secure-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+.secure-text { font-size: 9px; color: var(--green); letter-spacing: 0.1em; font-weight: 500; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.header-user { display: flex; align-items: center; gap: 9px; padding: 5px 11px 5px 5px; border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s; border-radius: var(--radius); }
+.header-user:hover { border-color: var(--green); }
+.user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: white; }
+.user-name { font-size: 11px; font-weight: 500; color: var(--text-bright); }
+.user-role-label { font-size: 9px; color: var(--text-dim); }
+
+/* BODY */
+.app-body { flex: 1; display: flex; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar { width: var(--sidebar-w); background: var(--bg-2); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
+.sidebar-section { padding: 16px 0 4px; }
+.sidebar-label { padding: 0 16px 8px; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 16px; cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent; color: var(--text-dim); font-size: 13px; font-weight: 400; }
+.nav-item:hover { color: var(--text-bright); background: rgba(0,0,0,0.02); }
+.nav-item.active { color: var(--green); background: var(--green-glow); border-left-color: var(--green); font-weight: 500; }
+.nav-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.nav-icon svg { width: 16px; height: 16px; stroke-width: 1.5; }
+.nav-badge { margin-left: auto; background: var(--rose); color: white; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px; }
+.nav-badge.amber { background: var(--amber-dim); color: var(--amber); }
+.nav-badge.blue { background: var(--green-glow); color: var(--green); }
+.sidebar-bottom { margin-top: auto; padding: 12px; border-top: 1px solid var(--border); }
+.practice-card { background: var(--bg-3); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius); }
+.practice-name { font-size: 12px; color: var(--text-bright); font-weight: 500; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.online-badge { font-size: 9px; color: var(--green); display: flex; align-items: center; gap: 4px; }
+.practice-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.pstat-val { font-family: 'Fraunces', serif; font-size: 18px; color: var(--green); }
+.pstat-label { font-size: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* MAIN */
+.main-content { flex: 1; overflow-y: auto; padding: 28px 30px; }
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.22s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* PAGE HEADER */
+.page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; }
+.page-eyebrow { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 5px; font-weight: 600; }
+.page-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 400; color: var(--cream); line-height: 1.2; }
+.page-subtitle { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
+.page-actions { display: flex; gap: 9px; align-items: center; flex-shrink: 0; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; font-family: 'Figtree', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; letter-spacing: 0.02em; border-radius: var(--radius); }
+.btn-primary { background: var(--green); color: white; }
+.btn-primary:hover { background: var(--green-light); }
+.btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
+.btn-secondary:hover { border-color: var(--green); color: var(--green); }
+.btn-ghost { background: transparent; border: none; color: var(--text-dim); padding: 7px 11px; }
+.btn-ghost:hover { color: var(--text-bright); }
+.btn-success { background: var(--emerald-dim); color: var(--emerald); border: 1px solid var(--border-green); }
+.btn-danger { background: var(--rose-dim); color: var(--rose); border: 1px solid rgba(196,68,58,0.2); }
+.btn-sm { padding: 6px 12px; font-size: 11px; }
+.btn-icon { padding: 7px; }
+
+/* KPI GRID */
+.kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+.kpi-card { background: var(--bg-2); border: 1px solid var(--border); padding: 20px 22px; position: relative; overflow: hidden; transition: all 0.2s; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.kpi-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
+.kpi-card::after { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background:var(--green); opacity:0; transition:opacity 0.2s; border-radius: var(--radius) var(--radius) 0 0; }
+.kpi-card:hover::after { opacity:1; }
+.kpi-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.kpi-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; }
+.kpi-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 15px; border-radius: var(--radius); }
+.kpi-value { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 400; color: var(--cream); line-height: 1; margin-bottom: 7px; }
+.kpi-delta { display: flex; align-items: center; gap: 5px; font-size: 11px; }
+.kpi-delta.up { color: var(--green); }
+.kpi-delta.down { color: var(--rose); }
+.kpi-delta.neutral { color: var(--text-dim); }
+
+/* CHARTS */
+.charts-row { display: grid; grid-template-columns: 1fr 0.65fr; gap: 14px; margin-bottom: 24px; }
+.chart-card { background: var(--bg-2); border: none; padding: 32px; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+.chart-title { font-family: 'Fraunces', serif; font-size: 18px; color: var(--cream); }
+.chart-canvas-wrap { position: relative; height: 200px; }
+
+/* TABLES */
+.data-table-wrap { background: var(--bg-2); border: 1px solid var(--border); margin-bottom: 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+.table-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 1px solid var(--border); }
+.table-title { font-family: 'Fraunces', serif; font-size: 16px; color: var(--cream); }
+.table-tools { display: flex; gap: 8px; }
+.search-input { background: var(--bg-3); border: 1px solid var(--border); color: var(--text-bright); font-family: 'Figtree', sans-serif; font-size: 12px; padding: 6px 11px; outline: none; width: 200px; transition: border-color 0.2s; border-radius: var(--radius); }
+.search-input:focus { border-color: var(--green); }
+.filter-select { background: var(--bg-3); border: 1px solid var(--border); color: var(--text-dim); font-family: 'Figtree', sans-serif; font-size: 12px; padding: 6px 11px; outline: none; cursor: pointer; border-radius: var(--radius); }
+table { width: 100%; border-collapse: collapse; }
+thead th { padding: 11px 22px; text-align: left; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; border-bottom: 1px solid var(--border); }
+tbody td { padding: 13px 22px; font-size: 13px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.03); }
+tbody tr:hover td { background: rgba(26,61,46,0.02); }
+tbody tr:last-child td { border-bottom: none; }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; border-radius: 20px; }
+.badge::before { content:''; width:4px; height:4px; border-radius:50%; flex-shrink:0; }
+.badge-hot { background: var(--rose-dim); color: var(--rose); }
+.badge-hot::before { background: var(--rose); }
+.badge-warm { background: var(--amber-dim); color: var(--amber); }
+.badge-warm::before { background: var(--amber); }
+.badge-good { background: var(--emerald-dim); color: var(--emerald); }
+.badge-good::before { background: var(--emerald); }
+.badge-blue { background: var(--green-glow); color: var(--green); }
+.badge-blue::before { background: var(--green); }
+.badge-neutral { background: rgba(0,0,0,0.04); color: var(--text-dim); }
+.badge-neutral::before { background: var(--text-dim); }
+.badge-violet { background: var(--violet-dim); color: var(--violet); }
+.badge-violet::before { background: var(--violet); }
+.badge-amber { background: var(--amber-dim); color: var(--amber); }
+.badge-amber::before { background: var(--amber); }
+
+/* TREATMENT PLAN CARDS */
+.tp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 14px; }
+.tp-card { background: var(--bg-2); border: 1px solid var(--border); overflow: hidden; transition: all 0.2s; cursor: pointer; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.tp-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
+.tp-card-header { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
+.tp-patient { font-size: 14px; font-weight: 500; color: var(--cream); margin-bottom: 3px; }
+.tp-treatment { font-size: 11px; color: var(--text-dim); }
+.tp-card-body { padding: 14px 18px; }
+.tp-meta { display: flex; flex-direction: column; gap: 5px; }
+.tp-meta-row { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text-dim); }
+.tp-progress { margin-top: 10px; }
+.tp-progress-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 10px; color: var(--text-dim); }
+.progress-bar { height: 4px; background: var(--bg-5); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--green); border-radius: 2px; }
+.tp-card-footer { padding: 11px 18px; border-top: 1px solid var(--border); background: var(--bg-3); display: flex; gap: 7px; justify-content: space-between; align-items: center; }
+
+/* AI CONFIDENCE RING */
+.confidence-ring { position: relative; width: 48px; height: 48px; flex-shrink: 0; }
+.confidence-ring svg { width: 48px; height: 48px; transform: rotate(-90deg); }
+.confidence-ring .ring-bg { fill: none; stroke: var(--bg-5); stroke-width: 3; }
+.confidence-ring .ring-fill { fill: none; stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+.confidence-ring .ring-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 12px; font-weight: 600; color: var(--cream); transform: none; }
+
+/* FOLLOW-UP / PATIENT JOURNEYS */
+.sequence-card { background: var(--bg-2); border: 1px solid var(--border); margin-bottom: 12px; overflow: hidden; transition: all 0.2s; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.sequence-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
+.sequence-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.sequence-name { font-size: 14px; font-weight: 500; color: var(--cream); }
+.sequence-body { padding: 16px 20px; }
+.sequence-steps { display: flex; align-items: center; gap: 0; overflow-x: auto; padding-bottom: 8px; }
+.sequence-step { display: flex; flex-direction: column; align-items: center; min-width: 120px; flex-shrink: 0; }
+.step-node { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; margin-bottom: 6px; border: 2px solid; }
+.step-node svg { width: 16px; height: 16px; }
+.step-node.sent { border-color: var(--green); background: var(--emerald-dim); color: var(--green); }
+.step-node.pending { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
+.step-node.waiting { border-color: var(--border); background: var(--bg-4); color: var(--text-dim); }
+.step-label { font-size: 10px; color: var(--text-dim); text-align: center; }
+.step-day { font-size: 9px; color: var(--text-dim); margin-top: 2px; font-weight: 500; }
+.step-connector { flex: 1; height: 2px; background: var(--border); margin-bottom: 28px; min-width: 20px; }
+.step-connector.done { background: var(--green); }
+.sequence-footer { padding: 12px 20px; border-top: 1px solid var(--border); background: var(--bg-3); display: flex; align-items: center; justify-content: space-between; }
+.sequence-stat { font-size: 11px; color: var(--text-dim); }
+.sequence-stat strong { color: var(--text-bright); }
+
+/* REVIEW CARDS */
+.review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 14px; }
+.review-card { background: var(--bg-2); border: 1px solid var(--border); padding: 18px; transition: all 0.2s; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.review-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
+.review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.review-patient { font-size: 13px; font-weight: 500; color: var(--cream); }
+.review-treatment { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+.review-stars { font-size: 14px; letter-spacing: 2px; color: var(--amber); }
+.review-text { font-size: 12px; color: var(--text); line-height: 1.6; margin-bottom: 12px; font-style: italic; }
+.review-meta { display: flex; justify-content: space-between; align-items: center; }
+.review-platform { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--text-dim); }
+.review-time { font-size: 9px; color: var(--text-dim); font-weight: 500; }
+
+/* STAFF */
+.staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 14px; }
+.staff-card { background: var(--bg-2); border: 1px solid var(--border); overflow: hidden; transition: all 0.2s; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.staff-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
+.staff-card-header { padding: 18px; display: flex; align-items: flex-start; gap: 12px; border-bottom: 1px solid var(--border); }
+.staff-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 15px; color: white; flex-shrink: 0; }
+.staff-name { font-size: 13px; font-weight: 500; color: var(--cream); margin-bottom: 2px; }
+.staff-role-text { font-size: 10px; color: var(--text-dim); }
+.staff-online { font-size: 9px; color: var(--green); display: flex; align-items: center; gap: 4px; margin-top: 3px; }
+.staff-card-body { padding: 14px 18px; }
+.staff-stats { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.staff-stat { text-align: center; }
+.staff-stat-val { font-family: 'Fraunces', serif; font-size: 20px; color: var(--green); }
+.staff-stat-label { font-size: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.staff-card-footer { padding: 10px 18px; border-top: 1px solid var(--border); background: var(--bg-3); display: flex; gap: 7px; }
+
+/* ROTA */
+.rota-wrap { overflow-x: auto; }
+.rota-grid { display: grid; grid-template-columns: 150px repeat(7,1fr); gap: 0; border: 1px solid var(--border); min-width: 900px; border-radius: var(--radius); overflow: hidden; }
+.rota-header { background: var(--bg-3); padding: 10px 14px; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+.rota-name-cell { padding: 10px 14px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 12px; color: var(--text-bright); display: flex; align-items: center; gap: 8px; background: var(--bg-2); }
+.rota-cell { padding: 8px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); min-height: 52px; background: var(--bg-2); }
+.rota-shift { background: var(--green-glow); border: 1px solid var(--border-green); padding: 3px 6px; font-size: 9px; color: var(--green); margin-bottom: 3px; text-align: center; border-radius: 4px; font-weight: 500; }
+.rota-shift.half { background: var(--violet-dim); border-color: rgba(91,74,138,0.2); color: var(--violet); }
+.rota-shift.off { background: transparent; border-color: var(--border); color: var(--text-dim); }
+.rota-shift.leave { background: var(--amber-dim); border-color: rgba(184,134,11,0.2); color: var(--amber); }
+
+/* HEATMAP */
+.heatmap-grid { display: grid; grid-template-columns: 80px repeat(10,1fr); gap: 2px; margin-top: 14px; }
+.heatmap-label { font-size: 9px; color: var(--text-dim); display: flex; align-items: center; padding: 4px 8px 4px 0; font-weight: 500; }
+.heatmap-cell { height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 600; color: white; }
+.heatmap-cell.red { background: rgba(196,68,58,0.7); }
+.heatmap-cell.amber { background: rgba(184,134,11,0.6); }
+.heatmap-cell.green { background: rgba(26,61,46,0.7); }
+.heatmap-cell.light { background: rgba(26,61,46,0.3); color: var(--green); }
+.heatmap-header { font-size: 8px; color: var(--text-dim); text-align: center; padding: 4px 0; font-weight: 500; }
+
+/* PAYROLL */
+.payroll-card { background: var(--bg-2); border: 1px solid var(--border); margin-bottom: 14px; overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.payroll-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.payroll-name { font-size: 14px; font-weight: 500; color: var(--cream); }
+.payroll-body { padding: 18px 22px; display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; }
+.payroll-item { }
+.payroll-item-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 5px; font-weight: 500; }
+.payroll-item-val { font-family: 'Fraunces', serif; font-size: 20px; color: var(--cream); }
+.payroll-footer { padding: 12px 22px; border-top: 1px solid var(--border); background: var(--bg-3); display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ACTIVITY */
+.activity-feed { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.activity-feed-header { padding: 16px 22px; border-bottom: 1px solid var(--border); }
+.activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 22px; border-bottom: 1px solid rgba(0,0,0,0.03); }
+.activity-item:last-child { border-bottom: none; }
+.activity-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-4); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; border: 1px solid var(--border); }
+.activity-dot svg { width: 14px; height: 14px; stroke: var(--text-dim); }
+.activity-text { flex: 1; font-size: 12px; color: var(--text); line-height: 1.5; }
+.activity-text strong { color: var(--text-bright); }
+.activity-time { font-size: 9px; color: var(--text-dim); white-space: nowrap; font-weight: 500; }
+
+/* PRACTICE HEALTH DIAL */
+.health-dial-wrap { display: flex; align-items: center; gap: 28px; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 24px 28px; margin-bottom: 24px; }
+.health-dial { position: relative; width: 120px; height: 120px; flex-shrink: 0; }
+.health-dial svg { width: 120px; height: 120px; }
+.health-dial-score { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.health-dial-score .score-num { font-family: 'Fraunces', serif; font-size: 36px; color: var(--green); line-height: 1; font-weight: 500; }
+.health-dial-score .score-label { font-size: 8px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-dim); margin-top: 2px; font-weight: 600; }
+.health-breakdown { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
+.health-metric { display: flex; align-items: center; gap: 10px; }
+.health-metric-bar { flex: 1; height: 4px; background: var(--bg-5); border-radius: 2px; overflow: hidden; }
+.health-metric-fill { height: 100%; border-radius: 2px; background: var(--green); }
+.health-metric-label { font-size: 11px; color: var(--text-dim); min-width: 110px; }
+.health-metric-val { font-size: 11px; font-weight: 600; color: var(--text-bright); min-width: 36px; text-align: right; }
+
+/* SENTIMENT BAR CHART */
+.sentiment-bars { display: flex; flex-direction: column; gap: 8px; }
+.sentiment-row { display: flex; align-items: center; gap: 12px; }
+.sentiment-label { font-size: 11px; color: var(--text-dim); min-width: 120px; text-align: right; }
+.sentiment-bar-wrap { flex: 1; height: 20px; background: var(--bg-5); border-radius: 3px; overflow: hidden; }
+.sentiment-bar-fill { height: 100%; border-radius: 3px; background: var(--green); display: flex; align-items: center; padding-left: 8px; font-size: 9px; color: white; font-weight: 600; }
+
+/* PATIENT TIMELINE */
+.timeline-row { display: flex; align-items: center; gap: 0; padding: 12px 0; overflow-x: auto; }
+.timeline-node { display: flex; flex-direction: column; align-items: center; min-width: 100px; flex-shrink: 0; }
+.timeline-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid; margin-bottom: 4px; }
+.timeline-dot.done { border-color: var(--green); background: var(--emerald-dim); }
+.timeline-dot.done svg { stroke: var(--green); }
+.timeline-dot.current { border-color: var(--amber); background: var(--amber-dim); }
+.timeline-dot.current svg { stroke: var(--amber); }
+.timeline-dot.future { border-color: var(--border); background: var(--bg-4); }
+.timeline-dot.future svg { stroke: var(--text-dim); }
+.timeline-dot svg { width: 12px; height: 12px; }
+.timeline-label { font-size: 9px; color: var(--text-dim); text-align: center; }
+.timeline-connector { flex: 1; height: 2px; margin-bottom: 18px; min-width: 12px; background: var(--border); }
+.timeline-connector.done { background: var(--green); }
+
+/* SPARKLINE */
+.sparkline-wrap { display: inline-block; vertical-align: middle; }
+.sparkline-wrap svg { display: block; }
+
+/* SETTINGS */
+.settings-layout { display: grid; grid-template-columns: 190px 1fr; gap: 18px; }
+.settings-nav { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+.settings-nav-item { padding: 11px 16px; font-size: 12px; color: var(--text-dim); cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; }
+.settings-nav-item.active { color: var(--green); background: var(--green-glow); border-left-color: var(--green); }
+.settings-nav-item:hover { color: var(--text-bright); }
+.settings-panel { background: var(--bg-2); border: 1px solid var(--border); padding: 26px; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.settings-section { margin-bottom: 28px; }
+.settings-section:last-child { margin-bottom: 0; }
+.settings-section-title { font-family: 'Fraunces', serif; font-size: 15px; color: var(--cream); margin-bottom: 14px; padding-bottom: 9px; border-bottom: 1px solid var(--border); }
+.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid rgba(0,0,0,0.03); }
+.settings-row:last-child { border-bottom: none; }
+.settings-label { font-size: 13px; color: var(--text-bright); }
+.settings-sublabel { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+.toggle { width: 34px; height: 18px; background: var(--bg-5); border-radius: 9px; cursor: pointer; position: relative; transition: background 0.2s; flex-shrink: 0; }
+.toggle.on { background: var(--green); }
+.toggle::after { content:''; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%; background:white; transition:transform 0.2s; }
+.toggle.on::after { transform: translateX(16px); }
+
+/* MODALS */
+.modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(28,28,28,0.4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal { background: var(--bg-2); border: 1px solid var(--border); width: 540px; max-height: 85vh; overflow-y: auto; transform: translateY(18px); transition: transform 0.2s; border-radius: var(--radius); box-shadow: var(--shadow-lg); }
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-header { padding: 22px 26px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-family: 'Fraunces', serif; font-size: 20px; color: var(--cream); }
+.modal-close { background: transparent; border: 1px solid var(--border); color: var(--text-dim); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: all 0.2s; border-radius: var(--radius); }
+.modal-close:hover { border-color: var(--rose); color: var(--rose); }
+.modal-body { padding: 26px; }
+.modal-footer { padding: 18px 26px; border-top: 1px solid var(--border); display: flex; gap: 9px; justify-content: flex-end; }
+
+/* NOTIFICATIONS */
+.notif-panel { position: absolute; right: 0; top: calc(var(--header-h) + 6px); width: 320px; background: var(--bg-2); border: 1px solid var(--border); z-index: 200; box-shadow: var(--shadow-lg); transform: translateY(-8px); opacity: 0; pointer-events: none; transition: all 0.2s; border-radius: var(--radius); }
+.notif-panel.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+.notif-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.notif-title { font-family: 'Fraunces', serif; font-size: 14px; color: var(--cream); }
+.notif-item { padding: 12px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; display: flex; gap: 10px; align-items: flex-start; }
+.notif-item:hover { background: rgba(0,0,0,0.02); }
+.notif-item.unread { background: var(--green-glow); }
+.notif-icon { font-size: 14px; flex-shrink: 0; }
+.notif-icon svg { width: 16px; height: 16px; stroke: var(--green); }
+.notif-text { font-size: 11px; color: var(--text-bright); margin-bottom: 2px; }
+.notif-time { font-size: 9px; color: var(--text-dim); font-weight: 500; }
+
+/* TOAST */
+.toast-container { position: fixed; bottom: 22px; right: 22px; z-index: 9999; display: flex; flex-direction: column; gap: 7px; }
+.toast { background: var(--bg-2); border: 1px solid var(--border); padding: 11px 16px; min-width: 270px; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease; box-shadow: var(--shadow-lg); border-radius: var(--radius); }
+@keyframes slideIn { from{transform:translateX(90px);opacity:0} to{transform:translateX(0);opacity:1} }
+.toast-icon { font-size: 14px; }
+.toast-text { font-size: 12px; color: var(--text-bright); flex: 1; }
+.toast.error { border-color: rgba(196,68,58,0.3); }
+
+/* REVIEW STATS */
+.review-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 24px; }
+.review-stat-card { background: var(--bg-2); border: 1px solid var(--border); padding: 20px; text-align: center; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.review-stat-val { font-family: 'Fraunces', serif; font-size: 36px; color: var(--cream); line-height: 1; margin-bottom: 4px; }
+.review-stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
+.review-stat-sub { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+
+/* SECURITY */
+.security-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.security-card { background: var(--bg-2); border: 1px solid var(--border); padding: 22px; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.security-card-title { font-family: 'Fraunces', serif; font-size: 16px; color: var(--cream); margin-bottom: 4px; }
+.security-card-desc { font-size: 11px; color: var(--text-dim); margin-bottom: 18px; }
+.audit-list { display: flex; flex-direction: column; }
+.audit-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.audit-item:last-child { border-bottom: none; }
+.audit-icon { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; border-radius: var(--radius); }
+.audit-icon.ok { background: var(--emerald-dim); color: var(--emerald); }
+.audit-icon.warn { background: var(--amber-dim); color: var(--amber); }
+.audit-icon.danger { background: var(--rose-dim); color: var(--rose); }
+.audit-icon.info { background: var(--green-glow); color: var(--green); }
+.audit-action { font-size: 12px; color: var(--text-bright); }
+.audit-meta { font-size: 10px; color: var(--text-dim); margin-top: 1px; }
+.audit-time { font-size: 9px; color: var(--text-dim); white-space: nowrap; font-weight: 500; }
+.perm-table { width: 100%; }
+.perm-row { display: flex; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.perm-row:last-child { border-bottom: none; }
+.perm-feature { flex: 1; font-size: 11px; color: var(--text); }
+.perm-checks { display: flex; gap: 18px; }
+.perm-check { width: 60px; text-align: center; }
+.check-yes { color: var(--green); font-size: 13px; }
+.check-no { color: var(--rose); font-size: 11px; }
+.perm-role-header { display: flex; align-items: center; padding: 7px 0; }
+.perm-role-label { width: 60px; text-align: center; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; }
+
+/* REVENUE FORECAST */
+.forecast-card { background: var(--bg-2); border: 1px solid var(--border); padding: 22px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
+
+/* PATIENT LTV */
+.ltv-strip { display: flex; gap: 16px; align-items: center; margin-top: 10px; padding: 10px 0; border-top: 1px solid var(--border); }
+.ltv-item { text-align: center; }
+.ltv-val { font-family: 'Fraunces', serif; font-size: 16px; color: var(--green); }
+.ltv-label { font-size: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+
+@media (max-width: 1280px) {
+  .kpi-grid { grid-template-columns: repeat(2,1fr); }
+  .charts-row { grid-template-columns: 1fr; }
+  .security-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-bg"></div>
+  <div class="auth-dots"></div>
+  <div class="auth-panel">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <div class="auth-logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 2C8 2 5 5.5 5 10c0 3 1 5 2 7l1 3c.3.8 1 1 1.5 1h5c.5 0 1.2-.2 1.5-1l1-3c1-2 2-4 2-7 0-4.5-3-8-7-8z"/><path d="M9 13h6"/><path d="M10 16h4"/></svg></div>
+        <div class="auth-logo-text">PEARLIQ</div>
+      </div>
+      <div class="auth-title">Secure Sign In</div>
+      <div class="auth-subtitle">Dental Practice Intelligence Platform</div>
+    </div>
+    <div class="auth-body">
+      <div style="margin-bottom:18px;">
+        <div class="form-label">Access Level</div>
+        <div class="role-selector">
+          <button class="role-btn active" onclick="selectRole(this,'admin')">Practice Manager</button>
+          <button class="role-btn" onclick="selectRole(this,'dentist')">Dentist</button>
+          <button class="role-btn" onclick="selectRole(this,'receptionist')">Receptionist</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="login-email" placeholder="manager@practice.co.uk">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="form-input-row">
+          <input class="form-input" type="password" id="login-pw" placeholder="Enter password">
+          <button class="btn btn-secondary btn-sm" id="togglePwBtn" onclick="togglePw()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:18px;">
+        <label style="display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text-dim);cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--green);"> Remember device
+        </label>
+        <span style="font-size:11px;color:var(--green);cursor:pointer;">Forgot password?</span>
+      </div>
+      <button class="btn-auth" onclick="doLogin()">Sign In</button>
+      <div class="auth-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span>GDPR compliant · ICO registered · AES-256 encrypted · ISO 27001</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-logo">
+      <div class="header-logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" width="14" height="14"><path d="M12 2C8 2 5 5.5 5 10c0 3 1 5 2 7l1 3c.3.8 1 1 1.5 1h5c.5 0 1.2-.2 1.5-1l1-3c1-2 2-4 2-7 0-4.5-3-8-7-8z"/><path d="M9 13h6"/><path d="M10 16h4"/></svg></div>
+      <div>
+        <div class="header-logo-text">PEARLIQ</div>
+        <div class="header-logo-sub">Dental Practice Intelligence</div>
+      </div>
+    </div>
+    <div class="header-search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input placeholder="Search patients, treatments, staff...">
+      <span style="font-size:9px;color:var(--text-dim);font-weight:500;">&#8984;K</span>
+    </div>
+    <div class="header-actions">
+      <div class="secure-pill"><div class="secure-dot"></div><div class="secure-text">SECURED</div></div>
+      <button class="h-action" onclick="toggleNotif()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-badge">4</div></button>
+      <button class="h-action" onclick="navigateTo('reviews')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+      <button class="h-action" onclick="navigateTo('settings')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+      <div class="header-user">
+        <div class="user-avatar" id="user-avatar">PM</div>
+        <div>
+          <div class="user-name" id="user-name-display">Dr. Sarah Clarke</div>
+          <div class="user-role-label" id="user-role-display">Practice Manager</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notif-panel" id="notif-panel" style="position:absolute;right:22px;">
+      <div class="notif-header">
+        <div class="notif-title">Notifications</div>
+        <span style="font-size:10px;color:var(--green);cursor:pointer;">Mark all read</span>
+      </div>
+      <div>
+        <div class="notif-item unread"><div class="notif-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div><div class="notif-text"><strong>Follow-up sent:</strong> James Thompson — Implant treatment plan Day 3 reminder</div><div class="notif-time">12 min ago</div></div></div>
+        <div class="notif-item unread"><div class="notif-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div><div class="notif-text"><strong>New Google review:</strong> Sarah Mitchell left a 5-star review</div><div class="notif-time">1 hr ago</div></div></div>
+        <div class="notif-item unread"><div class="notif-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div><div class="notif-text"><strong>Payroll alert:</strong> April payroll prep due in 3 days</div><div class="notif-time">2 hr ago</div></div></div>
+        <div class="notif-item unread"><div class="notif-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div><div class="notif-text"><strong>Treatment plan lapsed:</strong> 8 patients haven't responded in 30+ days</div><div class="notif-time">Today</div></div></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="app-body">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Overview</div>
+        <div class="nav-item active" onclick="navigateTo('dashboard')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> Dashboard</div>
+        <div class="nav-item" onclick="navigateTo('patients')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span> Patients</div>
+        <div class="nav-item" onclick="navigateTo('appointments')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span> Appointments</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Treatment Plans</div>
+        <div class="nav-item" onclick="navigateTo('treatment-plans')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Treatment Plans <span class="nav-badge amber">8</span></div>
+        <div class="nav-item" onclick="navigateTo('follow-up')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> Patient Journeys <span class="nav-badge">24</span></div>
+        <div class="nav-item" onclick="navigateTo('financing')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span> Financing Options</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Reviews</div>
+        <div class="nav-item" onclick="navigateTo('reviews')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> Review Management</div>
+        <div class="nav-item" onclick="navigateTo('review-triggers')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> Reputation Engine</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Team</div>
+        <div class="nav-item" onclick="navigateTo('staff')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span> Clinical Team</div>
+        <div class="nav-item" onclick="navigateTo('payroll')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span> Pay & Hours</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Intelligence</div>
+        <div class="nav-item" onclick="navigateTo('practice-health')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span> Practice Health</div>
+        <div class="nav-item" onclick="navigateTo('ai-insights')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> AI Insights</div>
+        <div class="nav-item" onclick="navigateTo('revenue-forecast')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Revenue Forecast</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Business</div>
+        <div class="nav-item" onclick="navigateTo('analytics')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> Analytics</div>
+        <div class="nav-item" onclick="navigateTo('security')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> Security</div>
+        <div class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span> Settings</div>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="practice-card">
+          <div class="practice-name">
+            <span id="sidebar-practice-name">Clarke Dental</span>
+            <div class="online-badge"><div style="width:5px;height:5px;border-radius:50%;background:var(--green);"></div> Live</div>
+          </div>
+          <div class="practice-stats">
+            <div><div class="pstat-val">142</div><div class="pstat-label">Patients</div></div>
+            <div><div class="pstat-val">4.9</div><div class="pstat-label">Rating</div></div>
+            <div><div class="pstat-val">87%</div><div class="pstat-label">Conversion</div></div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="main-content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div>
+            <div class="page-eyebrow">Overview · April 2026</div>
+            <h1 class="page-title">Practice Dashboard</h1>
+            <div class="page-subtitle">Clarke Dental · 6 active automations · 4.9 average rating</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-secondary btn-sm" onclick="showToast('Generating monthly report...','info')">Monthly Report</button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('new-patient-modal')">+ Add Patient</button>
+          </div>
+        </div>
+
+        <!-- Practice Health Score Dial -->
+        <div class="health-dial-wrap">
+          <div class="health-dial">
+            <svg viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#E8E4DE" stroke-width="6"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#1A3D2E" stroke-width="6" stroke-linecap="round"
+                stroke-dasharray="314" stroke-dashoffset="47" transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="health-dial-score">
+              <div class="score-num">85</div>
+              <div class="score-label">Health Score</div>
+            </div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:4px;">Practice Health Score</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;">Composite of occupancy, conversion, reviews, recalls & rota coverage</div>
+            <div class="health-breakdown">
+              <div class="health-metric">
+                <div class="health-metric-label">Occupancy Rate</div>
+                <div class="health-metric-bar"><div class="health-metric-fill" style="width:82%;"></div></div>
+                <div class="health-metric-val">82%</div>
+              </div>
+              <div class="health-metric">
+                <div class="health-metric-label">Conversion Rate</div>
+                <div class="health-metric-bar"><div class="health-metric-fill" style="width:87%;"></div></div>
+                <div class="health-metric-val">87%</div>
+              </div>
+              <div class="health-metric">
+                <div class="health-metric-label">Review Velocity</div>
+                <div class="health-metric-bar"><div class="health-metric-fill" style="width:91%;"></div></div>
+                <div class="health-metric-val">91%</div>
+              </div>
+              <div class="health-metric">
+                <div class="health-metric-label">Recall Rate</div>
+                <div class="health-metric-bar"><div class="health-metric-fill" style="width:78%;"></div></div>
+                <div class="health-metric-val">78%</div>
+              </div>
+              <div class="health-metric">
+                <div class="health-metric-label">Rota Coverage</div>
+                <div class="health-metric-bar"><div class="health-metric-fill" style="width:88%;"></div></div>
+                <div class="health-metric-val">88%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-label">Treatment Plan Conversion</div><div class="kpi-icon" style="background:var(--green-glow);color:var(--green);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div></div>
+            <div class="kpi-value" id="kpi-conversion">87%</div>
+            <div class="kpi-delta up">+23% since automation</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-label">Active Patients</div><div class="kpi-icon" style="background:var(--amber-dim);color:var(--amber);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div>
+            <div class="kpi-value" id="kpi-patients">34</div>
+            <div class="kpi-delta up">+18 new Google reviews</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-label">Plans Awaiting Booking</div><div class="kpi-icon" style="background:var(--rose-dim);color:var(--rose);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div></div>
+            <div class="kpi-value" id="kpi-plans">24</div>
+            <div class="kpi-delta neutral">8 lapsed 30+ days</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-label">Pipeline Value</div><div class="kpi-icon" style="background:var(--emerald-dim);color:var(--emerald);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div></div>
+            <div class="kpi-value" id="kpi-revenue">&pound;48K</div>
+            <div class="kpi-delta up">+&pound;6,200 vs last month</div>
+          </div>
+        </div>
+
+        <!-- Charts row -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">Revenue & Treatment Conversions — 6 Months</div>
+            </div>
+            <div class="chart-canvas-wrap"><canvas id="revenue-chart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div class="chart-title">Follow-Up Performance</div></div>
+            <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px;">
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:11px;color:var(--text);">Day 1 — Initial email</span><span style="font-size:11px;color:var(--green);font-weight:500;">68% open</span></div><div class="progress-bar"><div class="progress-fill" style="width:68%;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:11px;color:var(--text);">Day 3 — SMS reminder</span><span style="font-size:11px;color:var(--green);font-weight:500;">54% read</span></div><div class="progress-bar"><div class="progress-fill" style="width:54%;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:11px;color:var(--text);">Day 7 — Finance offer</span><span style="font-size:11px;color:var(--amber);font-weight:500;">42% click</span></div><div class="progress-bar"><div class="progress-fill" style="width:42%;background:var(--amber);"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:11px;color:var(--text);">Day 14 — Education email</span><span style="font-size:11px;color:var(--green);font-weight:500;">31% click</span></div><div class="progress-bar"><div class="progress-fill" style="width:31%;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:11px;color:var(--text);">Day 30 — Final outreach</span><span style="font-size:11px;color:var(--text-dim);font-weight:500;">18% book</span></div><div class="progress-bar"><div class="progress-fill" style="width:18%;background:var(--text-dim);"></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="data-table-wrap">
+            <div class="table-header"><div class="table-title">Priority Follow-Ups Today</div><button class="btn btn-ghost btn-sm" onclick="navigateTo('follow-up')">View all</button></div>
+            <table><thead><tr><th>Patient</th><th>Treatment</th><th>Value</th><th>Days Since</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><div style="color:var(--cream);font-weight:500;">James Thompson</div></td><td style="font-size:11px;">Dental Implant</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;3,200</td><td><span class="badge badge-hot">42 days</span></td><td><button class="btn btn-primary btn-sm" onclick="showToast('Sending follow-up...','info')">Send</button></td></tr>
+              <tr><td><div style="color:var(--cream);font-weight:500;">Emma Davies</div></td><td style="font-size:11px;">Invisalign</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;4,800</td><td><span class="badge badge-hot">38 days</span></td><td><button class="btn btn-primary btn-sm" onclick="showToast('Sending follow-up...','info')">Send</button></td></tr>
+              <tr><td><div style="color:var(--cream);font-weight:500;">Robert Chen</div></td><td style="font-size:11px;">Veneers (x6)</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;5,400</td><td><span class="badge badge-warm">21 days</span></td><td><button class="btn btn-secondary btn-sm">Scheduled</button></td></tr>
+              <tr><td><div style="color:var(--cream);font-weight:500;">Lisa Patel</div></td><td style="font-size:11px;">Composite Bonding</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;1,800</td><td><span class="badge badge-warm">14 days</span></td><td><button class="btn btn-secondary btn-sm">Scheduled</button></td></tr>
+            </tbody></table>
+          </div>
+          <div class="activity-feed">
+            <div class="activity-feed-header"><div class="chart-title">Live Activity</div></div>
+            <div class="activity-item"><div class="activity-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="activity-text"><strong>Sarah Mitchell</strong> left a 5-star Google review after her implant appointment</div><div class="activity-time">1h</div></div>
+            <div class="activity-item"><div class="activity-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="activity-text"><strong>AI sent</strong> Day 7 finance offer to 6 patients with lapsed treatment plans</div><div class="activity-time">2h</div></div>
+            <div class="activity-item"><div class="activity-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div><div class="activity-text"><strong>James Thompson</strong> booked Implant treatment after Day 3 follow-up — &pound;3,200 recovered</div><div class="activity-time">3h</div></div>
+            <div class="activity-item"><div class="activity-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div class="activity-text"><strong>Payroll prep</strong> auto-calculated for April — 8 staff, &pound;28,400 total</div><div class="activity-time">4h</div></div>
+            <div class="activity-item"><div class="activity-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="activity-text"><strong>4 new Trustpilot reviews</strong> triggered from yesterday's appointments</div><div class="activity-time">Yesterday</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENTS -->
+      <div class="page" id="page-patients">
+        <div class="page-header">
+          <div><div class="page-eyebrow">CRM · Patients</div><h1 class="page-title">Patient Records</h1><div class="page-subtitle">342 registered patients · 142 active treatment plans</div></div>
+          <div class="page-actions">
+            <select class="filter-select"><option>All Patients</option><option>Active Plans</option><option>Lapsed Plans</option><option>Completed</option></select>
+            <button class="btn btn-primary btn-sm" onclick="openModal('new-patient-modal')">+ Add Patient</button>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <div class="table-header"><div class="table-title">All Patients</div><div class="table-tools"><input class="search-input" placeholder="Search patients..."><select class="filter-select"><option>All</option><option>Has Treatment Plan</option><option>Needs Follow-Up</option></select></div></div>
+          <table><thead><tr><th>Patient</th><th>Treatment Plan</th><th>Plan Value</th><th>Last Visit</th><th>Status</th><th>Lifetime Value</th><th></th></tr></thead>
+          <tbody id="patients-tbody">
+            <tr><td><div style="color:var(--cream);font-weight:500;">James Thompson</div><div style="font-size:10px;color:var(--text-dim);">james.t@email.com</div></td><td>Dental Implant</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;3,200</td><td style="font-size:11px;font-weight:500;">01 Mar 2026</td><td><span class="badge badge-hot">Lapsed 42d</span></td>
+              <td>
+                <div class="ltv-strip" style="border-top:none;padding:0;margin:0;">
+                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;8,400</div><div class="ltv-label">Total</div></div>
+                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;4,200</div><div class="ltv-label">Next 12m</div></div>
+                  <div class="sparkline-wrap"><svg width="48" height="20" viewBox="0 0 48 20"><polyline points="2,16 10,12 18,14 26,8 34,10 42,4 46,6" fill="none" stroke="#1A3D2E" stroke-width="1.5"/></svg></div>
+                </div>
+              </td>
+              <td><button class="btn btn-secondary btn-sm">View</button></td></tr>
+            <tr><td><div style="color:var(--cream);font-weight:500;">Emma Davies</div><div style="font-size:10px;color:var(--text-dim);">emma.d@email.com</div></td><td>Invisalign Full</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;4,800</td><td style="font-size:11px;font-weight:500;">05 Mar 2026</td><td><span class="badge badge-hot">Lapsed 38d</span></td>
+              <td>
+                <div class="ltv-strip" style="border-top:none;padding:0;margin:0;">
+                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;6,200</div><div class="ltv-label">Total</div></div>
+                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;5,800</div><div class="ltv-label">Next 12m</div></div>
+                  <div class="sparkline-wrap"><svg width="48" height="20" viewBox="0 0 48 20"><polyline points="2,14 10,16 18,12 26,10 34,8 42,6 46,4" fill="none" stroke="#1A3D2E" stroke-width="1.5"/></svg></div>
+                </div>
+              </td>
+              <td><button class="btn btn-secondary btn-sm">View</button></td></tr>
+            <tr><td><div style="color:var(--cream);font-weight:500;">Sarah Mitchell</div><div style="font-size:10px;color:var(--text-dim);">sarah.m@email.com</div></td><td>Composite Bonding</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;1,200</td><td style="font-size:11px;font-weight:500;">10 Apr 2026</td><td><span class="badge badge-good">Booked</span></td>
+              <td>
+                <div class="ltv-strip" style="border-top:none;padding:0;margin:0;">
+                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;3,600</div><div class="ltv-label">Total</div></div>
+                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;1,400</div><div class="ltv-label">Next 12m</div></div>
+                  <div class="sparkline-wrap"><svg width="48" height="20" viewBox="0 0 48 20"><polyline points="2,10 10,12 18,8 26,10 34,6 42,8 46,6" fill="none" stroke="#1A3D2E" stroke-width="1.5"/></svg></div>
+                </div>
+              </td>
+              <td><button class="btn btn-secondary btn-sm">View</button></td></tr>
+            <tr><td><div style="color:var(--cream);font-weight:500;">Robert Chen</div><div style="font-size:10px;color:var(--text-dim);">r.chen@email.com</div></td><td>Porcelain Veneers x6</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;5,400</td><td style="font-size:11px;font-weight:500;">22 Mar 2026</td><td><span class="badge badge-warm">Warm 21d</span></td>
+              <td>
+                <div class="ltv-strip" style="border-top:none;padding:0;margin:0;">
+                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;12,800</div><div class="ltv-label">Total</div></div>
+                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;6,400</div><div class="ltv-label">Next 12m</div></div>
+                  <div class="sparkline-wrap"><svg width="48" height="20" viewBox="0 0 48 20"><polyline points="2,18 10,14 18,16 26,10 34,6 42,4 46,2" fill="none" stroke="#1A3D2E" stroke-width="1.5"/></svg></div>
+                </div>
+              </td>
+              <td><button class="btn btn-secondary btn-sm">View</button></td></tr>
+          </tbody></table>
+        </div>
+
+        <!-- Treatment Sequence Timeline -->
+        <div class="chart-card" style="margin-top:14px;">
+          <div class="chart-header"><div class="chart-title">Active Patient Journeys</div></div>
+          <div style="margin-bottom:14px;">
+            <div style="font-size:12px;color:var(--text-bright);font-weight:500;margin-bottom:6px;">James Thompson — Dental Implant</div>
+            <div class="timeline-row">
+              <div class="timeline-node"><div class="timeline-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="timeline-label">Consultation</div></div>
+              <div class="timeline-connector done"></div>
+              <div class="timeline-node"><div class="timeline-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="timeline-label">Plan Sent</div></div>
+              <div class="timeline-connector done"></div>
+              <div class="timeline-node"><div class="timeline-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="timeline-label">Day 1 Email</div></div>
+              <div class="timeline-connector done"></div>
+              <div class="timeline-node"><div class="timeline-dot current"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="6"/></svg></div><div class="timeline-label">Day 3 SMS</div></div>
+              <div class="timeline-connector"></div>
+              <div class="timeline-node"><div class="timeline-dot future"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/></svg></div><div class="timeline-label">Finance Offer</div></div>
+              <div class="timeline-connector"></div>
+              <div class="timeline-node"><div class="timeline-dot future"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/></svg></div><div class="timeline-label">Booking</div></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--text-bright);font-weight:500;margin-bottom:6px;">Lisa Patel — Composite Bonding</div>
+            <div class="timeline-row">
+              <div class="timeline-node"><div class="timeline-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="timeline-label">Consultation</div></div>
+              <div class="timeline-connector done"></div>
+              <div class="timeline-node"><div class="timeline-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="timeline-label">Plan Sent</div></div>
+              <div class="timeline-connector done"></div>
+              <div class="timeline-node"><div class="timeline-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="timeline-label">Day 1 Email</div></div>
+              <div class="timeline-connector done"></div>
+              <div class="timeline-node"><div class="timeline-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="timeline-label">Finance Offer</div></div>
+              <div class="timeline-connector done"></div>
+              <div class="timeline-node"><div class="timeline-dot done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="timeline-label">Booked</div></div>
+              <div class="timeline-connector done"></div>
+              <div class="timeline-node"><div class="timeline-dot current"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="6"/></svg></div><div class="timeline-label">Treatment</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPOINTMENTS -->
+      <div class="page" id="page-appointments">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Scheduling · Calendar</div><h1 class="page-title">Appointments</h1><div class="page-subtitle">Today: 12 appointments · Week: 48 scheduled</div></div>
+          <div class="page-actions">
+            <button class="btn btn-primary btn-sm" onclick="openModal('new-appointment-modal')">+ Book Appointment</button>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <div class="table-header"><div class="table-title">Today — 14 April 2026</div></div>
+          <table><thead><tr><th>Time</th><th>Patient</th><th>Treatment</th><th>Dentist</th><th>Duration</th><th>Status</th><th>Review Trigger</th></tr></thead>
+          <tbody>
+            <tr><td style="font-size:12px;color:var(--green);font-weight:600;">09:00</td><td style="color:var(--cream);font-weight:500;">Sarah Mitchell</td><td>Composite Bonding</td><td>Dr. Clarke</td><td>60 min</td><td><span class="badge badge-good">Completed</span></td><td><span class="badge badge-good">Review sent</span></td></tr>
+            <tr><td style="font-size:12px;color:var(--green);font-weight:600;">10:30</td><td style="color:var(--cream);font-weight:500;">Tom Williams</td><td>Check-up & Scale</td><td>Dr. Patel</td><td>30 min</td><td><span class="badge badge-good">Completed</span></td><td><span class="badge badge-good">Review sent</span></td></tr>
+            <tr><td style="font-size:12px;color:var(--green);font-weight:600;">11:30</td><td style="color:var(--cream);font-weight:500;">Lisa Patel</td><td>Consultation</td><td>Dr. Clarke</td><td>45 min</td><td><span class="badge badge-blue">In Progress</span></td><td><span class="badge badge-neutral">Scheduled</span></td></tr>
+            <tr><td style="font-size:12px;color:var(--green);font-weight:600;">14:00</td><td style="color:var(--cream);font-weight:500;">Mark Johnson</td><td>Implant Stage 2</td><td>Dr. Clarke</td><td>90 min</td><td><span class="badge badge-neutral">Upcoming</span></td><td><span class="badge badge-neutral">Pending</span></td></tr>
+            <tr><td style="font-size:12px;color:var(--green);font-weight:600;">16:00</td><td style="color:var(--cream);font-weight:500;">Anna Foster</td><td>Whitening</td><td>Dr. Patel</td><td>60 min</td><td><span class="badge badge-neutral">Upcoming</span></td><td><span class="badge badge-neutral">Pending</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+
+      <!-- TREATMENT PLANS -->
+      <div class="page" id="page-treatment-plans">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Automation · Plans</div><h1 class="page-title">Treatment Plans</h1><div class="page-subtitle">142 active plans · 24 awaiting booking · &pound;184K pipeline</div></div>
+          <div class="page-actions">
+            <button class="btn btn-secondary btn-sm" onclick="showToast('Bulk follow-up sending...','info')">Bulk Follow-Up All</button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('new-plan-modal')">+ New Treatment Plan</button>
+          </div>
+        </div>
+        <div class="tp-grid">
+          <div class="tp-card" onclick="showToast('Opening treatment plan...','info')">
+            <div class="tp-card-header">
+              <div style="flex:1;"><div class="tp-patient">James Thompson</div><div class="tp-treatment">Full Dental Implant — Upper Right</div></div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="confidence-ring">
+                  <svg viewBox="0 0 48 48"><circle class="ring-bg" cx="24" cy="24" r="20"/><circle class="ring-fill" cx="24" cy="24" r="20" stroke="#C4443A" stroke-dasharray="125.6" stroke-dashoffset="80.4" transform="rotate(-90 24 24)"/></svg>
+                  <div class="ring-text">36</div>
+                </div>
+                <span class="badge badge-hot">Lapsed</span>
+              </div>
+            </div>
+            <div class="tp-card-body">
+              <div class="tp-meta">
+                <div class="tp-meta-row">Plan value: <strong style="color:var(--cream)">&pound;3,200</strong></div>
+                <div class="tp-meta-row">Plan created: 1 March 2026</div>
+                <div class="tp-meta-row">Last contact: Day 3 SMS sent</div>
+                <div class="tp-meta-row">Finance available: 0% over 12 months</div>
+              </div>
+              <div class="tp-progress">
+                <div class="tp-progress-label"><span>Follow-up progress</span><span>Day 3 / 5</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:60%;"></div></div>
+              </div>
+            </div>
+            <div class="tp-card-footer">
+              <span style="font-size:10px;color:var(--rose);font-weight:500;">42 days without booking</span>
+              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showToast('Sending Day 7 finance offer...','success')">Send Day 7</button>
+            </div>
+          </div>
+
+          <div class="tp-card" onclick="showToast('Opening treatment plan...','info')">
+            <div class="tp-card-header">
+              <div style="flex:1;"><div class="tp-patient">Emma Davies</div><div class="tp-treatment">Invisalign Full Treatment</div></div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="confidence-ring">
+                  <svg viewBox="0 0 48 48"><circle class="ring-bg" cx="24" cy="24" r="20"/><circle class="ring-fill" cx="24" cy="24" r="20" stroke="#B8860B" stroke-dasharray="125.6" stroke-dashoffset="62.8" transform="rotate(-90 24 24)"/></svg>
+                  <div class="ring-text">50</div>
+                </div>
+                <span class="badge badge-hot">Lapsed</span>
+              </div>
+            </div>
+            <div class="tp-card-body">
+              <div class="tp-meta">
+                <div class="tp-meta-row">Plan value: <strong style="color:var(--cream)">&pound;4,800</strong></div>
+                <div class="tp-meta-row">Plan created: 5 March 2026</div>
+                <div class="tp-meta-row">Last contact: Day 1 email sent</div>
+                <div class="tp-meta-row">Finance available: 0% over 18 months</div>
+              </div>
+              <div class="tp-progress">
+                <div class="tp-progress-label"><span>Follow-up progress</span><span>Day 1 / 5</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:20%;"></div></div>
+              </div>
+            </div>
+            <div class="tp-card-footer">
+              <span style="font-size:10px;color:var(--rose);font-weight:500;">38 days without booking</span>
+              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showToast('Sending Day 3 SMS...','success')">Send Day 3</button>
+            </div>
+          </div>
+
+          <div class="tp-card" onclick="showToast('Opening treatment plan...','info')">
+            <div class="tp-card-header">
+              <div style="flex:1;"><div class="tp-patient">Robert Chen</div><div class="tp-treatment">Porcelain Veneers x6</div></div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="confidence-ring">
+                  <svg viewBox="0 0 48 48"><circle class="ring-bg" cx="24" cy="24" r="20"/><circle class="ring-fill" cx="24" cy="24" r="20" stroke="#1A3D2E" stroke-dasharray="125.6" stroke-dashoffset="31.4" transform="rotate(-90 24 24)"/></svg>
+                  <div class="ring-text">75</div>
+                </div>
+                <span class="badge badge-warm">Warm</span>
+              </div>
+            </div>
+            <div class="tp-card-body">
+              <div class="tp-meta">
+                <div class="tp-meta-row">Plan value: <strong style="color:var(--cream)">&pound;5,400</strong></div>
+                <div class="tp-meta-row">Plan created: 22 March 2026</div>
+                <div class="tp-meta-row">Last contact: Day 7 finance email opened</div>
+                <div class="tp-meta-row">Finance available: 0% over 24 months</div>
+              </div>
+              <div class="tp-progress">
+                <div class="tp-progress-label"><span>Follow-up progress</span><span>Day 7 / 5</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:60%;background:var(--amber);"></div></div>
+              </div>
+            </div>
+            <div class="tp-card-footer">
+              <span style="font-size:10px;color:var(--amber);font-weight:500;">21 days — opened finance email</span>
+              <button class="btn btn-secondary btn-sm">Day 14 Scheduled</button>
+            </div>
+          </div>
+
+          <div class="tp-card" onclick="showToast('Opening treatment plan...','info')">
+            <div class="tp-card-header">
+              <div style="flex:1;"><div class="tp-patient">Lisa Patel</div><div class="tp-treatment">Composite Bonding x4 teeth</div></div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="confidence-ring">
+                  <svg viewBox="0 0 48 48"><circle class="ring-bg" cx="24" cy="24" r="20"/><circle class="ring-fill" cx="24" cy="24" r="20" stroke="#1A3D2E" stroke-dasharray="125.6" stroke-dashoffset="6.3" transform="rotate(-90 24 24)"/></svg>
+                  <div class="ring-text">95</div>
+                </div>
+                <span class="badge badge-good">Active</span>
+              </div>
+            </div>
+            <div class="tp-card-body">
+              <div class="tp-meta">
+                <div class="tp-meta-row">Plan value: <strong style="color:var(--cream)">&pound;1,800</strong></div>
+                <div class="tp-meta-row">Plan created: 10 April 2026</div>
+                <div class="tp-meta-row">Day 1 email sent — opened</div>
+                <div class="tp-meta-row">Appointment booked: 28 April</div>
+              </div>
+              <div class="tp-progress">
+                <div class="tp-progress-label"><span>Follow-up progress</span><span>Booked</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--green);"></div></div>
+              </div>
+            </div>
+            <div class="tp-card-footer">
+              <span style="font-size:10px;color:var(--green);font-weight:500;">Appointment booked — 28 Apr</span>
+              <button class="btn btn-success btn-sm">Converted</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENT JOURNEYS (was Follow-Up Sequences) -->
+      <div class="page" id="page-follow-up">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Automation · Nurture</div><h1 class="page-title">Patient Journeys</h1><div class="page-subtitle">6 active sequences · 87% conversion rate · &pound;42K recovered this month</div></div>
+          <div class="page-actions">
+            <button class="btn btn-primary btn-sm" onclick="openModal('new-sequence-modal')">+ New Sequence</button>
+          </div>
+        </div>
+
+        <div class="sequence-card">
+          <div class="sequence-header">
+            <div>
+              <div class="sequence-name">High-Value Treatment Plan Nurture</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Triggers for treatment plans over &pound;1,500 · Implants, Invisalign, Veneers</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="badge badge-good">Active</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+          <div class="sequence-body">
+            <div class="sequence-steps">
+              <div class="sequence-step">
+                <div class="step-node sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                <div class="step-label">Welcome Email</div>
+                <div class="step-day">Day 1</div>
+              </div>
+              <div class="step-connector done"></div>
+              <div class="sequence-step">
+                <div class="step-node sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+                <div class="step-label">SMS Reminder</div>
+                <div class="step-day">Day 3</div>
+              </div>
+              <div class="step-connector done"></div>
+              <div class="sequence-step">
+                <div class="step-node pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+                <div class="step-label">Finance Offer</div>
+                <div class="step-day">Day 7</div>
+              </div>
+              <div class="step-connector"></div>
+              <div class="sequence-step">
+                <div class="step-node waiting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+                <div class="step-label">Education Email</div>
+                <div class="step-day">Day 14</div>
+              </div>
+              <div class="step-connector"></div>
+              <div class="sequence-step">
+                <div class="step-node waiting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+                <div class="step-label">Call Prompt</div>
+                <div class="step-day">Day 21</div>
+              </div>
+              <div class="step-connector"></div>
+              <div class="sequence-step">
+                <div class="step-node waiting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+                <div class="step-label">Final Offer</div>
+                <div class="step-day">Day 30</div>
+              </div>
+            </div>
+          </div>
+          <div class="sequence-footer">
+            <div class="sequence-stat"><strong>24</strong> patients in sequence</div>
+            <div class="sequence-stat"><strong>&pound;32K</strong> recovered this month</div>
+            <div class="sequence-stat"><strong>87%</strong> conversion rate</div>
+            <button class="btn btn-secondary btn-sm">Edit Sequence</button>
+          </div>
+        </div>
+
+        <div class="sequence-card">
+          <div class="sequence-header">
+            <div>
+              <div class="sequence-name">Standard Treatment Re-engagement</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Triggers for all treatment plans under &pound;1,500</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="badge badge-good">Active</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+          </div>
+          <div class="sequence-body">
+            <div class="sequence-steps">
+              <div class="sequence-step"><div class="step-node sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="step-label">Welcome Email</div><div class="step-day">Day 1</div></div>
+              <div class="step-connector done"></div>
+              <div class="sequence-step"><div class="step-node sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="step-label">SMS Nudge</div><div class="step-day">Day 5</div></div>
+              <div class="step-connector done"></div>
+              <div class="sequence-step"><div class="step-node pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="step-label">Final Email</div><div class="step-day">Day 14</div></div>
+            </div>
+          </div>
+          <div class="sequence-footer">
+            <div class="sequence-stat"><strong>18</strong> patients in sequence</div>
+            <div class="sequence-stat"><strong>&pound;10K</strong> recovered this month</div>
+            <div class="sequence-stat"><strong>74%</strong> conversion rate</div>
+            <button class="btn btn-secondary btn-sm">Edit Sequence</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINANCING -->
+      <div class="page" id="page-financing">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Automation · Finance</div><h1 class="page-title">Financing Options</h1><div class="page-subtitle">Embedded financing offers in follow-up sequences</div></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Finance Applications</div></div><div class="kpi-value">12</div><div class="kpi-delta up">+8 approved this month</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Finance Converted</div></div><div class="kpi-value">&pound;18K</div><div class="kpi-delta up">+Revenue via finance</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Finance Amount</div></div><div class="kpi-value">&pound;2,200</div><div class="kpi-delta neutral">Avg per application</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Approval Rate</div></div><div class="kpi-value">67%</div><div class="kpi-delta up">+Via Chrysalis Finance</div></div>
+        </div>
+        <div class="data-table-wrap">
+          <div class="table-header"><div class="table-title">Finance Applications</div></div>
+          <table><thead><tr><th>Patient</th><th>Treatment</th><th>Amount</th><th>Term</th><th>Provider</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--cream);">James Thompson</td><td>Dental Implant</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;3,200</td><td>12 months 0%</td><td>Chrysalis Finance</td><td><span class="badge badge-good">Approved</span></td></tr>
+            <tr><td style="color:var(--cream);">Emma Davies</td><td>Invisalign</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;4,800</td><td>18 months 0%</td><td>Chrysalis Finance</td><td><span class="badge badge-amber">Pending</span></td></tr>
+            <tr><td style="color:var(--cream);">Robert Chen</td><td>Veneers x6</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;5,400</td><td>24 months 0%</td><td>Chrysalis Finance</td><td><span class="badge badge-amber">Applied</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="page" id="page-reviews">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Reputation · Reviews</div><h1 class="page-title">Review Management</h1><div class="page-subtitle">4.9 average · 186 Google reviews · 94 Trustpilot</div></div>
+          <div class="page-actions">
+            <button class="btn btn-secondary btn-sm" onclick="showToast('Exporting review report...','info')">Export</button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('manual-review-modal')">+ Manual Request</button>
+          </div>
+        </div>
+
+        <div class="review-stats">
+          <div class="review-stat-card">
+            <div class="review-stat-val">4.9</div>
+            <div style="font-size:16px;margin-bottom:4px;color:var(--amber);">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="review-stat-label">Google Rating</div>
+            <div class="review-stat-sub">186 reviews · #1 in area</div>
+          </div>
+          <div class="review-stat-card">
+            <div class="review-stat-val">4.8</div>
+            <div style="font-size:16px;margin-bottom:4px;color:var(--amber);">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div class="review-stat-label">Trustpilot Rating</div>
+            <div class="review-stat-sub">94 reviews · Excellent</div>
+          </div>
+          <div class="review-stat-card">
+            <div class="review-stat-val">34</div>
+            <div style="font-size:16px;margin-bottom:4px;color:var(--green);">+</div>
+            <div class="review-stat-label">New This Month</div>
+            <div class="review-stat-sub">68% trigger response rate</div>
+          </div>
+        </div>
+
+        <!-- Sentiment Analysis -->
+        <div class="chart-card" style="margin-bottom:14px;">
+          <div class="chart-header"><div class="chart-title">Review Sentiment Analysis</div></div>
+          <div class="sentiment-bars">
+            <div class="sentiment-row"><div class="sentiment-label">Friendly staff</div><div class="sentiment-bar-wrap"><div class="sentiment-bar-fill" style="width:88%;">88%</div></div></div>
+            <div class="sentiment-row"><div class="sentiment-label">Great results</div><div class="sentiment-bar-wrap"><div class="sentiment-bar-fill" style="width:82%;">82%</div></div></div>
+            <div class="sentiment-row"><div class="sentiment-label">Professional care</div><div class="sentiment-bar-wrap"><div class="sentiment-bar-fill" style="width:76%;">76%</div></div></div>
+            <div class="sentiment-row"><div class="sentiment-label">Clear explanations</div><div class="sentiment-bar-wrap"><div class="sentiment-bar-fill" style="width:64%;">64%</div></div></div>
+            <div class="sentiment-row"><div class="sentiment-label">Pain-free experience</div><div class="sentiment-bar-wrap"><div class="sentiment-bar-fill" style="width:58%;">58%</div></div></div>
+            <div class="sentiment-row"><div class="sentiment-label">Good value</div><div class="sentiment-bar-wrap"><div class="sentiment-bar-fill" style="width:44%;">44%</div></div></div>
+            <div class="sentiment-row"><div class="sentiment-label">Modern facilities</div><div class="sentiment-bar-wrap"><div class="sentiment-bar-fill" style="width:36%;">36%</div></div></div>
+          </div>
+        </div>
+
+        <div class="review-grid">
+          <div class="review-card">
+            <div class="review-header">
+              <div><div class="review-patient">Sarah Mitchell</div><div class="review-treatment">Composite Bonding · 14 Apr 2026</div></div>
+              <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <div class="review-text">"Absolutely incredible results. Dr. Clarke completely transformed my smile. The whole team made me feel so at ease throughout. Cannot recommend highly enough!"</div>
+            <div class="review-meta">
+              <div class="review-platform"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg> Google Review</div>
+              <div class="review-time">2 hr ago</div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-header">
+              <div><div class="review-patient">Tom Williams</div><div class="review-treatment">Check-up & Scale · 14 Apr 2026</div></div>
+              <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <div class="review-text">"Always a great experience at Clarke Dental. Professional, friendly and thorough. Been coming here for 5 years and wouldn't go anywhere else."</div>
+            <div class="review-meta">
+              <div class="review-platform"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Trustpilot</div>
+              <div class="review-time">4 hr ago</div>
+            </div>
+          </div>
+          <div class="review-card">
+            <div class="review-header">
+              <div><div class="review-patient">Mark Johnson</div><div class="review-treatment">Implant Stage 1 · 10 Apr 2026</div></div>
+              <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            </div>
+            <div class="review-text">"The implant consultation was so thorough and reassuring. Dr. Clarke explained everything clearly and the finance option made it so much more accessible."</div>
+            <div class="review-meta">
+              <div class="review-platform"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg> Google Review</div>
+              <div class="review-time">Yesterday</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPUTATION ENGINE (was Review Triggers) -->
+      <div class="page" id="page-review-triggers">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Automation · Reputation</div><h1 class="page-title">Reputation Engine</h1><div class="page-subtitle">Post-appointment triggers · Smart timing · Platform routing</div></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Triggers Sent Today</div></div><div class="kpi-value">8</div><div class="kpi-delta up">+After today's appointments</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Response Rate</div></div><div class="kpi-value">68%</div><div class="kpi-delta up">+Industry avg is 12%</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Google vs Trustpilot</div></div><div class="kpi-value">66/34</div><div class="kpi-delta neutral">Split by patient segment</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">5-Star Rate</div></div><div class="kpi-value">94%</div><div class="kpi-delta up">+Pre-screen filtering</div></div>
+        </div>
+        <div class="chart-card" style="margin-bottom:16px;">
+          <div class="chart-header"><div class="chart-title">Trigger Workflow — Post Appointment</div></div>
+          <div style="display:flex;gap:0;overflow-x:auto;padding-bottom:8px;">
+            <div style="text-align:center;min-width:140px;padding:16px;">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--green-glow);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+              <div style="font-size:11px;color:var(--text-bright);font-weight:500;">Appointment Ends</div>
+              <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Auto-detected</div>
+            </div>
+            <div style="display:flex;align-items:center;padding-bottom:28px;"><div style="width:40px;height:2px;background:var(--green);"></div></div>
+            <div style="text-align:center;min-width:140px;padding:16px;">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--green-glow);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div style="font-size:11px;color:var(--text-bright);font-weight:500;">AI Pre-Screen</div>
+              <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Predict satisfaction</div>
+            </div>
+            <div style="display:flex;align-items:center;padding-bottom:28px;"><div style="width:40px;height:2px;background:var(--green);"></div></div>
+            <div style="text-align:center;min-width:140px;padding:16px;">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--emerald-dim);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+              <div style="font-size:11px;color:var(--text-bright);font-weight:500;">Review Request</div>
+              <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">2hrs post-appt SMS</div>
+            </div>
+            <div style="display:flex;align-items:center;padding-bottom:28px;"><div style="width:40px;height:2px;background:var(--green);"></div></div>
+            <div style="text-align:center;min-width:140px;padding:16px;">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--green-glow);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg></div>
+              <div style="font-size:11px;color:var(--text-bright);font-weight:500;">Google / Trustpilot</div>
+              <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Smart platform routing</div>
+            </div>
+            <div style="display:flex;align-items:center;padding-bottom:28px;"><div style="width:40px;height:2px;background:var(--green);"></div></div>
+            <div style="text-align:center;min-width:140px;padding:16px;">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--emerald-dim);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+              <div style="font-size:11px;color:var(--text-bright);font-weight:500;">Dashboard Update</div>
+              <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Real-time tracking</div>
+            </div>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <div class="table-header"><div class="table-title">Today's Review Triggers</div></div>
+          <table><thead><tr><th>Patient</th><th>Treatment</th><th>Sent At</th><th>Platform</th><th>Status</th><th>Rating</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--cream);">Sarah Mitchell</td><td>Composite Bonding</td><td style="font-size:11px;font-weight:500;">11:00</td><td>Google</td><td><span class="badge badge-good">Reviewed</span></td><td style="font-size:14px;color:var(--amber);">&#9733;&#9733;&#9733;&#9733;&#9733;</td></tr>
+            <tr><td style="color:var(--cream);">Tom Williams</td><td>Check-up</td><td style="font-size:11px;font-weight:500;">12:30</td><td>Trustpilot</td><td><span class="badge badge-good">Reviewed</span></td><td style="font-size:14px;color:var(--amber);">&#9733;&#9733;&#9733;&#9733;&#9733;</td></tr>
+            <tr><td style="color:var(--cream);">Lisa Patel</td><td>Consultation</td><td style="font-size:11px;font-weight:500;">13:30</td><td>Google</td><td><span class="badge badge-blue">Sent — pending</span></td><td style="color:var(--text-dim);">—</td></tr>
+            <tr><td style="color:var(--cream);">Mark Johnson</td><td>Implant Stage 2</td><td style="font-size:11px;font-weight:500;">15:30</td><td>Google</td><td><span class="badge badge-neutral">Scheduled</span></td><td style="color:var(--text-dim);">—</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+
+      <!-- CLINICAL TEAM (was Staff & Rota) -->
+      <div class="page" id="page-staff">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Team · Scheduling</div><h1 class="page-title">Clinical Team</h1><div class="page-subtitle">8 team members · Week of 14 April 2026</div></div>
+          <div class="page-actions">
+            <button class="btn btn-secondary btn-sm" onclick="showToast('AI generating rota...','info')">AI Generate Rota</button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('invite-staff-modal')">+ Add Staff</button>
+          </div>
+        </div>
+
+        <div class="staff-grid" style="margin-bottom:24px;">
+          <div class="staff-card">
+            <div class="staff-card-header">
+              <div class="staff-avatar">SC</div>
+              <div>
+                <div class="staff-name">Dr. Sarah Clarke</div>
+                <div class="staff-role-text">Principal Dentist · Practice Manager</div>
+                <div class="staff-online"><div style="width:5px;height:5px;border-radius:50%;background:var(--green);"></div> On duty</div>
+              </div>
+            </div>
+            <div class="staff-card-body">
+              <div class="staff-stats">
+                <div class="staff-stat"><div class="staff-stat-val">6</div><div class="staff-stat-label">Today</div></div>
+                <div class="staff-stat"><div class="staff-stat-val">32</div><div class="staff-stat-label">This wk</div></div>
+                <div class="staff-stat"><div class="staff-stat-val">4.9</div><div class="staff-stat-label">Rating</div></div>
+              </div>
+              <div style="font-size:10px;color:var(--text-dim);">GDC: 123456 · Valid</div>
+            </div>
+            <div class="staff-card-footer">
+              <button class="btn btn-secondary btn-sm" style="flex:1;">Message</button>
+              <button class="btn btn-ghost btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+            </div>
+          </div>
+          <div class="staff-card">
+            <div class="staff-card-header">
+              <div class="staff-avatar" style="background:var(--green-light);">RP</div>
+              <div>
+                <div class="staff-name">Dr. Raj Patel</div>
+                <div class="staff-role-text">Associate Dentist</div>
+                <div class="staff-online"><div style="width:5px;height:5px;border-radius:50%;background:var(--green);"></div> On duty</div>
+              </div>
+            </div>
+            <div class="staff-card-body">
+              <div class="staff-stats">
+                <div class="staff-stat"><div class="staff-stat-val">5</div><div class="staff-stat-label">Today</div></div>
+                <div class="staff-stat"><div class="staff-stat-val">28</div><div class="staff-stat-label">This wk</div></div>
+                <div class="staff-stat"><div class="staff-stat-val">4.8</div><div class="staff-stat-label">Rating</div></div>
+              </div>
+              <div style="font-size:10px;color:var(--text-dim);">GDC: 234567 · Valid</div>
+            </div>
+            <div class="staff-card-footer">
+              <button class="btn btn-secondary btn-sm" style="flex:1;">Message</button>
+              <button class="btn btn-ghost btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+          </div>
+          <div class="staff-card">
+            <div class="staff-card-header">
+              <div class="staff-avatar" style="background:#5B4A8A;">JW</div>
+              <div>
+                <div class="staff-name">Jenny Walsh</div>
+                <div class="staff-role-text">Practice Manager / Receptionist</div>
+                <div class="staff-online"><div style="width:5px;height:5px;border-radius:50%;background:var(--green);"></div> On duty</div>
+              </div>
+            </div>
+            <div class="staff-card-body">
+              <div class="staff-stats">
+                <div class="staff-stat"><div class="staff-stat-val">38</div><div class="staff-stat-label">Hrs/wk</div></div>
+                <div class="staff-stat"><div class="staff-stat-val">Mon-Fri</div><div class="staff-stat-label">Schedule</div></div>
+                <div class="staff-stat"><div class="staff-stat-val">&pound;28K</div><div class="staff-stat-label">Annual</div></div>
+              </div>
+            </div>
+            <div class="staff-card-footer">
+              <button class="btn btn-secondary btn-sm" style="flex:1;">Message</button>
+              <button class="btn btn-ghost btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+          </div>
+          <div class="staff-card" style="border-style:dashed;cursor:pointer;" onclick="openModal('invite-staff-modal')">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px;gap:10px;opacity:0.4;">
+              <div style="font-size:28px;color:var(--text-dim);">+</div>
+              <div style="font-size:12px;color:var(--text-dim);">Add Team Member</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rota -->
+        <div class="chart-card" style="margin-bottom:18px;">
+          <div class="chart-header"><div class="chart-title">Weekly Rota — 14-20 April 2026</div><button class="btn btn-secondary btn-sm" onclick="showToast('Exporting rota to payroll...','info')">Export to Payroll</button></div>
+          <div class="rota-wrap">
+            <div class="rota-grid">
+              <div class="rota-header">Staff</div>
+              <div class="rota-header">Mon 14</div><div class="rota-header">Tue 15</div><div class="rota-header">Wed 16</div><div class="rota-header">Thu 17</div><div class="rota-header">Fri 18</div><div class="rota-header">Sat 19</div><div class="rota-header">Sun 20</div>
+              <div class="rota-name-cell">Dr. Clarke</div>
+              <div class="rota-cell"><div class="rota-shift">08:30-17:30</div></div>
+              <div class="rota-cell"><div class="rota-shift">08:30-17:30</div></div>
+              <div class="rota-cell"><div class="rota-shift off">OFF</div></div>
+              <div class="rota-cell"><div class="rota-shift">08:30-17:30</div></div>
+              <div class="rota-cell"><div class="rota-shift">08:30-17:30</div></div>
+              <div class="rota-cell"><div class="rota-shift half">09:00-13:00</div></div>
+              <div class="rota-cell"><div class="rota-shift off">OFF</div></div>
+              <div class="rota-name-cell">Dr. Patel</div>
+              <div class="rota-cell"><div class="rota-shift">09:00-18:00</div></div>
+              <div class="rota-cell"><div class="rota-shift off">OFF</div></div>
+              <div class="rota-cell"><div class="rota-shift">09:00-18:00</div></div>
+              <div class="rota-cell"><div class="rota-shift">09:00-18:00</div></div>
+              <div class="rota-cell"><div class="rota-shift">09:00-18:00</div></div>
+              <div class="rota-cell"><div class="rota-shift off">OFF</div></div>
+              <div class="rota-cell"><div class="rota-shift off">OFF</div></div>
+              <div class="rota-name-cell">Jenny Walsh</div>
+              <div class="rota-cell"><div class="rota-shift">08:00-17:00</div></div>
+              <div class="rota-cell"><div class="rota-shift">08:00-17:00</div></div>
+              <div class="rota-cell"><div class="rota-shift">08:00-17:00</div></div>
+              <div class="rota-cell"><div class="rota-shift">08:00-17:00</div></div>
+              <div class="rota-cell"><div class="rota-shift">08:00-17:00</div></div>
+              <div class="rota-cell"><div class="rota-shift off">OFF</div></div>
+              <div class="rota-cell"><div class="rota-shift off">OFF</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Smart Rota Intelligence — Chair Utilisation Heatmap -->
+        <div class="chart-card">
+          <div class="chart-header"><div class="chart-title">Chair Utilisation Heatmap — This Week</div></div>
+          <div class="heatmap-grid">
+            <div></div>
+            <div class="heatmap-header">8am</div><div class="heatmap-header">9am</div><div class="heatmap-header">10am</div><div class="heatmap-header">11am</div><div class="heatmap-header">12pm</div><div class="heatmap-header">1pm</div><div class="heatmap-header">2pm</div><div class="heatmap-header">3pm</div><div class="heatmap-header">4pm</div><div class="heatmap-header">5pm</div>
+            <div class="heatmap-label">Mon</div>
+            <div class="heatmap-cell light">25%</div><div class="heatmap-cell green">80%</div><div class="heatmap-cell green">90%</div><div class="heatmap-cell amber">95%</div><div class="heatmap-cell green">75%</div><div class="heatmap-cell red">20%</div><div class="heatmap-cell green">85%</div><div class="heatmap-cell amber">95%</div><div class="heatmap-cell green">70%</div><div class="heatmap-cell light">40%</div>
+            <div class="heatmap-label">Tue</div>
+            <div class="heatmap-cell light">30%</div><div class="heatmap-cell green">85%</div><div class="heatmap-cell amber">92%</div><div class="heatmap-cell green">80%</div><div class="heatmap-cell green">75%</div><div class="heatmap-cell red">15%</div><div class="heatmap-cell green">88%</div><div class="heatmap-cell green">82%</div><div class="heatmap-cell green">78%</div><div class="heatmap-cell light">35%</div>
+            <div class="heatmap-label">Wed</div>
+            <div class="heatmap-cell red">10%</div><div class="heatmap-cell light">45%</div><div class="heatmap-cell green">70%</div><div class="heatmap-cell green">75%</div><div class="heatmap-cell light">50%</div><div class="heatmap-cell red">10%</div><div class="heatmap-cell light">55%</div><div class="heatmap-cell green">65%</div><div class="heatmap-cell light">45%</div><div class="heatmap-cell red">15%</div>
+            <div class="heatmap-label">Thu</div>
+            <div class="heatmap-cell light">35%</div><div class="heatmap-cell green">88%</div><div class="heatmap-cell amber">96%</div><div class="heatmap-cell amber">98%</div><div class="heatmap-cell green">82%</div><div class="heatmap-cell red">18%</div><div class="heatmap-cell amber">92%</div><div class="heatmap-cell amber">95%</div><div class="heatmap-cell green">85%</div><div class="heatmap-cell light">40%</div>
+            <div class="heatmap-label">Fri</div>
+            <div class="heatmap-cell light">30%</div><div class="heatmap-cell green">82%</div><div class="heatmap-cell green">88%</div><div class="heatmap-cell green">85%</div><div class="heatmap-cell green">72%</div><div class="heatmap-cell red">12%</div><div class="heatmap-cell green">78%</div><div class="heatmap-cell green">80%</div><div class="heatmap-cell green">68%</div><div class="heatmap-cell light">30%</div>
+          </div>
+          <div style="display:flex;gap:14px;margin-top:12px;font-size:9px;color:var(--text-dim);">
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(196,68,58,0.7);vertical-align:middle;margin-right:3px;"></span> Under-utilised (&lt;30%)</span>
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(26,61,46,0.3);vertical-align:middle;margin-right:3px;"></span> Low (30-60%)</span>
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(26,61,46,0.7);vertical-align:middle;margin-right:3px;"></span> Optimal (60-90%)</span>
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(184,134,11,0.6);vertical-align:middle;margin-right:3px;"></span> At capacity (&gt;90%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAY & HOURS (was Payroll) -->
+      <div class="page" id="page-payroll">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Finance · Pay & Hours</div><h1 class="page-title">Pay & Hours</h1><div class="page-subtitle">April 2026 · Auto-calculated from rota · Export ready</div></div>
+          <div class="page-actions">
+            <button class="btn btn-secondary btn-sm" onclick="showToast('Exporting to Xero...','info')">Export to Xero</button>
+            <button class="btn btn-primary btn-sm" onclick="showToast('Sending payroll to accountant...','success')">Send to Accountant</button>
+          </div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Total Payroll April</div><div class="kpi-icon" style="background:var(--green-glow);color:var(--green);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div></div><div class="kpi-value">&pound;28,400</div><div class="kpi-delta neutral">8 staff members</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Total Hours</div></div><div class="kpi-value">1,240</div><div class="kpi-delta up">+40h overtime</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Employer NI</div></div><div class="kpi-value">&pound;3,420</div><div class="kpi-delta neutral">Auto-calculated</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Payroll Status</div></div><div class="kpi-value">Ready</div><div class="kpi-delta up">All data confirmed</div></div>
+        </div>
+
+        <div class="payroll-card">
+          <div class="payroll-header"><div class="payroll-name">Dr. Sarah Clarke — Principal Dentist</div><span class="badge badge-good">Confirmed</span></div>
+          <div class="payroll-body">
+            <div class="payroll-item"><div class="payroll-item-label">Basic Salary</div><div class="payroll-item-val">&pound;6,500</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Hours Worked</div><div class="payroll-item-val">168h</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Overtime</div><div class="payroll-item-val">&pound;0</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Pension (5%)</div><div class="payroll-item-val">&pound;325</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Net Pay</div><div class="payroll-item-val" style="color:var(--green);">&pound;5,420</div></div>
+          </div>
+          <div class="payroll-footer"><button class="btn btn-secondary btn-sm">View Payslip</button></div>
+        </div>
+
+        <div class="payroll-card">
+          <div class="payroll-header"><div class="payroll-name">Dr. Raj Patel — Associate Dentist</div><span class="badge badge-good">Confirmed</span></div>
+          <div class="payroll-body">
+            <div class="payroll-item"><div class="payroll-item-label">Basic Salary</div><div class="payroll-item-val">&pound;5,200</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Hours Worked</div><div class="payroll-item-val">152h</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Overtime</div><div class="payroll-item-val">&pound;420</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Pension (5%)</div><div class="payroll-item-val">&pound;260</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Net Pay</div><div class="payroll-item-val" style="color:var(--green);">&pound;4,380</div></div>
+          </div>
+          <div class="payroll-footer"><button class="btn btn-secondary btn-sm">View Payslip</button></div>
+        </div>
+
+        <div class="payroll-card">
+          <div class="payroll-header"><div class="payroll-name">Jenny Walsh — Practice Manager</div><span class="badge badge-amber">Pending Review</span></div>
+          <div class="payroll-body">
+            <div class="payroll-item"><div class="payroll-item-label">Basic Salary</div><div class="payroll-item-val">&pound;2,333</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Hours Worked</div><div class="payroll-item-val">160h</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Overtime</div><div class="payroll-item-val">&pound;180</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Pension (3%)</div><div class="payroll-item-val">&pound;70</div></div>
+            <div class="payroll-item"><div class="payroll-item-label">Net Pay</div><div class="payroll-item-val" style="color:var(--green);">&pound;1,940</div></div>
+          </div>
+          <div class="payroll-footer"><button class="btn btn-primary btn-sm">Confirm</button><button class="btn btn-secondary btn-sm">Edit</button></div>
+        </div>
+      </div>
+
+      <!-- PRACTICE HEALTH -->
+      <div class="page" id="page-practice-health">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Intelligence · Health</div><h1 class="page-title">Practice Health Score</h1><div class="page-subtitle">Composite score combining key practice performance metrics</div></div>
+        </div>
+        <div class="health-dial-wrap">
+          <div class="health-dial">
+            <svg viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#E8E4DE" stroke-width="6"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#1A3D2E" stroke-width="6" stroke-linecap="round"
+                stroke-dasharray="314" stroke-dashoffset="47" transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="health-dial-score">
+              <div class="score-num">85</div>
+              <div class="score-label">Health Score</div>
+            </div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:4px;">Overall Practice Health: Excellent</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;">Your practice is performing well across all key metrics. Review velocity and conversion rate are standout areas.</div>
+            <div class="health-breakdown">
+              <div class="health-metric"><div class="health-metric-label">Occupancy Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:82%;"></div></div><div class="health-metric-val">82%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Conversion Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:87%;"></div></div><div class="health-metric-val">87%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Review Velocity</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:91%;"></div></div><div class="health-metric-val">91%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Recall Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:78%;"></div></div><div class="health-metric-val">78%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Rota Coverage</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:88%;"></div></div><div class="health-metric-val">88%</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="chart-card">
+            <div class="chart-header"><div class="chart-title">Health Score Trend — 6 Months</div></div>
+            <div class="chart-canvas-wrap"><canvas id="health-trend-chart"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div class="chart-title">Recommendations</div></div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:var(--amber-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div style="font-size:12px;color:var(--text-bright);font-weight:500;">Improve recall rate</div><div style="font-size:11px;color:var(--text-dim);">78% recall rate is below target. Consider adding a recall reminder sequence.</div></div></div>
+              <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:var(--green-glow);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div><div style="font-size:12px;color:var(--text-bright);font-weight:500;">Review velocity is excellent</div><div style="font-size:11px;color:var(--text-dim);">34 reviews this month. Keep the automated triggers running.</div></div></div>
+              <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:var(--amber-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div style="font-size:12px;color:var(--text-bright);font-weight:500;">Wednesday chair utilisation low</div><div style="font-size:11px;color:var(--text-dim);">Only 1 clinician on Wednesdays. Consider adding a half-day session.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI INSIGHTS -->
+      <div class="page" id="page-ai-insights">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Intelligence · AI</div><h1 class="page-title">AI Insights</h1><div class="page-subtitle">Machine learning-powered practice intelligence</div></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Confidence Score</div></div><div class="kpi-value">68</div><div class="kpi-delta up">+12 vs last month</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Predictions Made</div></div><div class="kpi-value">142</div><div class="kpi-delta neutral">Active treatment plans</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Accuracy Rate</div></div><div class="kpi-value">91%</div><div class="kpi-delta up">Last 90 days</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Revenue Recovered</div></div><div class="kpi-value">&pound;42K</div><div class="kpi-delta up">AI-assisted this month</div></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div class="chart-title">AI Treatment Confidence Distribution</div></div>
+          <div class="chart-canvas-wrap"><canvas id="confidence-dist-chart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- REVENUE FORECAST -->
+      <div class="page" id="page-revenue-forecast">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Intelligence · Forecasting</div><h1 class="page-title">Revenue Forecast</h1><div class="page-subtitle">90-day revenue projection based on current pipeline and historical conversion</div></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Forecast — 30 Days</div></div><div class="kpi-value">&pound;52K</div><div class="kpi-delta up">+8% vs current month</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Forecast — 60 Days</div></div><div class="kpi-value">&pound;106K</div><div class="kpi-delta up">Based on pipeline</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Forecast — 90 Days</div></div><div class="kpi-value">&pound;158K</div><div class="kpi-delta up">Conservative estimate</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Pipeline Value</div></div><div class="kpi-value">&pound;184K</div><div class="kpi-delta neutral">142 active plans</div></div>
+        </div>
+        <div class="forecast-card">
+          <div class="chart-header"><div class="chart-title">90-Day Revenue Forecast</div></div>
+          <div class="chart-canvas-wrap" style="height:280px;"><canvas id="forecast-chart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div class="page" id="page-analytics">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Insights · Performance</div><h1 class="page-title">Analytics</h1><div class="page-subtitle">Treatment conversion, review growth, revenue trends</div></div>
+          <div class="page-actions"><button class="btn btn-secondary btn-sm">Export PDF</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Revenue YTD</div></div><div class="kpi-value">&pound;186K</div><div class="kpi-delta up">+&pound;24K vs last year</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Plans Recovered</div></div><div class="kpi-value">&pound;42K</div><div class="kpi-delta up">+Via follow-up automation</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Review Growth</div></div><div class="kpi-value">+186</div><div class="kpi-delta up">+Google reviews YTD</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Treatment Value</div></div><div class="kpi-value">&pound;2,840</div><div class="kpi-delta up">+&pound;420 vs last year</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="chart-card"><div class="chart-header"><div class="chart-title">Revenue by Treatment Type</div></div><div class="chart-canvas-wrap"><canvas id="treatment-chart"></canvas></div></div>
+          <div class="chart-card"><div class="chart-header"><div class="chart-title">Review Growth — 6 Months</div></div><div class="chart-canvas-wrap"><canvas id="reviews-chart"></canvas></div></div>
+        </div>
+      </div>
+
+      <!-- SECURITY -->
+      <div class="page" id="page-security">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Platform · Security</div><h1 class="page-title">Security Centre</h1><div class="page-subtitle">GDPR compliant · ICO registered · Audit trail active</div></div>
+        </div>
+        <div style="background:var(--bg-2);border:1px solid var(--border-green);padding:22px;margin-bottom:18px;display:flex;align-items:center;gap:28px;border-radius:var(--radius);box-shadow:var(--shadow-md);">
+          <div style="text-align:center;flex-shrink:0;">
+            <div style="font-family:'Fraunces',serif;font-size:48px;color:var(--green);line-height:1;">98</div>
+            <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.14em;font-weight:600;">Security Score</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:5px;">Platform Status: Secure</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-bottom:12px;">All systems operational. GDPR & ICO compliant.</div>
+            <div style="display:flex;gap:18px;flex-wrap:wrap;">
+              <span style="font-size:11px;color:var(--green);font-weight:500;">AES-256 Encryption</span>
+              <span style="font-size:11px;color:var(--green);font-weight:500;">GDPR Compliant</span>
+              <span style="font-size:11px;color:var(--green);font-weight:500;">ICO Registered</span>
+              <span style="font-size:11px;color:var(--green);font-weight:500;">2FA Enforced</span>
+              <span style="font-size:11px;color:var(--green);font-weight:500;">Audit Trail Active</span>
+            </div>
+          </div>
+        </div>
+        <div class="security-grid">
+          <div class="security-card">
+            <div class="security-card-title">Audit Log</div>
+            <div class="security-card-desc">All user actions — last 24 hours</div>
+            <div class="audit-list">
+              <div class="audit-item"><div class="audit-icon ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div style="flex:1;"><div class="audit-action">Dr. Clarke signed in</div><div class="audit-meta">2FA verified · Chrome 122</div></div><div class="audit-time">08:28</div></div>
+              <div class="audit-item"><div class="audit-icon info"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div style="flex:1;"><div class="audit-action">Follow-up sequence triggered — 6 patients</div><div class="audit-meta">AI Automation · Day 7 finance email</div></div><div class="audit-time">09:00</div></div>
+              <div class="audit-item"><div class="audit-icon ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div style="flex:1;"><div class="audit-action">Review trigger sent — Sarah Mitchell</div><div class="audit-meta">Post-appointment · Google</div></div><div class="audit-time">11:00</div></div>
+              <div class="audit-item"><div class="audit-icon info"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div style="flex:1;"><div class="audit-action">Payroll calculated — April 2026</div><div class="audit-meta">Auto-generated from rota data</div></div><div class="audit-time">14:00</div></div>
+              <div class="audit-item"><div class="audit-icon warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div style="flex:1;"><div class="audit-action">Patient data exported</div><div class="audit-meta">Dr. Clarke · GDPR: Legitimate interest</div></div><div class="audit-time">15:30</div></div>
+            </div>
+          </div>
+          <div class="security-card">
+            <div class="security-card-title">Role Permissions</div>
+            <div class="security-card-desc">Access by role across platform features</div>
+            <div class="perm-role-header" style="padding-left:160px;">
+              <div class="perm-role-label">Manager</div>
+              <div class="perm-role-label">Dentist</div>
+              <div class="perm-role-label">Recept.</div>
+            </div>
+            <div class="perm-table">
+              <div class="perm-row"><div class="perm-feature">Revenue & payroll</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-no">&#10007;</span></div><div class="perm-check"><span class="check-no">&#10007;</span></div></div></div>
+              <div class="perm-row"><div class="perm-feature">Treatment plans</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-no">&#10007;</span></div></div></div>
+              <div class="perm-row"><div class="perm-feature">Patient journeys</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div></div></div>
+              <div class="perm-row"><div class="perm-feature">Staff management</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-no">&#10007;</span></div><div class="perm-check"><span class="check-no">&#10007;</span></div></div></div>
+              <div class="perm-row"><div class="perm-feature">Review management</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div></div></div>
+              <div class="perm-row"><div class="perm-feature">Patient records</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="page-header">
+          <div><div class="page-eyebrow">Platform · Configuration</div><h1 class="page-title">Settings</h1><div class="page-subtitle">Practice configuration and automation preferences</div></div>
+          <div class="page-actions"><button class="btn btn-primary btn-sm" onclick="showToast('Settings saved','success')">Save Changes</button></div>
+        </div>
+        <div class="settings-layout">
+          <div class="settings-nav">
+            <div class="settings-nav-item active" onclick="settingsNav(this)">Practice Profile</div>
+            <div class="settings-nav-item" onclick="settingsNav(this)">Follow-Up Settings</div>
+            <div class="settings-nav-item" onclick="settingsNav(this)">Review Settings</div>
+            <div class="settings-nav-item" onclick="settingsNav(this)">Payroll Settings</div>
+            <div class="settings-nav-item" onclick="settingsNav(this)">Integrations</div>
+            <div class="settings-nav-item" onclick="settingsNav(this)">Billing</div>
+          </div>
+          <div class="settings-panel">
+            <div class="settings-section">
+              <div class="settings-section-title">Practice Profile</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="form-group"><label class="form-label">Practice Name</label><input class="form-input" value="Clarke Dental"></div>
+                <div class="form-group"><label class="form-label">GDC Registration</label><input class="form-input" value="123456"></div>
+                <div class="form-group"><label class="form-label">CQC Registration</label><input class="form-input" value="1-234567890"></div>
+                <div class="form-group"><label class="form-label">Practice Software</label><select class="form-input filter-select"><option>Dentally</option><option>SOE Exact</option><option>Carestream R4</option><option>Other</option></select></div>
+              </div>
+            </div>
+            <div class="settings-section">
+              <div class="settings-section-title">Follow-Up Automation</div>
+              <div class="settings-row"><div><div class="settings-label">Auto-trigger follow-up sequences</div><div class="settings-sublabel">Starts automatically when treatment plan created</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><div><div class="settings-label">Include financing options</div><div class="settings-sublabel">Add Chrysalis Finance offer at Day 7</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><div><div class="settings-label">Lapsed plan alerts</div><div class="settings-sublabel">Alert manager when plan lapsed 30+ days</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            </div>
+            <div class="settings-section">
+              <div class="settings-section-title">Review Automation</div>
+              <div class="settings-row"><div><div class="settings-label">Auto-trigger post appointment</div><div class="settings-sublabel">Send review request 2 hours after appointment ends</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><div><div class="settings-label">Primary review platform</div></div><select class="filter-select"><option>Google (primary)</option><option>Trustpilot (primary)</option><option>Split 70/30</option></select></div>
+              <div class="settings-row"><div><div class="settings-label">Pre-screen low satisfaction</div><div class="settings-sublabel">Redirect negative experience to internal feedback</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="new-patient-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add New Patient</div><button class="modal-close" onclick="closeModal('new-patient-modal')">&#10005;</button></div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
+        <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="pat-first" placeholder="James"></div>
+        <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="pat-last" placeholder="Thompson"></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="pat-email" placeholder="james@email.com"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="pat-phone" placeholder="07700 000000"></div>
+        <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date" id="pat-dob"></div>
+        <div class="form-group"><label class="form-label">NHS / Private</label><select class="form-input filter-select" id="pat-type"><option>Private</option><option>NHS</option><option>Mixed</option></select></div>
+        <div class="form-group"><label class="form-label">Referring Dentist</label><input class="form-input" id="pat-ref" placeholder="Self-referral"></div>
+        <div class="form-group"><label class="form-label">Assigned Dentist</label><select class="form-input filter-select" id="pat-dentist"><option>Dr. Clarke</option><option>Dr. Patel</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('new-patient-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="savePatient()">Add Patient</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="new-plan-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">New Treatment Plan</div><button class="modal-close" onclick="closeModal('new-plan-modal')">&#10005;</button></div>
+    <div class="modal-body">
+      <div style="background:var(--green-glow);border:1px solid var(--border-green);padding:11px 14px;margin-bottom:18px;font-size:11px;color:var(--green);border-radius:var(--radius);">Follow-up sequence will start automatically after plan is created</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
+        <div class="form-group"><label class="form-label">Patient</label><input class="form-input" id="plan-patient" placeholder="Search patient..."></div>
+        <div class="form-group"><label class="form-label">Treatment</label><select class="form-input filter-select" id="plan-treatment"><option>Dental Implant</option><option>Invisalign</option><option>Composite Bonding</option><option>Veneers</option><option>Whitening</option><option>Other</option></select></div>
+        <div class="form-group"><label class="form-label">Treatment Value (&pound;)</label><input class="form-input" id="plan-value" placeholder="3200"></div>
+        <div class="form-group"><label class="form-label">Presenting Dentist</label><select class="form-input filter-select" id="plan-dentist"><option>Dr. Clarke</option><option>Dr. Patel</option></select></div>
+        <div class="form-group" style="grid-column:span 2;"><label class="form-label">Treatment Notes</label><textarea class="form-input" id="plan-notes" rows="3" placeholder="Treatment details, patient concerns, financing discussed..."></textarea></div>
+        <div class="form-group"><label class="form-label">Finance Offered</label><select class="form-input filter-select" id="plan-finance"><option>Yes — 0% 12 months</option><option>Yes — 0% 18 months</option><option>Yes — 0% 24 months</option><option>No</option></select></div>
+        <div class="form-group"><label class="form-label">Follow-Up Sequence</label><select class="form-input filter-select" id="plan-sequence"><option>High-Value Nurture (&pound;1,500+)</option><option>Standard Re-engagement</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('new-plan-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTreatmentPlan()">Create Plan & Start Sequence</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="new-appointment-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Book Appointment</div><button class="modal-close" onclick="closeModal('new-appointment-modal')">&#10005;</button></div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
+        <div class="form-group"><label class="form-label">Patient</label><input class="form-input" placeholder="Search patient..."></div>
+        <div class="form-group"><label class="form-label">Treatment</label><select class="form-input filter-select"><option>Check-up & Scale</option><option>Implant</option><option>Invisalign</option><option>Composite Bonding</option><option>Veneers</option><option>Consultation</option></select></div>
+        <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date"></div>
+        <div class="form-group"><label class="form-label">Time</label><input class="form-input" type="time"></div>
+        <div class="form-group"><label class="form-label">Dentist</label><select class="form-input filter-select"><option>Dr. Clarke</option><option>Dr. Patel</option></select></div>
+        <div class="form-group"><label class="form-label">Duration</label><select class="form-input filter-select"><option>30 min</option><option>45 min</option><option>60 min</option><option>90 min</option><option>120 min</option></select></div>
+      </div>
+      <div style="background:var(--green-glow);border:1px solid var(--border-green);padding:11px 14px;margin-top:8px;font-size:11px;color:var(--green);border-radius:var(--radius);">Review trigger will be sent automatically 2 hours after appointment</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('new-appointment-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('new-appointment-modal');showToast('Appointment booked. Confirmation SMS sent.','success')">Book Appointment</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="new-sequence-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Create Patient Journey</div><button class="modal-close" onclick="closeModal('new-sequence-modal')">&#10005;</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Sequence Name</label><input class="form-input" placeholder="e.g. High-Value Implant Nurture"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
+        <div class="form-group"><label class="form-label">Triggers For</label><select class="form-input filter-select"><option>All treatment plans</option><option>Plans over &pound;1,500</option><option>Plans over &pound;3,000</option><option>Specific treatments</option></select></div>
+        <div class="form-group"><label class="form-label">Number of Steps</label><select class="form-input filter-select"><option>3 steps</option><option>4 steps</option><option>5 steps</option><option>6 steps</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Include Financing Offer</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="role-btn active" style="flex:1;" onclick="this.parentElement.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Yes — Day 7</button>
+          <button class="role-btn" style="flex:1;" onclick="this.parentElement.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Yes — Day 14</button>
+          <button class="role-btn" style="flex:1;" onclick="this.parentElement.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">No</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('new-sequence-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('new-sequence-modal');showToast('Sequence created and activated','success')">Create Sequence</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="manual-review-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Manual Review Request</div><button class="modal-close" onclick="closeModal('manual-review-modal')">&#10005;</button></div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
+        <div class="form-group"><label class="form-label">Patient</label><input class="form-input" placeholder="Search patient..."></div>
+        <div class="form-group"><label class="form-label">Platform</label><select class="form-input filter-select"><option>Google</option><option>Trustpilot</option><option>Both</option></select></div>
+        <div class="form-group"><label class="form-label">Send Via</label><select class="form-input filter-select"><option>SMS</option><option>Email</option><option>WhatsApp</option></select></div>
+        <div class="form-group"><label class="form-label">Send Timing</label><select class="form-input filter-select"><option>Now</option><option>In 1 hour</option><option>In 2 hours</option><option>Tomorrow 9am</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('manual-review-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('manual-review-modal');showToast('Review request sent','success')">Send Request</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="invite-staff-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Team Member</div><button class="modal-close" onclick="closeModal('invite-staff-modal')">&#10005;</button></div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
+        <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="staff-first" placeholder="Jenny"></div>
+        <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="staff-last" placeholder="Walsh"></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="staff-email" placeholder="jenny@clarkdental.co.uk"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="staff-phone" placeholder="07700 000000"></div>
+        <div class="form-group"><label class="form-label">Role</label><select class="form-input filter-select" id="staff-role"><option>Principal Dentist</option><option>Associate Dentist</option><option>Dental Therapist</option><option>Hygienist</option><option>Practice Manager</option><option>Receptionist</option><option>Nurse</option></select></div>
+        <div class="form-group"><label class="form-label">Contract Type</label><select class="form-input filter-select" id="staff-contract"><option>Full Time</option><option>Part Time</option><option>Associate</option></select></div>
+        <div class="form-group"><label class="form-label">Hourly Rate (&pound;)</label><input class="form-input" id="staff-rate" placeholder="15.50"></div>
+        <div class="form-group"><label class="form-label">GDC Number</label><input class="form-input" id="staff-gdc" placeholder="123456 (if applicable)"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('invite-staff-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveStaff()">Add Team Member</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// SUPABASE
+const pearliqDB = window.supabase.createClient(
+  'https://zgxezpzfdzvbefqiilop.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpneGV6cHpmZHp2YmVmcWlpbG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTY0OTUsImV4cCI6MjA5MjMzMjQ5NX0.b1BAV3geIw0Uv6PrDIPpcJY5RTNLo71LM2YHQS6H54U'
+);
+
+// SESSION PERSISTENCE — check if user is already logged in on page load
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await pearliqDB.auth.getSession();
+  if (session) {
+    const roleMap = {
+      default: { name: session.user.email.split('@')[0], role: 'Practice User', initials: session.user.email.substring(0,2).toUpperCase() }
+    };
+    document.getElementById('user-name-display').textContent = roleMap.default.name;
+    document.getElementById('user-role-display').textContent = roleMap.default.role;
+    document.getElementById('user-avatar').textContent = roleMap.default.initials;
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').classList.add('visible');
+    initCharts();
+    loadDashboardData();
+  }
+});
+
+// AUTO-REDIRECT ON SESSION EXPIRY
+pearliqDB.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_OUT') {
+    document.getElementById('app').classList.remove('visible');
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('auth-screen').style.opacity = '1';
+  }
+});
+
+// AUTH
+let currentRole = 'admin';
+
+function selectRole(btn, role) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRole = role;
+}
+
+function togglePw() {
+  const inp = document.getElementById('login-pw');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-pw').value;
+  if (!email || !password) { showToast('Please enter your email and password', 'error'); return; }
+  const { data, error } = await pearliqDB.auth.signInWithPassword({ email, password });
+  if (error) { showToast('Invalid email or password', 'error'); return; }
+  const roleMap = {
+    admin: { name: 'Dr. Sarah Clarke', role: 'Practice Manager', initials: 'SC' },
+    dentist: { name: 'Dr. Raj Patel', role: 'Associate Dentist', initials: 'RP' },
+    receptionist: { name: 'Jenny Walsh', role: 'Receptionist', initials: 'JW' }
+  };
+  const user = roleMap[currentRole];
+  document.getElementById('user-name-display').textContent = user.name;
+  document.getElementById('user-role-display').textContent = user.role;
+  document.getElementById('user-avatar').textContent = user.initials;
+  document.getElementById('auth-screen').style.opacity = '0';
+  document.getElementById('auth-screen').style.transition = 'opacity 0.3s';
+  setTimeout(() => {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').classList.add('visible');
+    initCharts();
+    loadDashboardData();
+    showToast('Welcome back, ' + user.name.split(' ').pop() + '!', 'success');
+  }, 300);
+}
+
+// NAV
+function navigateTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + page + "'")) n.classList.add('active');
+  });
+  if (page === 'analytics') setTimeout(initAnalyticsCharts, 100);
+  if (page === 'practice-health') setTimeout(initHealthChart, 100);
+  if (page === 'ai-insights') setTimeout(initConfidenceChart, 100);
+  if (page === 'revenue-forecast') setTimeout(initForecastChart, 100);
+  if (page === 'patients') loadPatients();
+  document.getElementById('main-content').scrollTop = 0;
+  closeNotif();
+}
+
+// MODALS
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('open'); });
+
+// NOTIFICATIONS
+function toggleNotif() { document.getElementById('notif-panel').classList.toggle('open'); }
+function closeNotif() { document.getElementById('notif-panel').classList.remove('open'); }
+document.addEventListener('click', e => { if (!e.target.closest('.notif-panel') && !e.target.closest('.h-action')) closeNotif(); });
+
+// TOAST
+function showToast(msg, type = 'info') {
+  const icons = { success: '&#10003;', error: '&#10007;', info: '&#9889;' };
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.innerHTML = '<div class="toast-icon">' + icons[type] + '</div><div class="toast-text">' + msg + '</div>';
+  document.getElementById('toast-container').appendChild(toast);
+  setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateX(80px)'; toast.style.transition='all 0.3s'; setTimeout(()=>toast.remove(),300); }, 3500);
+}
+
+// SETTINGS NAV
+function settingsNav(el) {
+  el.closest('.settings-nav').querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// SAVE FUNCTIONS
+async function savePatient() {
+  const first = document.getElementById('pat-first').value.trim();
+  const last = document.getElementById('pat-last').value.trim();
+  const email = document.getElementById('pat-email').value.trim();
+  const phone = document.getElementById('pat-phone').value.trim();
+  const dob = document.getElementById('pat-dob').value || null;
+  if (!first || !last) { showToast('Please enter patient name', 'error'); return; }
+  if (!email) { showToast('Please enter an email address', 'error'); return; }
+  if (!phone) { showToast('Please enter a phone number', 'error'); return; }
+  const { error } = await pearliqDB.from('patients').insert([{
+    name: first + ' ' + last,
+    email: email,
+    phone: phone,
+    date_of_birth: dob,
+    status: 'active'
+  }]);
+  if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  closeModal('new-patient-modal');
+  showToast(first + ' ' + last + ' added successfully', 'success');
+  document.getElementById('pat-first').value = '';
+  document.getElementById('pat-last').value = '';
+  document.getElementById('pat-email').value = '';
+  document.getElementById('pat-phone').value = '';
+  document.getElementById('pat-dob').value = '';
+  document.getElementById('pat-type').selectedIndex = 0;
+  document.getElementById('pat-dentist').selectedIndex = 0;
+}
+
+async function saveTreatmentPlan() {
+  const patientName = document.getElementById('plan-patient').value.trim();
+  const treatment = document.getElementById('plan-treatment').value;
+  const rawValue = document.getElementById('plan-value').value;
+  const value = parseFloat(rawValue.replace(/[£,\s]/g, '')) || 0;
+  const notes = document.getElementById('plan-notes').value.trim();
+  if (!patientName) { showToast('Please enter a patient name', 'error'); return; }
+  if (!treatment) { showToast('Please select a treatment type', 'error'); return; }
+  const confidenceScore = Math.floor(Math.random() * 36) + 60;
+  const { error } = await pearliqDB.from('treatment_plans').insert([{
+    patient_name: patientName,
+    treatment_type: treatment,
+    value: value,
+    status: 'presented',
+    sequence_active: true,
+    notes: notes,
+    confidence_score: confidenceScore
+  }]);
+  if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  closeModal('new-plan-modal');
+  showToast('Treatment plan created. Follow-up sequence started.', 'success');
+  document.getElementById('plan-patient').value = '';
+  document.getElementById('plan-treatment').selectedIndex = 0;
+  document.getElementById('plan-value').value = '';
+  document.getElementById('plan-notes').value = '';
+  document.getElementById('plan-finance').selectedIndex = 0;
+  document.getElementById('plan-sequence').selectedIndex = 0;
+}
+
+async function saveStaff() {
+  const first = document.getElementById('staff-first').value.trim();
+  const last = document.getElementById('staff-last').value.trim();
+  const email = document.getElementById('staff-email').value.trim();
+  const role = document.getElementById('staff-role').value;
+  const contractType = document.getElementById('staff-contract').value;
+  const rawRate = document.getElementById('staff-rate').value;
+  const hourlyRate = parseFloat(rawRate.replace(/[£,\s]/g, '')) || null;
+  const gdcNumber = document.getElementById('staff-gdc').value.trim() || null;
+  if (!first || !last) { showToast('Please enter staff name', 'error'); return; }
+  if (!role) { showToast('Please select a role', 'error'); return; }
+  const { error } = await pearliqDB.from('staff').insert([{
+    name: first + ' ' + last,
+    email: email,
+    role: role,
+    hourly_rate: hourlyRate,
+    contract_type: contractType,
+    gdc_number: gdcNumber,
+    status: 'active'
+  }]);
+  if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  closeModal('invite-staff-modal');
+  showToast(first + ' ' + last + ' added to the team', 'success');
+  document.getElementById('staff-first').value = '';
+  document.getElementById('staff-last').value = '';
+  document.getElementById('staff-email').value = '';
+  document.getElementById('staff-phone').value = '';
+  document.getElementById('staff-role').selectedIndex = 0;
+  document.getElementById('staff-contract').selectedIndex = 0;
+  document.getElementById('staff-rate').value = '';
+  document.getElementById('staff-gdc').value = '';
+}
+
+// LOAD DASHBOARD DATA
+async function loadDashboardData() {
+  try {
+    const [patientsRes, plansRes, revenueRes] = await Promise.all([
+      pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['presented', 'in_nurture']),
+      pearliqDB.from('treatment_plans').select('value').neq('status', 'lost')
+    ]);
+
+    if (patientsRes.count !== null && patientsRes.count > 0) {
+      document.getElementById('kpi-patients').textContent = patientsRes.count;
+    }
+    if (plansRes.count !== null && plansRes.count > 0) {
+      document.getElementById('kpi-plans').textContent = plansRes.count;
+    }
+    if (revenueRes.data && revenueRes.data.length > 0) {
+      const total = revenueRes.data.reduce((sum, row) => sum + (row.value || 0), 0);
+      if (total > 0) {
+        const display = total >= 1000 ? '\u00A3' + Math.round(total / 1000) + 'K' : '\u00A3' + total;
+        document.getElementById('kpi-revenue').textContent = display;
+      }
+    }
+  } catch (e) {
+    // Silently fail — keep demo values visible
+  }
+}
+
+// LOAD PATIENTS TABLE
+async function loadPatients() {
+  try {
+    const { data, error } = await pearliqDB.from('patients').select('*').order('created_at', { ascending: false });
+    if (error || !data) return;
+    const tbody = document.getElementById('patients-tbody');
+    if (!tbody) return;
+    if (data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No patients added yet</td></tr>';
+      return;
+    }
+    const demoRows = tbody.innerHTML;
+    let rows = '';
+    data.forEach(p => {
+      const date = p.created_at ? new Date(p.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+      const statusClass = p.status === 'active' ? 'badge-good' : p.status === 'lapsed' ? 'badge-hot' : 'badge-neutral';
+      const statusText = p.status ? p.status.charAt(0).toUpperCase() + p.status.slice(1) : 'Unknown';
+      rows += '<tr>' +
+        '<td><div style="color:var(--cream);font-weight:500;">' + (p.name || '') + '</div><div style="font-size:10px;color:var(--text-dim);">' + (p.email || '') + '</div></td>' +
+        '<td>—</td>' +
+        '<td>—</td>' +
+        '<td style="font-size:11px;font-weight:500;">' + date + '</td>' +
+        '<td><span class="badge ' + statusClass + '">' + statusText + '</span></td>' +
+        '<td>—</td>' +
+        '<td><button class="btn btn-secondary btn-sm">View</button></td>' +
+        '</tr>';
+    });
+    tbody.innerHTML = rows + demoRows;
+  } catch (e) {
+    // Silently fail — keep demo data visible
+  }
+}
+
+// CHART THEME
+const chartColors = {
+  bar: 'rgba(45,80,22,0.85)',
+  barBorder: '#2D5016',
+  line: '#C4922A',
+  lineDot: '#C4922A',
+  p1: '#1A3D2E',
+  p2: '#2D5A3D',
+  p3: '#4A7C59',
+  p4: '#C4922A',
+  p5: '#8B6914',
+  text: '#6B6B6B',
+  grid: 'rgba(0,0,0,0.06)',
+  gridNone: 'rgba(0,0,0,0)',
+  tickFont: { family: 'Figtree', size: 11 }
+};
+
+// CHARTS
+let chartsInited = false;
+function initCharts() {
+  if (chartsInited) return;
+  chartsInited = true;
+  const ctx = document.getElementById('revenue-chart');
+  if (!ctx) return;
+  const months = ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'];
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        { label: 'Revenue (£K)', data: [38, 42, 40, 44, 42, 48], backgroundColor: chartColors.bar, borderColor: chartColors.gridNone, borderWidth: 0, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 },
+        { label: 'Conversions', data: [72, 78, 74, 80, 82, 87], type: 'line', borderColor: chartColors.line, backgroundColor: 'transparent', pointBackgroundColor: chartColors.lineDot, pointBorderColor: chartColors.lineDot, pointRadius: 3.5, pointHoverRadius: 5, borderWidth: 2, tension: 0.4, fill: false, yAxisID: 'y2' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } },
+        y: { grid: { color: chartColors.grid, drawBorder: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont }, position: 'left' },
+        y2: { grid: { display: false }, border: { display: false }, ticks: { color: chartColors.line, font: chartColors.tickFont }, position: 'right' }
+      }
+    }
+  });
+}
+
+function initAnalyticsCharts() {
+  const tCtx = document.getElementById('treatment-chart');
+  const rCtx = document.getElementById('reviews-chart');
+  if (tCtx && !tCtx.hasAttribute('data-init')) {
+    tCtx.setAttribute('data-init', '1');
+    new Chart(tCtx, {
+      type: 'doughnut',
+      data: { labels: ['Implants', 'Invisalign', 'Veneers', 'Bonding', 'Other'], datasets: [{ data: [34, 28, 18, 12, 8], backgroundColor: [chartColors.p1, chartColors.p2, chartColors.p3, chartColors.p4, chartColors.p5], borderWidth: 2, borderColor: '#FFFFFF' }] },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'right', labels: { color: chartColors.text, font: chartColors.tickFont, padding: 14, usePointStyle: true, pointStyleWidth: 8 } } } }
+    });
+  }
+  if (rCtx && !rCtx.hasAttribute('data-init')) {
+    rCtx.setAttribute('data-init', '1');
+    new Chart(rCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+        datasets: [
+          { label: 'Google', data: [18, 22, 20, 26, 28, 34], backgroundColor: chartColors.p2, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 },
+          { label: 'Trustpilot', data: [8, 10, 12, 14, 16, 18], backgroundColor: chartColors.p4, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: chartColors.text, font: chartColors.tickFont, usePointStyle: true, pointStyleWidth: 8, padding: 14 } } },
+        scales: {
+          x: { stacked: true, grid: { display: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } },
+          y: { stacked: true, grid: { color: chartColors.grid, drawBorder: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } }
+        }
+      }
+    });
+  }
+}
+
+// HEALTH TREND CHART
+function initHealthChart() {
+  const ctx = document.getElementById('health-trend-chart');
+  if (!ctx || ctx.hasAttribute('data-init')) return;
+  ctx.setAttribute('data-init', '1');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+      datasets: [{
+        label: 'Health Score', data: [72, 74, 78, 80, 82, 85],
+        borderColor: chartColors.p1, backgroundColor: 'rgba(26,61,46,0.08)',
+        borderWidth: 2, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#FFFFFF', pointBorderColor: chartColors.p1, pointBorderWidth: 2, pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } },
+        y: { min: 60, max: 100, grid: { color: chartColors.grid, drawBorder: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } }
+      }
+    }
+  });
+}
+
+// AI CONFIDENCE CHART
+function initConfidenceChart() {
+  const ctx = document.getElementById('confidence-dist-chart');
+  if (!ctx || ctx.hasAttribute('data-init')) return;
+  ctx.setAttribute('data-init', '1');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['0-20', '21-40', '41-60', '61-80', '81-100'],
+      datasets: [{
+        label: 'Treatment Plans', data: [8, 18, 34, 52, 30],
+        backgroundColor: ['rgba(196,68,58,0.5)', 'rgba(196,68,58,0.3)', 'rgba(184,134,11,0.4)', 'rgba(26,61,46,0.4)', 'rgba(26,61,46,0.7)'],
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 10 } },
+          title: { display: true, text: 'Confidence Score Range', color: chartColors.text, font: { family: 'Figtree', size: 10 } } },
+        y: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 10 } },
+          title: { display: true, text: 'Number of Plans', color: chartColors.text, font: { family: 'Figtree', size: 10 } } }
+      }
+    }
+  });
+}
+
+// REVENUE FORECAST CHART
+function initForecastChart() {
+  const ctx = document.getElementById('forecast-chart');
+  if (!ctx || ctx.hasAttribute('data-init')) return;
+  ctx.setAttribute('data-init', '1');
+  const labels = [];
+  const actual = [];
+  const forecast = [];
+  const today = new Date(2026, 3, 21);
+  for (let i = -30; i <= 60; i += 5) {
+    const d = new Date(today);
+    d.setDate(d.getDate() + i);
+    labels.push(d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
+    if (i <= 0) {
+      actual.push(Math.round(48000 + (i + 30) * 520 + Math.random() * 2000));
+      forecast.push(null);
+    } else {
+      actual.push(null);
+      forecast.push(Math.round(48000 + 30 * 520 + i * 580 + Math.random() * 3000));
+    }
+  }
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Actual Revenue', data: actual, borderColor: chartColors.green, backgroundColor: chartColors.greenLight, fill: true, tension: 0.3, pointRadius: 2, spanGaps: false },
+        { label: 'Forecast', data: forecast, borderColor: chartColors.amber, backgroundColor: chartColors.amberLight, fill: true, tension: 0.3, pointRadius: 2, borderDash: [5, 3], spanGaps: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: chartColors.text, font: { family: 'Figtree', size: 10 } } } },
+      scales: {
+        x: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 9 }, maxRotation: 45 } },
+        y: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 10 },
+          callback: function(v) { return '£' + (v/1000).toFixed(0) + 'K'; } } }
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>
