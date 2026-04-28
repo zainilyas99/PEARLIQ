@@ -121,8 +121,12 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .secure-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
 .secure-text { font-size: 9px; color: var(--green); letter-spacing: 0.1em; font-weight: 500; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-.header-user { display: flex; align-items: center; gap: 9px; padding: 5px 11px 5px 5px; border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s; border-radius: var(--radius); }
+.header-user { display: flex; align-items: center; gap: 9px; padding: 5px 11px 5px 5px; border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s; border-radius: var(--radius); position: relative; }
 .header-user:hover { border-color: var(--green); }
+.user-menu { position: absolute; top: calc(100% + 6px); right: 0; width: 160px; background: #FFFFFF; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none; transform: translateY(-4px); transition: all 0.15s ease; z-index: 200; }
+.user-menu.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+.user-menu-item { display: flex; align-items: center; gap: 8px; padding: 10px 14px; font-size: 12px; color: var(--text-dim); cursor: pointer; transition: all 0.15s; }
+.user-menu-item:hover { background: var(--bg-3); color: var(--rose); }
 .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: white; }
 .user-name { font-size: 11px; font-weight: 500; color: var(--text-bright); }
 .user-role-label { font-size: 9px; color: var(--text-dim); }
@@ -583,11 +587,17 @@ tbody tr:last-child td { border-bottom: none; }
       <div class="header-stat-pill"><strong>142</strong> Patients</div>
       <div class="header-stat-pill"><strong>4.9</strong> Rating</div>
       <div class="header-stat-pill"><strong>87%</strong> Conv.</div>
-      <div class="header-user">
+      <div class="header-user" onclick="toggleUserMenu(event)">
         <div class="user-avatar" id="user-avatar">PM</div>
         <div>
           <div class="user-name" id="user-name-display">Dr. Sarah Clarke</div>
           <div class="user-role-label" id="user-role-display">Practice Manager</div>
+        </div>
+        <div class="user-menu" id="user-menu">
+          <div class="user-menu-item" onclick="event.stopPropagation();logout()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out
+          </div>
         </div>
       </div>
     </div>
@@ -1797,7 +1807,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     animateDashboard();
     loadDashboardData();
     var hash = window.location.hash.replace('#', '');
-    if (hash) {
+    if (hash && hash !== 'dashboard') {
       navigateTo(hash);
     } else {
       window.history.replaceState({ page: 'dashboard' }, '', '#dashboard');
@@ -1884,6 +1894,22 @@ document.addEventListener('click', e => { if (e.target.classList.contains('modal
 function toggleNotif() { document.getElementById('notif-panel').classList.toggle('open'); }
 function closeNotif() { document.getElementById('notif-panel').classList.remove('open'); }
 document.addEventListener('click', e => { if (!e.target.closest('.notif-panel') && !e.target.closest('.h-action')) closeNotif(); });
+
+// USER MENU
+function toggleUserMenu(e) { e.stopPropagation(); document.getElementById('user-menu').classList.toggle('open'); }
+function closeUserMenu() { document.getElementById('user-menu').classList.remove('open'); }
+document.addEventListener('click', e => { if (!e.target.closest('.header-user')) closeUserMenu(); });
+
+// LOGOUT
+async function logout() {
+  closeUserMenu();
+  await pearliqDB.auth.signOut();
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('auth-screen').style.opacity = '1';
+  window.history.replaceState(null, '', window.location.pathname);
+  showToast('Signed out successfully', 'info');
+}
 
 // TOAST
 function showToast(msg, type = 'info') {
@@ -2015,7 +2041,7 @@ async function loadDashboardData() {
       }
     }
   } catch (e) {
-    // Silently fail — keep demo values visible
+    showToast('Unable to load data — check your connection', 'error');
   }
 }
 
@@ -2048,7 +2074,7 @@ async function loadPatients() {
     });
     tbody.innerHTML = rows + demoRows;
   } catch (e) {
-    // Silently fail — keep demo data visible
+    showToast('Unable to load data — check your connection', 'error');
   }
 }
 
