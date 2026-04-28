@@ -109,7 +109,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .header-logo-mark svg { width: 14px; height: 14px; }
 .header-logo-text { font-family: 'Fraunces', serif; font-size: 17px; color: var(--cream); letter-spacing: 0.08em; }
 .header-logo-sub { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
-.header-search { flex: 1; max-width: 340px; background: var(--bg-3); border: 1px solid var(--border); display: flex; align-items: center; gap: 9px; padding: 7px 13px; border-radius: var(--radius); }
+.header-search { flex: 1; max-width: 340px; background: var(--bg-3); border: 1px solid var(--border); display: flex; align-items: center; gap: 9px; padding: 7px 13px; border-radius: var(--radius); position: relative; }
 .header-search input { background: transparent; border: none; outline: none; color: var(--text-bright); font-family: 'Figtree', sans-serif; font-size: 13px; flex: 1; }
 .header-search input::placeholder { color: var(--text-dim); }
 .header-actions { display: flex; align-items: center; gap: 10px; }
@@ -576,8 +576,9 @@ tbody tr:last-child td { border-bottom: none; }
     </div>
     <div class="header-search">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input placeholder="Search patients, treatments, staff...">
+      <input id="global-search" placeholder="Search patients, treatments, staff..." oninput="globalSearch(this.value)">
       <span style="font-size:9px;color:var(--text-dim);font-weight:500;">&#8984;K</span>
+      <div id="search-results" style="position:absolute;top:100%;left:0;right:0;background:#FFFFFF;border:1px solid rgba(0,0,0,0.1);border-radius:0 0 8px 8px;box-shadow:0 8px 24px rgba(0,0,0,0.08);z-index:9999;max-height:320px;overflow-y:auto;display:none;"></div>
     </div>
     <div class="header-actions">
       <div class="secure-pill"><div class="secure-dot"></div><div class="secure-text">SECURED</div></div>
@@ -1920,6 +1921,47 @@ function showToast(msg, type = 'info') {
   document.getElementById('toast-container').appendChild(toast);
   setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateX(80px)'; toast.style.transition='all 0.3s'; setTimeout(()=>toast.remove(),300); }, 3500);
 }
+
+// GLOBAL SEARCH
+async function globalSearch(query) {
+  var resultsEl = document.getElementById('search-results');
+  if (!query || query.length < 2) { resultsEl.style.display = 'none'; return; }
+  resultsEl.style.display = 'block';
+  resultsEl.innerHTML = '<div style="padding:12px 16px;font-size:12px;color:#8A8A8A;">Searching...</div>';
+  try {
+    var [patientsRes, plansRes, staffRes] = await Promise.all([
+      pearliqDB.from('patients').select('name, email, status').ilike('name', '%' + query + '%').limit(4),
+      pearliqDB.from('treatment_plans').select('patient_name, treatment_type, value, status').ilike('patient_name', '%' + query + '%').limit(4),
+      pearliqDB.from('staff').select('name, role').ilike('name', '%' + query + '%').limit(3)
+    ]);
+    var html = '';
+    if (patientsRes.data && patientsRes.data.length > 0) {
+      html += '<div style="padding:8px 16px;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Patients</div>';
+      patientsRes.data.forEach(function(p) {
+        html += '<div onclick="navigateTo(\'patients\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,0.04);" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="width:28px;height:28px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;flex-shrink:0;">' + p.name.split(' ').map(function(n){return n[0]}).join('').substring(0,2) + '</div><div><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + p.name + '</div><div style="font-size:11px;color:#8A8A8A;">Patient · ' + (p.email || 'No email') + '</div></div></div>';
+      });
+    }
+    if (plansRes.data && plansRes.data.length > 0) {
+      html += '<div style="padding:8px 16px;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Treatment Plans</div>';
+      plansRes.data.forEach(function(p) {
+        html += '<div onclick="navigateTo(\'treatment-plans\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,0.04);" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + p.patient_name + '</div><div style="font-size:11px;color:#8A8A8A;margin-left:auto;">\u00A3' + (p.value || 0).toLocaleString() + ' \u00B7 ' + (p.treatment_type || '') + '</div></div>';
+      });
+    }
+    if (staffRes.data && staffRes.data.length > 0) {
+      html += '<div style="padding:8px 16px;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Staff</div>';
+      staffRes.data.forEach(function(s) {
+        html += '<div onclick="navigateTo(\'staff\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + s.name + '</div><div style="font-size:11px;color:#8A8A8A;margin-left:auto;">' + (s.role || '') + '</div></div>';
+      });
+    }
+    if (!html) {
+      html = '<div style="padding:16px;font-size:12px;color:#8A8A8A;text-align:center;">No results found for "' + query + '"</div>';
+    }
+    resultsEl.innerHTML = html;
+  } catch(e) {
+    resultsEl.innerHTML = '<div style="padding:12px 16px;font-size:12px;color:#8A8A8A;">Search unavailable</div>';
+  }
+}
+document.addEventListener('click', function(e) { if (!e.target.closest('.header-search')) { var r = document.getElementById('search-results'); if (r) r.style.display = 'none'; } });
 
 // SETTINGS NAV
 function settingsNav(el) {
