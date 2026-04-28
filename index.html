@@ -134,6 +134,8 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .top-nav { height: 48px; background: #FFFFFF; border-bottom: 1px solid #E8E4DE; display: flex; align-items: center; padding: 0 32px; gap: 4px; flex-shrink: 0; }
 .top-nav-btn { width: 40px; height: 40px; border-radius: 8px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dim); transition: all 0.15s; position: relative; }
 .top-nav-btn:hover { background: #F5F3EF; color: var(--text-bright); }
+.top-nav-btn::after { content: attr(title); position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%); background: #1C1C1C; color: #FFFFFF; font-family: 'Figtree', sans-serif; font-size: 11px; padding: 4px 8px; border-radius: 4px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; z-index: 9999; }
+.top-nav-btn:hover::after { opacity: 1; }
 .top-nav-btn.active { background: #1A3D2E; color: white; }
 .top-nav-btn svg { width: 18px; height: 18px; }
 .top-nav-divider { width: 1px; height: 24px; background: #E8E4DE; margin: 0 6px; flex-shrink: 0; }
