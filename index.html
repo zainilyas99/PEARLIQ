@@ -1772,6 +1772,15 @@ const pearliqDB = window.supabase.createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpneGV6cHpmZHp2YmVmcWlpbG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTY0OTUsImV4cCI6MjA5MjMzMjQ5NX0.b1BAV3geIw0Uv6PrDIPpcJY5RTNLo71LM2YHQS6H54U'
 );
 
+// BROWSER HISTORY NAVIGATION
+window.addEventListener('popstate', function(event) {
+  if (event.state && event.state.page) {
+    navigateTo(event.state.page);
+  } else {
+    navigateTo('dashboard');
+  }
+});
+
 // SESSION PERSISTENCE — check if user is already logged in on page load
 window.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await pearliqDB.auth.getSession();
@@ -1787,6 +1796,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     initCharts();
     animateDashboard();
     loadDashboardData();
+    var hash = window.location.hash.replace('#', '');
+    if (hash) {
+      navigateTo(hash);
+    } else {
+      window.history.replaceState({ page: 'dashboard' }, '', '#dashboard');
+    }
   }
 });
 
@@ -1857,6 +1872,7 @@ function navigateTo(page) {
   if (page === 'patients') loadPatients();
   document.getElementById('main-content').scrollTop = 0;
   closeNotif();
+  window.history.pushState({ page: page }, '', '#' + page);
 }
 
 // MODALS
