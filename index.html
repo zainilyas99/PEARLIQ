@@ -862,7 +862,7 @@ tbody tr:last-child td { border-bottom: none; }
           </div>
         </div>
         <div class="tp-grid">
-          <div class="tp-card" onclick="openDetailPanel('James Thompson', '<div style=\"margin-bottom:12px;\"><span class=\"badge badge-hot\">Lapsed</span></div><div style=\"font-size:13px;color:var(--text-dim);margin-bottom:8px;\">Full Dental Implant — Upper Right</div><div style=\"font-family:Fraunces,serif;font-size:28px;color:var(--green);margin-bottom:16px;\">&pound;3,200</div><div style=\"font-size:12px;color:var(--text-dim);line-height:2;\">Plan created: 1 March 2026<br>Last contact: Day 3 SMS sent<br>Finance: 0% over 12 months<br>42 days without booking</div>')">
+          <div class="tp-card" onclick="openPatientPanel('James Thompson', 'Dental Implant', '3200', 'Lapsed', '42 days', 'Day 3 SMS sent', '0% over 12 months')">
             <div class="tp-card-header">
               <div style="flex:1;"><div class="tp-patient">James Thompson</div><div class="tp-treatment">Full Dental Implant — Upper Right</div></div>
               <div style="display:flex;align-items:center;gap:10px;">
@@ -891,7 +891,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
           </div>
 
-          <div class="tp-card" onclick="openDetailPanel('Emma Davies', '<div style=\"margin-bottom:12px;\"><span class=\"badge badge-hot\">Lapsed</span></div><div style=\"font-size:13px;color:var(--text-dim);margin-bottom:8px;\">Invisalign Full Treatment</div><div style=\"font-family:Fraunces,serif;font-size:28px;color:var(--green);margin-bottom:16px;\">&pound;4,800</div><div style=\"font-size:12px;color:var(--text-dim);line-height:2;\">Plan created: 5 March 2026<br>Last contact: Day 1 email sent<br>Finance: 0% over 18 months<br>38 days without booking</div>')">
+          <div class="tp-card" onclick="openPatientPanel('Emma Davies', 'Invisalign Full', '4800', 'Lapsed', '38 days', 'Day 1 email sent', '0% over 18 months')">
             <div class="tp-card-header">
               <div style="flex:1;"><div class="tp-patient">Emma Davies</div><div class="tp-treatment">Invisalign Full Treatment</div></div>
               <div style="display:flex;align-items:center;gap:10px;">
@@ -920,7 +920,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
           </div>
 
-          <div class="tp-card" onclick="openDetailPanel('Robert Chen', '<div style=\"margin-bottom:12px;\"><span class=\"badge badge-warm\">Warm</span></div><div style=\"font-size:13px;color:var(--text-dim);margin-bottom:8px;\">Porcelain Veneers x6</div><div style=\"font-family:Fraunces,serif;font-size:28px;color:var(--green);margin-bottom:16px;\">&pound;5,400</div><div style=\"font-size:12px;color:var(--text-dim);line-height:2;\">Plan created: 22 March 2026<br>Last contact: Day 7 finance email opened<br>Finance: 0% over 24 months<br>21 days — opened finance email</div>')">
+          <div class="tp-card" onclick="openPatientPanel('Robert Chen', 'Porcelain Veneers x6', '5400', 'Warm', '21 days', 'Day 7 finance email opened', '0% over 24 months')">
             <div class="tp-card-header">
               <div style="flex:1;"><div class="tp-patient">Robert Chen</div><div class="tp-treatment">Porcelain Veneers x6</div></div>
               <div style="display:flex;align-items:center;gap:10px;">
@@ -949,7 +949,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
           </div>
 
-          <div class="tp-card" onclick="openDetailPanel('Lisa Patel', '<div style=\"margin-bottom:12px;\"><span class=\"badge badge-good\">Active</span></div><div style=\"font-size:13px;color:var(--text-dim);margin-bottom:8px;\">Composite Bonding x4 teeth</div><div style=\"font-family:Fraunces,serif;font-size:28px;color:var(--green);margin-bottom:16px;\">&pound;1,800</div><div style=\"font-size:12px;color:var(--text-dim);line-height:2;\">Plan created: 10 April 2026<br>Day 1 email sent — opened<br>Finance: Pay in full<br>11 days — actively engaged</div>')">
+          <div class="tp-card" onclick="openPatientPanel('Lisa Patel', 'Composite Bonding x4', '1800', 'Active', '11 days', 'Day 1 email sent — opened', 'Pay in full')">
             <div class="tp-card-header">
               <div style="flex:1;"><div class="tp-patient">Lisa Patel</div><div class="tp-treatment">Composite Bonding x4 teeth</div></div>
               <div style="display:flex;align-items:center;gap:10px;">
@@ -2035,6 +2035,20 @@ async function loadPatients() {
 }
 
 // DETAIL PANEL
+
+function openPatientPanel(name, treatment, value, status, days, lastContact, finance) {
+  var statusClass = status === 'Lapsed' ? 'badge-hot' : status === 'Warm' ? 'badge-warm' : 'badge-good';
+  var html = '<div style="margin-bottom:16px;"><span class="badge ' + statusClass + '">' + status + '</span></div>' +
+    '<div style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">' + treatment + '</div>' +
+    '<div style="font-family:Fraunces,serif;font-size:32px;color:var(--green);margin-bottom:20px;">£' + parseInt(value).toLocaleString() + '</div>' +
+    '<div style="font-size:12px;color:var(--text-dim);line-height:2.2;">' +
+    '<strong style="color:var(--text-bright);">Last contact:</strong> ' + lastContact + '<br>' +
+    '<strong style="color:var(--text-bright);">Finance:</strong> ' + finance + '<br>' +
+    '<strong style="color:var(--text-bright);">Days since plan:</strong> ' + days +
+    '</div>';
+  openDetailPanel(name, html);
+}
+
 function openDetailPanel(title, content) {
   document.getElementById('detail-panel-title').textContent = title;
   document.getElementById('detail-panel-body').innerHTML = content;
