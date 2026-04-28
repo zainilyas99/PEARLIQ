@@ -361,14 +361,14 @@ tbody tr:last-child td { border-bottom: none; }
 .priority-action-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 
 /* DETAIL PANEL */
-.detail-panel { position: fixed; top: 110px; right: -420px; width: 420px; height: calc(100vh - 110px); background: #FFFFFF; box-shadow: -4px 0 24px rgba(0,0,0,0.08); transition: right 0.3s ease; z-index: 300; overflow-y: auto; }
+.detail-panel { position: fixed; top: 110px; right: -420px; width: 420px; height: calc(100vh - 110px); background: #FFFFFF; box-shadow: -4px 0 24px rgba(0,0,0,0.08); transition: right 0.3s ease; z-index: 9999; overflow-y: auto; }
 .detail-panel.open { right: 0; }
 .detail-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid var(--border); }
 .detail-panel-title { font-family: 'Fraunces', serif; font-size: 18px; color: var(--cream); }
 .detail-panel-close { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dim); font-size: 14px; transition: all 0.2s; }
 .detail-panel-close:hover { border-color: var(--rose); color: var(--rose); }
 .detail-panel-body { padding: 24px; }
-.detail-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.15); z-index: 299; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.detail-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.15); z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
 .detail-panel-overlay.open { opacity: 1; pointer-events: all; }
 
 .health-breakdown { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
@@ -1761,16 +1761,6 @@ tbody tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
-<!-- DETAIL PANEL -->
-<div class="detail-panel-overlay" id="detail-overlay" onclick="closeDetailPanel()"></div>
-<div class="detail-panel" id="detail-panel">
-  <div class="detail-panel-header">
-    <div class="detail-panel-title" id="detail-panel-title">Details</div>
-    <button class="detail-panel-close" onclick="closeDetailPanel()">&#10005;</button>
-  </div>
-  <div class="detail-panel-body" id="detail-panel-body"></div>
-</div>
-
 <div class="toast-container" id="toast-container"></div>
 
 <script>
@@ -2264,5 +2254,14 @@ function initForecastChart() {
   });
 }
 </script>
+<!-- DETAIL PANEL -->
+<div class="detail-panel-overlay" id="detail-overlay" onclick="closeDetailPanel()"></div>
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-panel-header">
+    <div class="detail-panel-title" id="detail-panel-title">Details</div>
+    <button class="detail-panel-close" onclick="closeDetailPanel()">&#10005;</button>
+  </div>
+  <div class="detail-panel-body" id="detail-panel-body"></div>
+</div>
 </body>
 </html>
