@@ -900,7 +900,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
             <div class="tp-card-footer">
               <span style="font-size:10px;color:var(--rose);font-weight:500;">42 days without booking</span>
-              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();sendTreatmentFollowUp('James Thompson','james@example.com','Dental Implant',3200,7)">Send Day 7</button>
+              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();var email=prompt('Enter patient email to send Day 7 follow-up:');if(email)sendTreatmentFollowUp('James Thompson',email,'Dental Implant',3200,7)">Send Day 7</button>
             </div>
           </div>
 
@@ -929,7 +929,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
             <div class="tp-card-footer">
               <span style="font-size:10px;color:var(--rose);font-weight:500;">38 days without booking</span>
-              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();sendTreatmentFollowUp('Emma Davies','emma@example.com','Invisalign Full',4800,3)">Send Day 3</button>
+              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();var email=prompt('Enter patient email to send Day 3 follow-up:');if(email)sendTreatmentFollowUp('Emma Davies',email,'Invisalign Full',4800,3)">Send Day 3</button>
             </div>
           </div>
 
