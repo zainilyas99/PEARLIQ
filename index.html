@@ -34,7 +34,6 @@
   --violet-dim: rgba(91,74,138,0.08);
   --border: rgba(0,0,0,0.07);
   --border-green: rgba(26,61,46,0.15);
-  --sidebar-w: 220px;
   --header-h: 58px;
   --radius: 6px;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
@@ -129,30 +128,20 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .user-role-label { font-size: 9px; color: var(--text-dim); }
 
 /* BODY */
-.app-body { flex: 1; display: flex; overflow: hidden; }
+.app-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-/* SIDEBAR */
-.sidebar { width: var(--sidebar-w); background: var(--bg-2); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
-.sidebar-section { padding: 16px 0 4px; }
-.sidebar-label { padding: 0 16px 8px; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 16px; cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent; color: var(--text-dim); font-size: 13px; font-weight: 400; }
-.nav-item:hover { color: var(--text-bright); background: rgba(0,0,0,0.02); }
-.nav-item.active { color: var(--green); background: var(--green-glow); border-left-color: var(--green); font-weight: 500; }
-.nav-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.nav-icon svg { width: 16px; height: 16px; stroke-width: 1.5; }
-.nav-badge { margin-left: auto; background: var(--rose); color: white; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px; }
-.nav-badge.amber { background: var(--amber-dim); color: var(--amber); }
-.nav-badge.blue { background: var(--green-glow); color: var(--green); }
-.sidebar-bottom { margin-top: auto; padding: 12px; border-top: 1px solid var(--border); }
-.practice-card { background: var(--bg-3); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius); }
-.practice-name { font-size: 12px; color: var(--text-bright); font-weight: 500; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-.online-badge { font-size: 9px; color: var(--green); display: flex; align-items: center; gap: 4px; }
-.practice-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-.pstat-val { font-family: 'Fraunces', serif; font-size: 18px; color: var(--green); }
-.pstat-label { font-size: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+/* TOP NAV */
+.top-nav { height: 48px; background: #FFFFFF; border-bottom: 1px solid #E8E4DE; display: flex; align-items: center; padding: 0 32px; gap: 4px; flex-shrink: 0; }
+.top-nav-btn { width: 40px; height: 40px; border-radius: 8px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dim); transition: all 0.15s; position: relative; }
+.top-nav-btn:hover { background: #F5F3EF; color: var(--text-bright); }
+.top-nav-btn.active { background: #1A3D2E; color: white; }
+.top-nav-btn svg { width: 18px; height: 18px; }
+.top-nav-divider { width: 1px; height: 24px; background: #E8E4DE; margin: 0 6px; flex-shrink: 0; }
+.header-stat-pill { display: flex; align-items: center; gap: 4px; padding: 3px 10px; background: var(--bg-3); border: 1px solid var(--border); border-radius: 20px; font-size: 10px; color: var(--text-dim); }
+.header-stat-pill strong { color: var(--green); font-family: 'Fraunces', serif; font-size: 12px; }
 
 /* MAIN */
-.main-content { flex: 1; overflow-y: auto; padding: 28px 30px; }
+.main-content { flex: 1; overflow-y: auto; padding: 32px 40px; }
 .page { display: none; }
 .page.active { display: block; animation: fadeIn 0.22s ease; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
@@ -353,6 +342,35 @@ tbody tr:last-child td { border-bottom: none; }
 .health-dial-score { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .health-dial-score .score-num { font-family: 'Fraunces', serif; font-size: 36px; color: var(--green); line-height: 1; font-weight: 500; }
 .health-dial-score .score-label { font-size: 8px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-dim); margin-top: 2px; font-weight: 600; }
+
+/* HEALTH HERO */
+.health-hero { background: #FFFFFF; border-radius: 12px; padding: 48px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); margin-bottom: 28px; text-align: center; }
+.health-hero-dial { position: relative; width: 200px; height: 200px; margin: 0 auto 28px; }
+.health-hero-score { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.health-hero-num { font-family: 'Fraunces', serif; font-size: 72px; color: #1A3D2E; line-height: 1; font-weight: 500; }
+.health-hero-label { font-family: 'Figtree', sans-serif; font-size: 14px; color: #6B7280; margin-top: 4px; }
+.health-hero-metrics { display: flex; gap: 24px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
+.health-hero-metric { display: flex; align-items: center; gap: 8px; min-width: 160px; }
+.health-hero-metric-name { font-size: 12px; color: var(--text-dim); min-width: 100px; text-align: right; }
+.health-hero-metric-bar { flex: 1; height: 4px; background: var(--bg-5); border-radius: 2px; overflow: hidden; min-width: 60px; }
+.health-hero-metric-fill { height: 100%; border-radius: 2px; background: var(--green); }
+.health-hero-metric-val { font-size: 12px; font-weight: 600; color: var(--text-bright); min-width: 32px; }
+.health-hero-actions { display: flex; flex-direction: column; gap: 8px; text-align: left; max-width: 700px; margin: 0 auto; }
+.priority-action-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 18px; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius); }
+.priority-action-title { font-size: 13px; font-weight: 500; color: var(--cream); }
+.priority-action-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+/* DETAIL PANEL */
+.detail-panel { position: fixed; top: 0; right: -420px; width: 420px; height: 100vh; background: #FFFFFF; box-shadow: -4px 0 24px rgba(0,0,0,0.08); transition: right 0.3s ease; z-index: 300; overflow-y: auto; }
+.detail-panel.open { right: 0; }
+.detail-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid var(--border); }
+.detail-panel-title { font-family: 'Fraunces', serif; font-size: 18px; color: var(--cream); }
+.detail-panel-close { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dim); font-size: 14px; transition: all 0.2s; }
+.detail-panel-close:hover { border-color: var(--rose); color: var(--rose); }
+.detail-panel-body { padding: 24px; }
+.detail-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.15); z-index: 299; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.detail-panel-overlay.open { opacity: 1; pointer-events: all; }
+
 .health-breakdown { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
 .health-metric { display: flex; align-items: center; gap: 10px; }
 .health-metric-bar { flex: 1; height: 4px; background: var(--bg-5); border-radius: 2px; overflow: hidden; }
@@ -560,6 +578,9 @@ tbody tr:last-child td { border-bottom: none; }
       <button class="h-action" onclick="toggleNotif()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-badge">4</div></button>
       <button class="h-action" onclick="navigateTo('reviews')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
       <button class="h-action" onclick="navigateTo('settings')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+      <div class="header-stat-pill"><strong>142</strong> Patients</div>
+      <div class="header-stat-pill"><strong>4.9</strong> Rating</div>
+      <div class="header-stat-pill"><strong>87%</strong> Conv.</div>
       <div class="header-user">
         <div class="user-avatar" id="user-avatar">PM</div>
         <div>
@@ -587,116 +608,68 @@ tbody tr:last-child td { border-bottom: none; }
   <!-- BODY -->
   <div class="app-body">
 
-    <!-- SIDEBAR -->
-    <nav class="sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">Overview</div>
-        <div class="nav-item active" onclick="navigateTo('dashboard')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> Dashboard</div>
-        <div class="nav-item" onclick="navigateTo('patients')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span> Patients</div>
-        <div class="nav-item" onclick="navigateTo('appointments')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span> Appointments</div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Treatment Plans</div>
-        <div class="nav-item" onclick="navigateTo('treatment-plans')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Treatment Plans <span class="nav-badge amber">8</span></div>
-        <div class="nav-item" onclick="navigateTo('follow-up')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> Patient Journeys <span class="nav-badge">24</span></div>
-        <div class="nav-item" onclick="navigateTo('financing')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span> Financing Options</div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Reviews</div>
-        <div class="nav-item" onclick="navigateTo('reviews')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> Review Management</div>
-        <div class="nav-item" onclick="navigateTo('review-triggers')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> Reputation Engine</div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Team</div>
-        <div class="nav-item" onclick="navigateTo('staff')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span> Clinical Team</div>
-        <div class="nav-item" onclick="navigateTo('payroll')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span> Pay & Hours</div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Intelligence</div>
-        <div class="nav-item" onclick="navigateTo('practice-health')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span> Practice Health</div>
-        <div class="nav-item" onclick="navigateTo('ai-insights')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> AI Insights</div>
-        <div class="nav-item" onclick="navigateTo('revenue-forecast')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Revenue Forecast</div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Business</div>
-        <div class="nav-item" onclick="navigateTo('analytics')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> Analytics</div>
-        <div class="nav-item" onclick="navigateTo('security')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> Security</div>
-        <div class="nav-item" onclick="navigateTo('settings')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span> Settings</div>
-      </div>
-      <div class="sidebar-bottom">
-        <div class="practice-card">
-          <div class="practice-name">
-            <span id="sidebar-practice-name">Clarke Dental</span>
-            <div class="online-badge"><div style="width:5px;height:5px;border-radius:50%;background:var(--green);"></div> Live</div>
-          </div>
-          <div class="practice-stats">
-            <div><div class="pstat-val">142</div><div class="pstat-label">Patients</div></div>
-            <div><div class="pstat-val">4.9</div><div class="pstat-label">Rating</div></div>
-            <div><div class="pstat-val">87%</div><div class="pstat-label">Conversion</div></div>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <!-- TOP NAV -->
+<nav class="top-nav">
+  <button class="top-nav-btn active" onclick="navigateTo('dashboard')" title="Dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('patients')" title="Patients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('appointments')" title="Appointments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+  <div class="top-nav-divider"></div>
+  <button class="top-nav-btn" onclick="navigateTo('treatment-plans')" title="Treatment Plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('follow-up')" title="Patient Journeys"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('financing')" title="Financing Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></button>
+  <div class="top-nav-divider"></div>
+  <button class="top-nav-btn" onclick="navigateTo('reviews')" title="Review Management"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('review-triggers')" title="Reputation Engine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button>
+  <div class="top-nav-divider"></div>
+  <button class="top-nav-btn" onclick="navigateTo('staff')" title="Clinical Team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('payroll')" title="Pay &amp; Hours"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
+  <div class="top-nav-divider"></div>
+  <button class="top-nav-btn" onclick="navigateTo('practice-health')" title="Practice Health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('ai-insights')" title="AI Insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5L12 2z"/><path d="M18 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('revenue-forecast')" title="Revenue Forecast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></button>
+  <div class="top-nav-divider"></div>
+  <button class="top-nav-btn" onclick="navigateTo('analytics')" title="Analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('security')" title="Security"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('settings')" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+</nav>
 
     <!-- MAIN CONTENT -->
     <main class="main-content" id="main-content">
 
       <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
-        <div class="page-header">
-          <div>
-            <div class="page-eyebrow">Overview · April 2026</div>
-            <h1 class="page-title">Practice Dashboard</h1>
-            <div class="page-subtitle">Clarke Dental · 6 active automations · 4.9 average rating</div>
-          </div>
-          <div class="page-actions">
-            <button class="btn btn-secondary btn-sm" onclick="showToast('Generating monthly report...','info')">Monthly Report</button>
-            <button class="btn btn-primary btn-sm" onclick="openModal('new-patient-modal')">+ Add Patient</button>
-          </div>
-        </div>
-
-        <!-- Practice Health Score Dial -->
-        <div class="health-dial-wrap">
-          <div class="health-dial">
-            <svg viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="50" fill="none" stroke="#E8E4DE" stroke-width="6"/>
-              <circle cx="60" cy="60" r="50" fill="none" stroke="#1A3D2E" stroke-width="6" stroke-linecap="round"
-                stroke-dasharray="314" stroke-dashoffset="47" transform="rotate(-90 60 60)"/>
+        <!-- Hero Health Score -->
+        <div class="health-hero">
+          <div class="health-hero-dial">
+            <svg viewBox="0 0 200 200" width="200" height="200">
+              <circle cx="100" cy="100" r="84" fill="none" stroke="#E8E4DE" stroke-width="8"/>
+              <circle id="health-hero-ring" cx="100" cy="100" r="84" fill="none" stroke="#1A3D2E" stroke-width="8" stroke-linecap="round"
+                stroke-dasharray="527.8" stroke-dashoffset="527.8" transform="rotate(-90 100 100)"/>
             </svg>
-            <div class="health-dial-score">
-              <div class="score-num">85</div>
-              <div class="score-label">Health Score</div>
+            <div class="health-hero-score">
+              <div class="health-hero-num" id="health-hero-num">0</div>
+              <div class="health-hero-label">Practice Health Score</div>
             </div>
           </div>
-          <div style="flex:1;">
-            <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:4px;">Practice Health Score</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;">Composite of occupancy, conversion, reviews, recalls & rota coverage</div>
-            <div class="health-breakdown">
-              <div class="health-metric">
-                <div class="health-metric-label">Occupancy Rate</div>
-                <div class="health-metric-bar"><div class="health-metric-fill" style="width:82%;"></div></div>
-                <div class="health-metric-val">82%</div>
-              </div>
-              <div class="health-metric">
-                <div class="health-metric-label">Conversion Rate</div>
-                <div class="health-metric-bar"><div class="health-metric-fill" style="width:87%;"></div></div>
-                <div class="health-metric-val">87%</div>
-              </div>
-              <div class="health-metric">
-                <div class="health-metric-label">Review Velocity</div>
-                <div class="health-metric-bar"><div class="health-metric-fill" style="width:91%;"></div></div>
-                <div class="health-metric-val">91%</div>
-              </div>
-              <div class="health-metric">
-                <div class="health-metric-label">Recall Rate</div>
-                <div class="health-metric-bar"><div class="health-metric-fill" style="width:78%;"></div></div>
-                <div class="health-metric-val">78%</div>
-              </div>
-              <div class="health-metric">
-                <div class="health-metric-label">Rota Coverage</div>
-                <div class="health-metric-bar"><div class="health-metric-fill" style="width:88%;"></div></div>
-                <div class="health-metric-val">88%</div>
-              </div>
+          <div class="health-hero-metrics">
+            <div class="health-hero-metric"><span class="health-hero-metric-name">Conversion Rate</span><div class="health-hero-metric-bar"><div class="health-hero-metric-fill" style="width:87%;"></div></div><span class="health-hero-metric-val">87%</span></div>
+            <div class="health-hero-metric"><span class="health-hero-metric-name">Review Velocity</span><div class="health-hero-metric-bar"><div class="health-hero-metric-fill" style="width:91%;"></div></div><span class="health-hero-metric-val">91%</span></div>
+            <div class="health-hero-metric"><span class="health-hero-metric-name">Occupancy</span><div class="health-hero-metric-bar"><div class="health-hero-metric-fill" style="width:82%;"></div></div><span class="health-hero-metric-val">82%</span></div>
+            <div class="health-hero-metric"><span class="health-hero-metric-name">Recall Rate</span><div class="health-hero-metric-bar"><div class="health-hero-metric-fill" style="width:78%;"></div></div><span class="health-hero-metric-val">78%</span></div>
+            <div class="health-hero-metric"><span class="health-hero-metric-name">Rota Coverage</span><div class="health-hero-metric-bar"><div class="health-hero-metric-fill" style="width:88%;"></div></div><span class="health-hero-metric-val">88%</span></div>
+          </div>
+          <div class="health-hero-actions">
+            <div class="priority-action-card">
+              <div class="priority-action-info"><div class="priority-action-title">8 lapsed treatment plans need follow-up</div><div class="priority-action-desc">Patients haven't responded in 30+ days. Send Day 7 finance offers.</div></div>
+              <button class="btn btn-primary btn-sm" onclick="navigateTo('treatment-plans')">Review Plans</button>
+            </div>
+            <div class="priority-action-card">
+              <div class="priority-action-info"><div class="priority-action-title">4 reviews pending from today's appointments</div><div class="priority-action-desc">Trigger review requests for completed appointments.</div></div>
+              <button class="btn btn-primary btn-sm" onclick="navigateTo('review-triggers')">Send Triggers</button>
+            </div>
+            <div class="priority-action-card">
+              <div class="priority-action-info"><div class="priority-action-title">Wednesday chair utilisation is low</div><div class="priority-action-desc">Only 1 clinician scheduled. Consider adding a half-day session.</div></div>
+              <button class="btn btn-primary btn-sm" onclick="navigateTo('staff')">View Rota</button>
             </div>
           </div>
         </div>
@@ -709,7 +682,7 @@ tbody tr:last-child td { border-bottom: none; }
             <div class="kpi-delta up">+23% since automation</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-top"><div class="kpi-label">Active Patients</div><div class="kpi-icon" style="background:var(--amber-dim);color:var(--amber);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div>
+            <div class="kpi-top"><div class="kpi-label">Active Patients</div><div class="kpi-icon" style="background:var(--amber-dim);color:var(--amber);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div></div>
             <div class="kpi-value" id="kpi-patients">34</div>
             <div class="kpi-delta up">+18 new Google reviews</div>
           </div>
@@ -889,7 +862,7 @@ tbody tr:last-child td { border-bottom: none; }
           </div>
         </div>
         <div class="tp-grid">
-          <div class="tp-card" onclick="showToast('Opening treatment plan...','info')">
+          <div class="tp-card" onclick="openDetailPanel('James Thompson', '<div style=\"margin-bottom:12px;\"><span class=\"badge badge-hot\">Lapsed</span></div><div style=\"font-size:13px;color:var(--text-dim);margin-bottom:8px;\">Full Dental Implant — Upper Right</div><div style=\"font-family:Fraunces,serif;font-size:28px;color:var(--green);margin-bottom:16px;\">&pound;3,200</div><div style=\"font-size:12px;color:var(--text-dim);line-height:2;\">Plan created: 1 March 2026<br>Last contact: Day 3 SMS sent<br>Finance: 0% over 12 months<br>42 days without booking</div>')">
             <div class="tp-card-header">
               <div style="flex:1;"><div class="tp-patient">James Thompson</div><div class="tp-treatment">Full Dental Implant — Upper Right</div></div>
               <div style="display:flex;align-items:center;gap:10px;">
@@ -918,7 +891,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
           </div>
 
-          <div class="tp-card" onclick="showToast('Opening treatment plan...','info')">
+          <div class="tp-card" onclick="openDetailPanel('Emma Davies', '<div style=\"margin-bottom:12px;\"><span class=\"badge badge-hot\">Lapsed</span></div><div style=\"font-size:13px;color:var(--text-dim);margin-bottom:8px;\">Invisalign Full Treatment</div><div style=\"font-family:Fraunces,serif;font-size:28px;color:var(--green);margin-bottom:16px;\">&pound;4,800</div><div style=\"font-size:12px;color:var(--text-dim);line-height:2;\">Plan created: 5 March 2026<br>Last contact: Day 1 email sent<br>Finance: 0% over 18 months<br>38 days without booking</div>')">
             <div class="tp-card-header">
               <div style="flex:1;"><div class="tp-patient">Emma Davies</div><div class="tp-treatment">Invisalign Full Treatment</div></div>
               <div style="display:flex;align-items:center;gap:10px;">
@@ -947,7 +920,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
           </div>
 
-          <div class="tp-card" onclick="showToast('Opening treatment plan...','info')">
+          <div class="tp-card" onclick="openDetailPanel('Robert Chen', '<div style=\"margin-bottom:12px;\"><span class=\"badge badge-warm\">Warm</span></div><div style=\"font-size:13px;color:var(--text-dim);margin-bottom:8px;\">Porcelain Veneers x6</div><div style=\"font-family:Fraunces,serif;font-size:28px;color:var(--green);margin-bottom:16px;\">&pound;5,400</div><div style=\"font-size:12px;color:var(--text-dim);line-height:2;\">Plan created: 22 March 2026<br>Last contact: Day 7 finance email opened<br>Finance: 0% over 24 months<br>21 days — opened finance email</div>')">
             <div class="tp-card-header">
               <div style="flex:1;"><div class="tp-patient">Robert Chen</div><div class="tp-treatment">Porcelain Veneers x6</div></div>
               <div style="display:flex;align-items:center;gap:10px;">
@@ -976,7 +949,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
           </div>
 
-          <div class="tp-card" onclick="showToast('Opening treatment plan...','info')">
+          <div class="tp-card" onclick="openDetailPanel('Lisa Patel', '<div style=\"margin-bottom:12px;\"><span class=\"badge badge-good\">Active</span></div><div style=\"font-size:13px;color:var(--text-dim);margin-bottom:8px;\">Composite Bonding x4 teeth</div><div style=\"font-family:Fraunces,serif;font-size:28px;color:var(--green);margin-bottom:16px;\">&pound;1,800</div><div style=\"font-size:12px;color:var(--text-dim);line-height:2;\">Plan created: 10 April 2026<br>Day 1 email sent — opened<br>Finance: Pay in full<br>11 days — actively engaged</div>')">
             <div class="tp-card-header">
               <div style="flex:1;"><div class="tp-patient">Lisa Patel</div><div class="tp-treatment">Composite Bonding x4 teeth</div></div>
               <div style="display:flex;align-items:center;gap:10px;">
@@ -1788,6 +1761,16 @@ tbody tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
+<!-- DETAIL PANEL -->
+<div class="detail-panel-overlay" id="detail-overlay" onclick="closeDetailPanel()"></div>
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-panel-header">
+    <div class="detail-panel-title" id="detail-panel-title">Details</div>
+    <button class="detail-panel-close" onclick="closeDetailPanel()">&#10005;</button>
+  </div>
+  <div class="detail-panel-body" id="detail-panel-body"></div>
+</div>
+
 <div class="toast-container" id="toast-container"></div>
 
 <script>
@@ -1810,6 +1793,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app').classList.add('visible');
     initCharts();
+    animateDashboard();
     loadDashboardData();
   }
 });
@@ -1858,6 +1842,7 @@ async function doLogin() {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app').classList.add('visible');
     initCharts();
+    animateDashboard();
     loadDashboardData();
     showToast('Welcome back, ' + user.name.split(' ').pop() + '!', 'success');
   }, 300);
@@ -1866,10 +1851,10 @@ async function doLogin() {
 // NAV
 function navigateTo(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.top-nav-btn').forEach(n => n.classList.remove('active'));
   const el = document.getElementById('page-' + page);
   if (el) el.classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => {
+  document.querySelectorAll('.top-nav-btn').forEach(n => {
     if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + page + "'")) n.classList.add('active');
   });
   if (page === 'analytics') setTimeout(initAnalyticsCharts, 100);
@@ -2055,6 +2040,50 @@ async function loadPatients() {
     tbody.innerHTML = rows + demoRows;
   } catch (e) {
     // Silently fail — keep demo data visible
+  }
+}
+
+// DETAIL PANEL
+function openDetailPanel(title, content) {
+  document.getElementById('detail-panel-title').textContent = title;
+  document.getElementById('detail-panel-body').innerHTML = content;
+  document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('detail-overlay').classList.add('open');
+}
+function closeDetailPanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('detail-overlay').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetailPanel(); });
+
+// COUNT-UP ANIMATION
+function animateCountUp(el, target, duration, prefix, suffix) {
+  prefix = prefix || '';
+  suffix = suffix || '';
+  const start = 0;
+  const startTime = performance.now();
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + (target - start) * eased);
+    el.textContent = prefix + current + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+function animateDashboard() {
+  // Animate health score dial
+  const ring = document.getElementById('health-hero-ring');
+  const numEl = document.getElementById('health-hero-num');
+  if (ring && numEl) {
+    const targetScore = 85;
+    const circumference = 527.8;
+    const targetOffset = circumference - (circumference * targetScore / 100);
+    ring.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)';
+    setTimeout(() => { ring.setAttribute('stroke-dashoffset', targetOffset); }, 50);
+    animateCountUp(numEl, targetScore, 1200, '', '');
   }
 }
 
