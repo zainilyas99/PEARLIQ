@@ -361,7 +361,7 @@ tbody tr:last-child td { border-bottom: none; }
 .priority-action-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 
 /* DETAIL PANEL */
-.detail-panel { position: fixed; top: 0; right: -420px; width: 420px; height: 100vh; background: #FFFFFF; box-shadow: -4px 0 24px rgba(0,0,0,0.08); transition: right 0.3s ease; z-index: 300; overflow-y: auto; }
+.detail-panel { position: fixed; top: 110px; right: -420px; width: 420px; height: calc(100vh - 110px); background: #FFFFFF; box-shadow: -4px 0 24px rgba(0,0,0,0.08); transition: right 0.3s ease; z-index: 300; overflow-y: auto; }
 .detail-panel.open { right: 0; }
 .detail-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid var(--border); }
 .detail-panel-title { font-family: 'Fraunces', serif; font-size: 18px; color: var(--cream); }
@@ -1850,6 +1850,7 @@ async function doLogin() {
 
 // NAV
 function navigateTo(page) {
+  closeDetailPanel();
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.top-nav-btn').forEach(n => n.classList.remove('active'));
   const el = document.getElementById('page-' + page);
