@@ -900,7 +900,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
             <div class="tp-card-footer">
               <span style="font-size:10px;color:var(--rose);font-weight:500;">42 days without booking</span>
-              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showToast('Sending Day 7 finance offer...','success')">Send Day 7</button>
+              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();sendTreatmentFollowUp('James Thompson','james@example.com','Dental Implant',3200,7)">Send Day 7</button>
             </div>
           </div>
 
@@ -929,7 +929,7 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
             <div class="tp-card-footer">
               <span style="font-size:10px;color:var(--rose);font-weight:500;">38 days without booking</span>
-              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();showToast('Sending Day 3 SMS...','success')">Send Day 3</button>
+              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();sendTreatmentFollowUp('Emma Davies','emma@example.com','Invisalign Full',4800,3)">Send Day 3</button>
             </div>
           </div>
 
@@ -1825,6 +1825,45 @@ pearliqDB.auth.onAuthStateChange((event, session) => {
   }
 });
 
+// EMAIL FUNCTIONS
+async function sendEmail(to, subject, html) {
+  try {
+    const { data: { session } } = await pearliqDB.auth.getSession();
+    if (!session) return;
+    const res = await fetch('https://zgxezpzfdzvbefqiilop.supabase.co/functions/v1/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body: JSON.stringify({ to: to, subject: subject, html: html, from_name: 'PEARLIQ' })
+    });
+    const data = await res.json();
+    if (res.ok) { showToast('Email sent successfully', 'success'); }
+    else { showToast('Email failed: ' + (data.error || 'Unknown error'), 'error'); }
+    return data;
+  } catch(e) { showToast('Email error: ' + e.message, 'error'); }
+}
+
+async function sendTreatmentFollowUp(patientName, patientEmail, treatmentType, value, dayNumber) {
+  var subjects = {
+    1: 'Your ' + treatmentType + ' treatment plan from Palmer Dental',
+    3: 'Have you had a chance to think about your ' + treatmentType + '?',
+    7: 'Flexible payment options for your ' + treatmentType,
+    14: 'We\'d love to help you with your ' + treatmentType,
+    30: 'Final follow-up regarding your ' + treatmentType + ' treatment'
+  };
+  var subject = subjects[dayNumber] || 'Following up on your ' + treatmentType + ' treatment';
+  var financeBlock = dayNumber === 7 ? '<div style="background:#F5F3EF;border-left:3px solid #1A3D2E;padding:16px 20px;margin-bottom:20px;"><p style="color:#1A3D2E;font-weight:600;margin:0 0 8px;">Flexible Payment Options Available</p><p style="color:#4A4A4A;font-size:13px;margin:0;">We offer 0% finance over 6-24 months, making your treatment more affordable. Ask us about our payment plans.</p></div>' : '';
+  var html = '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#F5F3EF;padding:40px 20px;">' +
+    '<div style="background:#1A3D2E;padding:24px 32px;margin-bottom:0;"><h1 style="color:white;font-size:22px;margin:0;letter-spacing:0.06em;">PEARLIQ</h1><p style="color:rgba(255,255,255,0.7);font-size:12px;margin:4px 0 0;">Dental Practice Intelligence</p></div>' +
+    '<div style="background:white;padding:40px 32px;border-left:1px solid #E8E4DE;border-right:1px solid #E8E4DE;">' +
+    '<p style="color:#1C1C1C;font-size:16px;margin-bottom:16px;">Dear ' + patientName + ',</p>' +
+    '<p style="color:#4A4A4A;font-size:14px;line-height:1.8;margin-bottom:20px;">Thank you for visiting us. We wanted to follow up on the <strong>' + treatmentType + '</strong> treatment plan we discussed with you, valued at <strong>\u00A3' + parseInt(value).toLocaleString() + '</strong>.</p>' +
+    financeBlock +
+    '<p style="color:#4A4A4A;font-size:14px;line-height:1.8;margin-bottom:28px;">We\'re here to answer any questions you may have. Please don\'t hesitate to get in touch or book a consultation.</p>' +
+    '<a href="mailto:hello@palmerdental.co.uk" style="background:#1A3D2E;color:white;padding:14px 28px;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:0.08em;display:inline-block;">GET IN TOUCH</a></div>' +
+    '<div style="background:#E8E4DE;padding:20px 32px;"><p style="color:#8A8A8A;font-size:11px;margin:0;">This email was sent by your dental practice via PEARLIQ. To unsubscribe, reply with STOP.</p></div></div>';
+  await sendEmail(patientEmail, subject, html);
+}
+
 // AUTH
 let currentRole = 'admin';
 
@@ -2019,6 +2058,13 @@ async function saveTreatmentPlan() {
   if (error) { showToast('Error: ' + error.message, 'error'); return; }
   closeModal('new-plan-modal');
   showToast('Treatment plan created. Follow-up sequence started.', 'success');
+  // Send Day 1 welcome email if patient has email on file
+  try {
+    var patRes = await pearliqDB.from('patients').select('email').eq('name', patientName).limit(1).single();
+    if (patRes.data && patRes.data.email) {
+      sendTreatmentFollowUp(patientName, patRes.data.email, treatment, value, 1);
+    }
+  } catch(e) {}
   document.getElementById('plan-patient').value = '';
   document.getElementById('plan-treatment').selectedIndex = 0;
   document.getElementById('plan-value').value = '';
