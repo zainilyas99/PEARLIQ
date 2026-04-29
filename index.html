@@ -42,6 +42,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Figtree', sans-serif; font-size: 14px; line-height: 1.6; overflow: hidden; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -471,6 +472,11 @@ tbody tr:last-child td { border-bottom: none; }
   .charts-row { grid-template-columns: 1fr; }
   .security-grid { grid-template-columns: 1fr; }
 }
+@media (max-width: 768px) {
+  .landing-nav-links { display: none !important; }
+  .landing-nav-links.open { display: flex !important; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: rgba(245,243,239,0.98); padding: 20px 40px; gap: 16px; border-bottom: 1px solid #E8E4DE; }
+  #nav-hamburger { display: block !important; }
+}
 
 /* DARK MODE */
 body.dark-mode { --bg: #0a0e0f; --bg-2: #10161a; --bg-3: #162024; --bg-4: #1e2c32; --bg-5: #263640; --cream: #e8f4f0; --text: #7a9a94; --text-dim: #4a6660; --text-bright: #b8d4ce; --border: rgba(255,255,255,0.06); --green: #4ecba8; --green-light: #7ddbc4; --green-dim: rgba(78,203,168,0.12); --green-glow: rgba(78,203,168,0.08); --border-green: rgba(78,203,168,0.15); --emerald: #4ecba8; --emerald-dim: rgba(78,203,168,0.12); --rose: #f07068; --rose-dim: rgba(240,112,104,0.12); --amber: #e0a830; --amber-dim: rgba(224,168,48,0.12); }
@@ -508,7 +514,8 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
       <div style="width:32px;height:32px;background:#1A3D2E;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
       <span style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;letter-spacing:0.04em;">PEARLIQ</span>
     </div>
-    <div style="display:flex;align-items:center;gap:24px;">
+    <button id="nav-hamburger" onclick="document.querySelector('.landing-nav-links').classList.toggle('open')" style="display:none;background:transparent;border:none;cursor:pointer;padding:4px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1C1C" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <div class="landing-nav-links" style="display:flex;align-items:center;gap:24px;">
       <a href="#features" style="font-size:13px;color:#4A4A4A;text-decoration:none;">Features</a>
       <a href="#stats" style="font-size:13px;color:#4A4A4A;text-decoration:none;">The Opportunity</a>
       <a href="#pricing" style="font-size:13px;color:#4A4A4A;text-decoration:none;">Pricing</a>
@@ -612,7 +619,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
   <footer style="padding:40px;background:#1C1C1C;text-align:center;">
     <div style="font-family:'Fraunces',serif;font-size:18px;color:white;margin-bottom:8px;">PEARLIQ</div>
     <div style="font-size:12px;color:#8A8A8A;margin-bottom:16px;">Dental Practice Intelligence · Built for UK Practices · GDPR Compliant · ICO Registered</div>
-    <div style="display:flex;justify-content:center;gap:24px;margin-bottom:16px;"><a href="#" style="font-size:11px;color:#555;text-decoration:none;">Privacy Policy</a><a href="#" style="font-size:11px;color:#555;text-decoration:none;">Terms of Service</a><a href="mailto:hello@pearliq.app" style="font-size:11px;color:#555;text-decoration:none;">hello@pearliq.app</a></div>
+    <div style="display:flex;justify-content:center;gap:24px;margin-bottom:16px;"><a onclick="showPrivacyPolicy()" style="font-size:11px;color:#555;text-decoration:none;cursor:pointer;">Privacy Policy</a><a onclick="showTerms()" style="font-size:11px;color:#555;text-decoration:none;cursor:pointer;">Terms of Service</a><a href="mailto:hello@pearliq.app" style="font-size:11px;color:#555;text-decoration:none;">hello@pearliq.app</a></div>
     <div style="font-size:11px;color:#444;">&copy; 2026 PEARLIQ · pearliq.app</div>
   </footer>
 </div>
@@ -1912,6 +1919,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('theme-icon-dark').style.display = 'none';
     document.getElementById('theme-icon-light').style.display = 'block';
   }
+  if (document.getElementById('roi-plans')) calculateROI();
   const { data: { session } } = await pearliqDB.auth.getSession();
   if (session) {
     const roleMap = {
@@ -2011,7 +2019,8 @@ async function doSignUp() {
   var { data, error } = await pearliqDB.auth.signUp({ email: email, password: password, options: { data: { practice_name: practice } } });
   if (error) { showToast(error.message, 'error'); return; }
   closeAuthModal();
-  showToast('Account created! Check your email to confirm your account.', 'success');
+  document.getElementById('auth-modal').style.display = 'flex';
+  document.getElementById('auth-modal').querySelector('div').innerHTML = '<div style="text-align:center;padding:48px 32px;"><div style="width:56px;height:56px;background:#E8F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-family:Fraunces,serif;font-size:24px;color:#1C1C1C;margin-bottom:12px;">Check your email</div><div style="font-size:14px;color:#4A4A4A;line-height:1.8;margin-bottom:28px;">We have sent a confirmation link to your email address. Click the link to activate your account and start your 14-day free trial.</div><button onclick="document.getElementById(\'auth-modal\').style.display=\'none\'" style="background:#1A3D2E;color:white;border:none;padding:13px 32px;font-family:Figtree,sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;">Got it</button></div>';
 }
 
 function calculateROI() {
@@ -2026,6 +2035,18 @@ function calculateROI() {
   document.getElementById('roi-with').textContent = '\u00A3' + Math.round(withPearliq).toLocaleString() + '/mo';
   document.getElementById('roi-extra').textContent = '\u00A3' + Math.round(extra).toLocaleString();
   document.getElementById('roi-profit').textContent = 'You keep \u00A3' + Math.round(profit).toLocaleString() + ' in additional profit every month';
+}
+
+function showPrivacyPolicy() {
+  document.getElementById('legal-modal-title').textContent = 'Privacy Policy';
+  document.getElementById('legal-modal-body').innerHTML = '<h3 style="font-family:Fraunces,serif;color:#1C1C1C;margin-bottom:12px;">PEARLIQ Privacy Policy</h3><p style="margin-bottom:12px;">Last updated: April 2026</p><p style="margin-bottom:12px;">PEARLIQ ("we", "us", "our") is committed to protecting the personal data of our users in accordance with the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018.</p><h4 style="color:#1C1C1C;margin:16px 0 8px;">Data We Collect</h4><p style="margin-bottom:12px;">We collect practice information, staff details, and patient data that you input into the platform. This data is stored securely on Supabase servers located in the EU.</p><h4 style="color:#1C1C1C;margin:16px 0 8px;">How We Use Your Data</h4><p style="margin-bottom:12px;">Your data is used solely to provide the PEARLIQ service. We do not sell or share your data with third parties except where required to deliver the service (e.g. Resend for email delivery).</p><h4 style="color:#1C1C1C;margin:16px 0 8px;">Your Rights</h4><p style="margin-bottom:12px;">You have the right to access, correct, or delete your data at any time. Contact us at privacy@pearliq.app to exercise your rights.</p><h4 style="color:#1C1C1C;margin:16px 0 8px;">Contact</h4><p>For any data protection queries contact: privacy@pearliq.app</p>';
+  document.getElementById('legal-modal').style.display = 'flex';
+}
+
+function showTerms() {
+  document.getElementById('legal-modal-title').textContent = 'Terms of Service';
+  document.getElementById('legal-modal-body').innerHTML = '<h3 style="font-family:Fraunces,serif;color:#1C1C1C;margin-bottom:12px;">PEARLIQ Terms of Service</h3><p style="margin-bottom:12px;">Last updated: April 2026</p><p style="margin-bottom:12px;">By using PEARLIQ you agree to these terms. PEARLIQ is a dental practice intelligence platform provided by PEARLIQ Ltd.</p><h4 style="color:#1C1C1C;margin:16px 0 8px;">Subscription</h4><p style="margin-bottom:12px;">PEARLIQ is available for \u00A31,497 per practice per month following a 14-day free trial. Payment is collected monthly via Stripe. You may cancel at any time before your next billing date.</p><h4 style="color:#1C1C1C;margin:16px 0 8px;">Data</h4><p style="margin-bottom:12px;">You retain ownership of all data you input into PEARLIQ. Upon cancellation your data will be retained for 30 days then permanently deleted unless you request otherwise.</p><h4 style="color:#1C1C1C;margin:16px 0 8px;">Acceptable Use</h4><p style="margin-bottom:12px;">PEARLIQ may only be used for lawful dental practice management purposes. You are responsible for ensuring your use complies with GDC, CQC and ICO requirements.</p><h4 style="color:#1C1C1C;margin:16px 0 8px;">Contact</h4><p>For any queries contact: hello@pearliq.app</p>';
+  document.getElementById('legal-modal').style.display = 'flex';
 }
 
 // AUTH
@@ -2060,6 +2081,7 @@ async function doLogin() {
   closeAuthModal();
   setTimeout(() => {
     document.getElementById('landing-page').style.display = 'none';
+    document.getElementById('auth-modal').style.display = 'none';
     document.getElementById('app').classList.add('visible');
     initCharts();
     animateDashboard();
@@ -2656,6 +2678,16 @@ function initForecastChart() {
     <button class="detail-panel-close" onclick="closeDetailPanel()">&#10005;</button>
   </div>
   <div class="detail-panel-body" id="detail-panel-body"></div>
+</div>
+<!-- LEGAL MODAL -->
+<div id="legal-modal" style="position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;">
+  <div style="background:white;width:560px;max-height:80vh;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">
+    <div style="background:#1A3D2E;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;">
+      <div id="legal-modal-title" style="font-family:'Fraunces',serif;font-size:18px;color:white;">Privacy Policy</div>
+      <button onclick="document.getElementById('legal-modal').style.display='none'" style="background:transparent;border:none;color:white;font-size:18px;cursor:pointer;">&#10005;</button>
+    </div>
+    <div id="legal-modal-body" style="padding:28px;overflow-y:auto;font-size:13px;color:#4A4A4A;line-height:1.8;"></div>
+  </div>
 </div>
 </body>
 </html>
