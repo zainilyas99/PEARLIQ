@@ -1118,24 +1118,29 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
 
       <!-- FINANCING -->
       <div class="page" id="page-financing">
-        <div class="page-header">
-          <div><div class="page-eyebrow">Automation · Finance</div><h1 class="page-title">Financing Options</h1><div class="page-subtitle">Embedded financing offers in follow-up sequences</div></div>
+        <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:26px;">
+          <div>
+            <div style="font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:#1A3D2E;margin-bottom:4px;">Treatment · Finance</div>
+            <h1 style="font-family:'Fraunces',serif;font-size:26px;color:var(--cream);line-height:1.2;">Financing Options</h1>
+            <div style="font-size:12px;color:var(--text-dim);margin-top:3px;">Define your practice financing options — these are shown to patients in follow-up sequences</div>
+          </div>
+          <button onclick="openModal('financing-modal')" style="display:inline-flex;align-items:center;gap:7px;padding:8px 15px;background:#1A3D2E;color:white;border:none;border-radius:6px;font-family:'Figtree',sans-serif;font-size:12px;font-weight:500;cursor:pointer;">+ Add Option</button>
         </div>
-        <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Finance Applications</div></div><div class="kpi-value">12</div><div class="kpi-delta up">+8 approved this month</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Finance Converted</div></div><div class="kpi-value">&pound;18K</div><div class="kpi-delta up">+Revenue via finance</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Finance Amount</div></div><div class="kpi-value">&pound;2,200</div><div class="kpi-delta neutral">Avg per application</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Approval Rate</div></div><div class="kpi-value">67%</div><div class="kpi-delta up">+Via Chrysalis Finance</div></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;">
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+            <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Active Options</div>
+            <div id="fin-count" style="font-family:'Fraunces',serif;font-size:30px;color:var(--cream);">0</div>
+          </div>
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+            <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Max Treatment Value</div>
+            <div id="fin-max" style="font-family:'Fraunces',serif;font-size:30px;color:var(--cream);">&pound;0</div>
+          </div>
+          <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
+            <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Lowest Interest Rate</div>
+            <div id="fin-rate" style="font-family:'Fraunces',serif;font-size:30px;color:var(--green);">0%</div>
+          </div>
         </div>
-        <div class="data-table-wrap">
-          <div class="table-header"><div class="table-title">Finance Applications</div></div>
-          <table><thead><tr><th>Patient</th><th>Treatment</th><th>Amount</th><th>Term</th><th>Provider</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td style="color:var(--cream);">James Thompson</td><td>Dental Implant</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;3,200</td><td>12 months 0%</td><td>Chrysalis Finance</td><td><span class="badge badge-good">Approved</span></td></tr>
-            <tr><td style="color:var(--cream);">Emma Davies</td><td>Invisalign</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;4,800</td><td>18 months 0%</td><td>Chrysalis Finance</td><td><span class="badge badge-amber">Pending</span></td></tr>
-            <tr><td style="color:var(--cream);">Robert Chen</td><td>Veneers x6</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;5,400</td><td>24 months 0%</td><td>Chrysalis Finance</td><td><span class="badge badge-amber">Applied</span></td></tr>
-          </tbody></table>
-        </div>
+        <div id="financing-options-list"></div>
       </div>
 
       <!-- REVIEWS -->
@@ -1801,6 +1806,31 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
   </div>
 </div>
 
+<div class="modal-overlay" id="financing-modal">
+  <div class="modal" style="width:560px;">
+    <div class="modal-header">
+      <div class="modal-title">Add Financing Option</div>
+      <button class="modal-close" onclick="closeModal('financing-modal')">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-group" style="grid-column:span 2;"><label class="form-label">Option Name</label><input class="form-input" id="fin-name" placeholder="e.g. 0% Interest Free Credit"></div>
+        <div class="form-group" style="grid-column:span 2;"><label class="form-label">Description</label><input class="form-input" id="fin-description" placeholder="e.g. Spread the cost with no interest charges"></div>
+        <div class="form-group"><label class="form-label">Maximum Treatment Amount</label><input class="form-input" id="fin-max-amount" placeholder="5000"></div>
+        <div class="form-group"><label class="form-label">Interest Rate (%)</label><input class="form-input" id="fin-interest-rate" placeholder="0" type="number" min="0" step="0.1"></div>
+        <div class="form-group"><label class="form-label">Minimum Term (months)</label><input class="form-input" id="fin-min-term" placeholder="6" type="number" min="1"></div>
+        <div class="form-group"><label class="form-label">Maximum Term (months)</label><input class="form-input" id="fin-max-term" placeholder="24" type="number" min="1"></div>
+        <div class="form-group" style="grid-column:span 2;"><label class="form-label">Applicable Treatment Types (comma separated)</label><input class="form-input" id="fin-treatment-types" placeholder="e.g. Implants, Invisalign, Veneers, All Treatments"></div>
+      </div>
+      <div style="background:var(--green-glow);border:1px solid var(--border-green);border-radius:4px;padding:10px 14px;margin-top:8px;font-size:11px;color:var(--green);">This financing option will automatically be included in Day 7 treatment follow-up emails for the applicable treatment types.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('financing-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFinancingOption()">Save Option</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast-container" id="toast-container"></div>
 
 <script>
@@ -1953,6 +1983,7 @@ function navigateTo(page) {
   if (page === 'ai-insights') setTimeout(initConfidenceChart, 100);
   if (page === 'revenue-forecast') setTimeout(initForecastChart, 100);
   if (page === 'patients') loadPatients();
+  if (page === 'financing') loadFinancingOptions();
   document.getElementById('main-content').scrollTop = 0;
   closeNotif();
   window.history.pushState({ page: page }, '', '#' + page);
@@ -2047,6 +2078,83 @@ document.addEventListener('click', function(e) { if (!e.target.closest('.header-
 function settingsNav(el) {
   el.closest('.settings-nav').querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
   el.classList.add('active');
+}
+
+// REQUIRED SQL: create table if not exists financing_options (id uuid default gen_random_uuid() primary key, name text not null, description text, max_amount numeric, interest_rate numeric default 0, min_term integer default 6, max_term integer default 24, treatment_types text, created_at timestamp default now());
+
+// FINANCING OPTIONS
+async function loadFinancingOptions() {
+  var { data, error } = await pearliqDB.from('financing_options').select('*').order('created_at', { ascending: false });
+  if (error) { showToast('Could not load financing options', 'error'); return; }
+  var options = data || [];
+  renderFinancingOptions(options);
+  var countEl = document.getElementById('fin-count');
+  var maxEl = document.getElementById('fin-max');
+  var rateEl = document.getElementById('fin-rate');
+  if (countEl) countEl.textContent = options.length;
+  if (maxEl && options.length > 0) {
+    var maxVal = Math.max.apply(null, options.map(function(o) { return o.max_amount || 0; }));
+    maxEl.textContent = '\u00A3' + maxVal.toLocaleString();
+  }
+  if (rateEl && options.length > 0) {
+    var minRate = Math.min.apply(null, options.map(function(o) { return o.interest_rate || 0; }));
+    rateEl.textContent = minRate + '%';
+  }
+}
+
+function renderFinancingOptions(options) {
+  var container = document.getElementById('financing-options-list');
+  if (!container) return;
+  if (options.length === 0) {
+    container.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-dim);font-size:13px;">No financing options added yet. Click + Add Option to create your first one.</div>';
+    return;
+  }
+  container.innerHTML = options.map(function(opt) {
+    var treatments = opt.treatment_types ? opt.treatment_types.split(',').map(function(t) { return '<span style="font-size:11px;background:var(--green-glow);color:var(--green);padding:3px 10px;border-radius:20px;">' + t.trim() + '</span>'; }).join('') : '';
+    return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:20px 24px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 4px rgba(0,0,0,0.04);">' +
+      '<div style="flex:1;">' +
+      '<div style="font-family:Fraunces,serif;font-size:18px;color:var(--cream);margin-bottom:4px;">' + opt.name + '</div>' +
+      '<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">' + (opt.description || '') + '</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+      '<span style="font-size:11px;background:var(--emerald-dim);color:var(--green);padding:3px 10px;border-radius:20px;">Up to \u00A3' + parseInt(opt.max_amount || 0).toLocaleString() + '</span>' +
+      '<span style="font-size:11px;background:var(--bg-3);color:var(--text);padding:3px 10px;border-radius:20px;">' + (opt.interest_rate === 0 ? '0% Interest' : opt.interest_rate + '% APR') + '</span>' +
+      '<span style="font-size:11px;background:var(--bg-3);color:var(--text);padding:3px 10px;border-radius:20px;">' + (opt.min_term || 6) + '-' + (opt.max_term || 24) + ' months</span>' +
+      treatments +
+      '</div></div>' +
+      '<div style="margin-left:16px;flex-shrink:0;"><button onclick="deleteFinancingOption(\'' + opt.id + '\')" style="padding:6px 12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);border-radius:4px;cursor:pointer;font-size:11px;font-family:Figtree,sans-serif;">Delete</button></div></div>';
+  }).join('');
+}
+
+async function saveFinancingOption() {
+  var name = document.getElementById('fin-name').value.trim();
+  var description = document.getElementById('fin-description').value.trim();
+  var max_amount = parseFloat(document.getElementById('fin-max-amount').value.replace(/[£,]/g, '')) || null;
+  var interest_rate = parseFloat(document.getElementById('fin-interest-rate').value) || 0;
+  var min_term = parseInt(document.getElementById('fin-min-term').value) || 6;
+  var max_term = parseInt(document.getElementById('fin-max-term').value) || 24;
+  var treatment_types = document.getElementById('fin-treatment-types').value.trim();
+  if (!name) { showToast('Please enter a name for this financing option', 'error'); return; }
+  if (!max_amount) { showToast('Please enter a maximum treatment amount', 'error'); return; }
+  var { error } = await pearliqDB.from('financing_options').insert([{ name: name, description: description, max_amount: max_amount, interest_rate: interest_rate, min_term: min_term, max_term: max_term, treatment_types: treatment_types }]);
+  if (error) { showToast('Error saving: ' + error.message, 'error'); return; }
+  closeModal('financing-modal');
+  showToast('Financing option added', 'success');
+  document.getElementById('fin-name').value = '';
+  document.getElementById('fin-description').value = '';
+  document.getElementById('fin-max-amount').value = '';
+  document.getElementById('fin-interest-rate').value = '';
+  document.getElementById('fin-min-term').value = '';
+  document.getElementById('fin-max-term').value = '';
+  document.getElementById('fin-treatment-types').value = '';
+  loadFinancingOptions();
+}
+
+async function deleteFinancingOption(id) {
+  if (!confirm('Delete this financing option?')) return;
+  var { error } = await pearliqDB.from('financing_options').delete().eq('id', id);
+  if (error) { showToast('Error deleting', 'error'); return; }
+  showToast('Deleted', 'success');
+  loadFinancingOptions();
 }
 
 // SAVE FUNCTIONS
