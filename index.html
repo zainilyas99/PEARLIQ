@@ -2112,10 +2112,11 @@ async function doLogin() {
     document.getElementById('landing-page').style.display = 'none';
     document.getElementById('auth-modal').style.display = 'none';
     document.getElementById('app').classList.add('visible');
+    document.getElementById('main-content').scrollTop = 0;
+    window.scrollTo(0, 0);
     initCharts();
     animateDashboard();
     loadDashboardData();
-    window.scrollTo(0, 0);
     showToast('Welcome back, ' + user.name.split(' ').pop() + '!', 'success');
   }, 300);
 }
