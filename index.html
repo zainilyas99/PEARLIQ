@@ -475,6 +475,7 @@ tbody tr:last-child td { border-bottom: none; }
 section[id] { scroll-margin-top: 80px; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding-top: 80px; box-sizing: border-box; }
 section[id] > div { width: 100%; }
 .landing-section-divider { clear: both; display: block; height: 0; overflow: hidden; }
+#landing-page section { display: block; width: 100%; box-sizing: border-box; position: relative; z-index: 1; }
 #landing-page section [style*="display:grid"] { max-width: 100%; }
 .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -518,7 +519,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
 <body>
 
 <!-- LANDING PAGE -->
-<div id="landing-page" style="min-height:100vh;background:#F5F3EF;overflow-y:auto;overflow-x:hidden;">
+<div id="landing-page" style="min-height:100vh;background:#F5F3EF;overflow-y:auto;overflow-x:hidden;display:block;width:100%;">
   <nav style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,243,239,0.95);backdrop-filter:blur(8px);border-bottom:1px solid #E8E4DE;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;">
     <div style="display:flex;align-items:center;gap:10px;">
       <div style="width:32px;height:32px;background:#1A3D2E;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
@@ -526,15 +527,16 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
     </div>
     <button id="nav-hamburger" onclick="document.querySelector('.landing-nav-links').classList.toggle('open')" style="display:none;background:transparent;border:none;cursor:pointer;padding:4px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1C1C" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <div class="landing-nav-links" style="display:flex;align-items:center;gap:24px;">
-      <a href="#features" style="font-size:13px;color:#4A4A4A;text-decoration:none;">Features</a>
-      <a href="#stats" style="font-size:13px;color:#4A4A4A;text-decoration:none;">The Opportunity</a>
-      <a href="#pricing" style="font-size:13px;color:#4A4A4A;text-decoration:none;">Pricing</a>
-      <a href="#roi" style="font-size:13px;color:#4A4A4A;text-decoration:none;">ROI Calculator</a>
+      <a href="#features" onclick="setTimeout(()=>document.querySelectorAll('#features .reveal').forEach(el=>el.classList.add('visible')),300)" style="font-size:13px;color:#4A4A4A;text-decoration:none;">Features</a>
+      <a href="#stats" onclick="setTimeout(()=>document.querySelectorAll('#stats .reveal').forEach(el=>el.classList.add('visible')),300)" style="font-size:13px;color:#4A4A4A;text-decoration:none;">The Opportunity</a>
+      <a href="#pricing" onclick="setTimeout(()=>document.querySelectorAll('#pricing .reveal').forEach(el=>el.classList.add('visible')),300)" style="font-size:13px;color:#4A4A4A;text-decoration:none;">Pricing</a>
+      <a href="#roi" onclick="setTimeout(()=>document.querySelectorAll('#roi .reveal').forEach(el=>el.classList.add('visible')),300)" style="font-size:13px;color:#4A4A4A;text-decoration:none;">ROI Calculator</a>
       <button onclick="showSignIn()" style="font-size:13px;color:#1A3D2E;background:transparent;border:none;cursor:pointer;font-family:'Figtree',sans-serif;font-weight:500;">Sign In</button>
       <button onclick="showSignUp()" style="background:#1A3D2E;color:white;border:none;padding:9px 20px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border-radius:4px;">Start Free Trial</button>
     </div>
   </nav>
-  <section style="padding:140px 40px 80px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;background:#F5F3EF;overflow:hidden;">
+  <section style="padding:140px 40px 80px;background:#F5F3EF;display:block;width:100%;box-sizing:border-box;overflow:hidden;position:relative;z-index:1;">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
     <div class="reveal">
       <div style="display:inline-flex;align-items:center;gap:8px;background:#E8F5EE;border:1px solid #C8E6D4;padding:6px 14px;border-radius:20px;margin-bottom:24px;"><div style="width:6px;height:6px;border-radius:50%;background:#1A3D2E;"></div><span style="font-size:11px;color:#1A3D2E;font-weight:500;letter-spacing:0.06em;">BUILT FOR UK DENTAL PRACTICES</span></div>
       <h1 style="font-family:'Fraunces',serif;font-size:52px;line-height:1.1;color:#1C1C1C;margin-bottom:20px;">The revenue intelligence platform for <em style="color:#1A3D2E;">UK dental practices</em></h1>
@@ -559,8 +561,9 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
         <div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#4A4A4A;">Rota Coverage</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:4px;background:#E8E4DE;border-radius:2px;overflow:hidden;"><div style="width:88%;height:100%;background:#1A3D2E;border-radius:2px;"></div></div><span style="font-size:12px;color:#1A3D2E;font-weight:500;">88%</span></div></div>
       </div>
     </div>
+    </div>
   </section>
-  <section id="stats" style="padding:80px 40px;background:#1A3D2E;overflow:hidden;">
+  <section id="stats" style="padding:80px 40px;background:#1A3D2E;display:block;width:100%;box-sizing:border-box;overflow:hidden;position:relative;z-index:1;">
     <div class="reveal" style="max-width:1100px;margin:0 auto;">
       <div style="text-align:center;margin-bottom:48px;"><div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:12px;">THE OPPORTUNITY</div><h2 style="font-family:'Fraunces',serif;font-size:36px;color:white;margin-bottom:16px;">The UK dental market is booming — but most practices aren't capturing it</h2></div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
@@ -571,7 +574,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
       </div>
     </div>
   </section>
-  <section id="features" style="padding:80px 40px;background:white;border-top:1px solid #E8E4DE;border-bottom:1px solid #E8E4DE;overflow:hidden;">
+  <section id="features" style="padding:80px 40px;background:white;border-top:1px solid #E8E4DE;border-bottom:1px solid #E8E4DE;display:block;width:100%;box-sizing:border-box;overflow:hidden;position:relative;z-index:1;">
     <div style="max-width:1100px;margin:0 auto;">
       <div style="text-align:center;margin-bottom:56px;"><div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1A3D2E;margin-bottom:12px;">WHAT PEARLIQ DOES</div><h2 style="font-family:'Fraunces',serif;font-size:36px;color:#1C1C1C;margin-bottom:16px;">Three problems. One platform. Zero manual work.</h2><p style="font-size:15px;color:#4A4A4A;max-width:540px;margin:0 auto;line-height:1.8;">Every UK dental practice loses revenue through the same three gaps. PEARLIQ closes all of them automatically.</p></div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
@@ -581,7 +584,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
       </div>
     </div>
   </section>
-  <section id="roi" style="padding:80px 40px;max-width:1100px;margin:0 auto;background:#F5F3EF;overflow:hidden;">
+  <section id="roi" style="padding:80px 40px;background:#F5F3EF;display:block;width:100%;box-sizing:border-box;overflow:hidden;position:relative;z-index:1;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
       <div class="reveal">
         <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1A3D2E;margin-bottom:12px;">ROI CALCULATOR</div>
@@ -602,12 +605,12 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
       </div>
     </div>
   </section>
-  <section id="pricing" style="padding:0px 40px;background:white;border-top:1px solid #E8E4DE;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:100vh;box-sizing:border-box;">
+  <section id="pricing" style="padding:80px 40px;background:white;border-top:1px solid #E8E4DE;display:block;width:100%;box-sizing:border-box;overflow:visible;position:relative;z-index:1;">
     <div style="max-width:600px;margin:0 auto;text-align:center;">
       <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1A3D2E;margin-bottom:12px;">SIMPLE PRICING</div>
       <h2 style="font-family:'Fraunces',serif;font-size:36px;color:#1C1C1C;margin-bottom:16px;">One price. Everything included.</h2>
       <p style="font-size:14px;color:#4A4A4A;line-height:1.8;margin-bottom:40px;">No tiers, no add-ons, no surprises. Every feature included for every practice.</p>
-      <div class="reveal" style="background:#F5F3EF;border:2px solid #1A3D2E;border-radius:12px;padding:24px;">
+      <div class="reveal" style="background:#F5F3EF;border:2px solid #1A3D2E;border-radius:12px;padding:24px;height:auto;overflow:visible;">
         <div style="font-family:'Fraunces',serif;font-size:56px;color:#1C1C1C;line-height:1;">&pound;1,497</div>
         <div style="font-size:14px;color:#8A8A8A;margin-bottom:8px;">per practice per month</div>
         <div style="font-size:12px;color:#1A3D2E;font-weight:500;margin-bottom:32px;">Average ROI: &pound;6,000+ additional revenue per month</div>
