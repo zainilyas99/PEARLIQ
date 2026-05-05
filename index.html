@@ -472,22 +472,7 @@ tbody tr:last-child td { border-bottom: none; }
   .charts-row { grid-template-columns: 1fr; }
   .security-grid { grid-template-columns: 1fr; }
 }
-section[id] { scroll-margin-top: 80px; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding-top: 80px; box-sizing: border-box; }
-section[id] > div { width: 100%; }
-.landing-section-divider { clear: both; display: block; height: 0; overflow: hidden; }
-#landing-page section { display: block; width: 100%; box-sizing: border-box; position: relative; z-index: 1; }
-#landing-page section [style*="display:grid"] { max-width: 100%; }
-.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-
-@media (max-width: 768px) {
-  .landing-nav-links { display: none !important; }
-  .landing-nav-links.open { display: flex !important; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: rgba(245,243,239,0.98); padding: 20px 40px; gap: 16px; border-bottom: 1px solid #E8E4DE; }
-  #nav-hamburger { display: block !important; }
-}
+#opportunity, #features, #roi, #pricing { scroll-margin-top: 80px; }
 
 /* DARK MODE */
 body.dark-mode { --bg: #0a0e0f; --bg-2: #10161a; --bg-3: #162024; --bg-4: #1e2c32; --bg-5: #263640; --cream: #e8f4f0; --text: #7a9a94; --text-dim: #4a6660; --text-bright: #b8d4ce; --border: rgba(255,255,255,0.06); --green: #4ecba8; --green-light: #7ddbc4; --green-dim: rgba(78,203,168,0.12); --green-glow: rgba(78,203,168,0.08); --border-green: rgba(78,203,168,0.15); --emerald: #4ecba8; --emerald-dim: rgba(78,203,168,0.12); --rose: #f07068; --rose-dim: rgba(240,112,104,0.12); --amber: #e0a830; --amber-dim: rgba(224,168,48,0.12); }
@@ -520,121 +505,219 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
 
 <!-- LANDING PAGE -->
 <div id="landing-page" style="min-height:100vh;background:#F5F3EF;overflow-y:auto;overflow-x:hidden;display:block;width:100%;">
-  <nav style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,243,239,0.95);backdrop-filter:blur(8px);border-bottom:1px solid #E8E4DE;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:32px;height:32px;background:#1A3D2E;border-radius:6px;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-      <span style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;letter-spacing:0.04em;">PEARLIQ</span>
+<!-- NAV -->
+<nav style="position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(245,243,239,0.97);backdrop-filter:blur(12px);border-bottom:1px solid #E8E4DE;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 60px;box-sizing:border-box;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="width:34px;height:34px;background:#1A3D2E;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
     </div>
-    <button id="nav-hamburger" onclick="document.querySelector('.landing-nav-links').classList.toggle('open')" style="display:none;background:transparent;border:none;cursor:pointer;padding:4px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1C1C" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-    <div class="landing-nav-links" style="display:flex;align-items:center;gap:24px;">
-      <a href="#features" onclick="setTimeout(()=>document.querySelectorAll('#features .reveal').forEach(el=>el.classList.add('visible')),300)" style="font-size:13px;color:#4A4A4A;text-decoration:none;">Features</a>
-      <a href="#stats" onclick="setTimeout(()=>document.querySelectorAll('#stats .reveal').forEach(el=>el.classList.add('visible')),300)" style="font-size:13px;color:#4A4A4A;text-decoration:none;">The Opportunity</a>
-      <a href="#pricing" onclick="setTimeout(()=>document.querySelectorAll('#pricing .reveal').forEach(el=>el.classList.add('visible')),300)" style="font-size:13px;color:#4A4A4A;text-decoration:none;">Pricing</a>
-      <a href="#roi" onclick="setTimeout(()=>document.querySelectorAll('#roi .reveal').forEach(el=>el.classList.add('visible')),300)" style="font-size:13px;color:#4A4A4A;text-decoration:none;">ROI Calculator</a>
-      <button onclick="showSignIn()" style="font-size:13px;color:#1A3D2E;background:transparent;border:none;cursor:pointer;font-family:'Figtree',sans-serif;font-weight:500;">Sign In</button>
-      <button onclick="showSignUp()" style="background:#1A3D2E;color:white;border:none;padding:9px 20px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border-radius:4px;">Start Free Trial</button>
-    </div>
-  </nav>
-  <section style="padding:140px 40px 80px;background:#F5F3EF;display:block;width:100%;box-sizing:border-box;overflow:hidden;position:relative;z-index:1;">
-    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
-    <div class="reveal">
-      <div style="display:inline-flex;align-items:center;gap:8px;background:#E8F5EE;border:1px solid #C8E6D4;padding:6px 14px;border-radius:20px;margin-bottom:24px;"><div style="width:6px;height:6px;border-radius:50%;background:#1A3D2E;"></div><span style="font-size:11px;color:#1A3D2E;font-weight:500;letter-spacing:0.06em;">BUILT FOR UK DENTAL PRACTICES</span></div>
-      <h1 style="font-family:'Fraunces',serif;font-size:52px;line-height:1.1;color:#1C1C1C;margin-bottom:20px;">The revenue intelligence platform for <em style="color:#1A3D2E;">UK dental practices</em></h1>
-      <p style="font-size:16px;color:#4A4A4A;line-height:1.8;margin-bottom:32px;">The UK dental market is worth &pound;10.6 billion and growing. Yet most practices leave significant revenue on the table through missed follow-ups, lost reviews and manual admin. PEARLIQ automates all three — 24 hours a day, 7 days a week.</p>
-      <div style="display:flex;gap:12px;align-items:center;margin-bottom:40px;">
-        <button onclick="showSignUp()" style="background:#1A3D2E;color:white;border:none;padding:14px 32px;font-family:'Figtree',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:4px;">Start 14-Day Free Trial</button>
-        <span style="font-size:12px;color:#8A8A8A;">No card required · Cancel anytime</span>
+    <span style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;letter-spacing:0.04em;">PEARLIQ</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:32px;">
+    <a href="#features" style="font-size:13px;color:#4A4A4A;text-decoration:none;font-family:'Figtree',sans-serif;">Features</a>
+    <a href="#opportunity" style="font-size:13px;color:#4A4A4A;text-decoration:none;font-family:'Figtree',sans-serif;">The Opportunity</a>
+    <a href="#roi" style="font-size:13px;color:#4A4A4A;text-decoration:none;font-family:'Figtree',sans-serif;">ROI Calculator</a>
+    <a href="#pricing" style="font-size:13px;color:#4A4A4A;text-decoration:none;font-family:'Figtree',sans-serif;">Pricing</a>
+    <button onclick="showSignIn()" style="font-size:13px;color:#1A3D2E;background:transparent;border:none;cursor:pointer;font-family:'Figtree',sans-serif;font-weight:600;">Sign In</button>
+    <button onclick="showSignUp()" style="background:#1A3D2E;color:white;border:none;padding:10px 22px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:6px;">Start Free Trial</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section style="padding:160px 60px 100px;background:#F5F3EF;box-sizing:border-box;width:100%;display:block;">
+  <div style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1.1fr 0.9fr;gap:80px;align-items:center;">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#E8F5EE;border:1px solid #C8E6D4;padding:5px 14px;border-radius:20px;margin-bottom:28px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#1A3D2E;flex-shrink:0;"></div>
+        <span style="font-size:11px;color:#1A3D2E;font-weight:600;letter-spacing:0.08em;font-family:'Figtree',sans-serif;">BUILT FOR UK DENTAL PRACTICES</span>
       </div>
-      <div style="display:flex;gap:24px;">
-        <div style="text-align:center;"><div style="font-family:'Fraunces',serif;font-size:28px;color:#1A3D2E;">&pound;10.6B</div><div style="font-size:11px;color:#8A8A8A;">UK dental market 2024</div></div>
-        <div style="width:1px;background:#E8E4DE;"></div>
-        <div style="text-align:center;"><div style="font-family:'Fraunces',serif;font-size:28px;color:#1A3D2E;">12,000+</div><div style="font-size:11px;color:#8A8A8A;">Practices across the UK</div></div>
-        <div style="width:1px;background:#E8E4DE;"></div>
-        <div style="text-align:center;"><div style="font-family:'Fraunces',serif;font-size:28px;color:#1A3D2E;">33%</div><div style="font-size:11px;color:#8A8A8A;">Avg private practice EBITDA</div></div>
+      <h1 style="font-family:'Fraunces',serif;font-size:54px;line-height:1.1;color:#1C1C1C;margin:0 0 22px;">Turn missed treatment plans into <em style="color:#1A3D2E;font-style:italic;">booked revenue</em></h1>
+      <p style="font-size:16px;color:#6B6B6B;line-height:1.8;margin:0 0 36px;font-family:'Figtree',sans-serif;">The UK dental market is worth &pound;10.6 billion and growing at 4.9% per year. Yet most practices lose thousands every month through missed follow-ups and no review strategy. PEARLIQ fixes both — automatically.</p>
+      <div style="display:flex;gap:14px;align-items:center;margin-bottom:48px;">
+        <button onclick="showSignUp()" style="background:#1A3D2E;color:white;border:none;padding:15px 34px;font-family:'Figtree',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:6px;">Start 14-Day Free Trial</button>
+        <span style="font-size:12px;color:#8A8A8A;font-family:'Figtree',sans-serif;">No card required · Cancel anytime</span>
       </div>
-    </div>
-    <div class="reveal reveal-delay-1" style="background:white;border-radius:12px;padding:32px;box-shadow:0 8px 40px rgba(0,0,0,0.08);border:1px solid #E8E4DE;">
-      <div style="text-align:center;margin-bottom:24px;"><div style="position:relative;display:inline-block;"><svg viewBox="0 0 200 200" width="160" height="160"><circle cx="100" cy="100" r="84" fill="none" stroke="#E8E4DE" stroke-width="8"/><circle cx="100" cy="100" r="84" fill="none" stroke="#1A3D2E" stroke-width="8" stroke-linecap="round" stroke-dasharray="527.8" stroke-dashoffset="79" transform="rotate(-90 100 100)"/></svg><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;"><div style="font-family:'Fraunces',serif;font-size:42px;color:#1C1C1C;line-height:1;">85</div><div style="font-size:10px;color:#8A8A8A;">Practice Health</div></div></div></div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#4A4A4A;">Treatment Conversion</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:4px;background:#E8E4DE;border-radius:2px;overflow:hidden;"><div style="width:87%;height:100%;background:#1A3D2E;border-radius:2px;"></div></div><span style="font-size:12px;color:#1A3D2E;font-weight:500;">87%</span></div></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#4A4A4A;">Review Velocity</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:4px;background:#E8E4DE;border-radius:2px;overflow:hidden;"><div style="width:91%;height:100%;background:#1A3D2E;border-radius:2px;"></div></div><span style="font-size:12px;color:#1A3D2E;font-weight:500;">91%</span></div></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#4A4A4A;">Rota Coverage</span><div style="display:flex;align-items:center;gap:8px;"><div style="width:100px;height:4px;background:#E8E4DE;border-radius:2px;overflow:hidden;"><div style="width:88%;height:100%;background:#1A3D2E;border-radius:2px;"></div></div><span style="font-size:12px;color:#1A3D2E;font-weight:500;">88%</span></div></div>
-      </div>
-    </div>
-    </div>
-  </section>
-  <section id="stats" style="padding:80px 40px;background:#1A3D2E;display:block;width:100%;box-sizing:border-box;overflow:hidden;position:relative;z-index:1;">
-    <div class="reveal" style="max-width:1100px;margin:0 auto;">
-      <div style="text-align:center;margin-bottom:48px;"><div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:12px;">THE OPPORTUNITY</div><h2 style="font-family:'Fraunces',serif;font-size:36px;color:white;margin-bottom:16px;">The UK dental market is booming — but most practices aren't capturing it</h2></div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
-        <div style="text-align:center;padding:28px;border:1px solid rgba(255,255,255,0.12);border-radius:8px;"><div style="font-family:'Fraunces',serif;font-size:40px;color:white;margin-bottom:8px;">4.9%</div><div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;">Annual market growth rate through 2026 — one of the fastest growing healthcare sectors in the UK</div></div>
-        <div style="text-align:center;padding:28px;border:1px solid rgba(255,255,255,0.12);border-radius:8px;"><div style="font-family:'Fraunces',serif;font-size:40px;color:white;margin-bottom:8px;">60%</div><div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;">Of UK adults don't attend regular check-ups — representing millions of patients practices are not retaining</div></div>
-        <div style="text-align:center;padding:28px;border:1px solid rgba(255,255,255,0.12);border-radius:8px;"><div style="font-family:'Fraunces',serif;font-size:40px;color:white;margin-bottom:8px;">23%</div><div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;">Increase in patient treatment plans in 2024 — practices that follow up are converting significantly more</div></div>
-        <div style="text-align:center;padding:28px;border:1px solid rgba(255,255,255,0.12);border-radius:8px;"><div style="font-family:'Fraunces',serif;font-size:40px;color:white;margin-bottom:8px;">&pound;1.5M</div><div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;">Average annual turnover of a busy private dental practice in the UK — with huge untapped revenue potential</div></div>
-      </div>
-    </div>
-  </section>
-  <section id="features" style="padding:80px 40px;background:white;border-top:1px solid #E8E4DE;border-bottom:1px solid #E8E4DE;display:block;width:100%;box-sizing:border-box;overflow:hidden;position:relative;z-index:1;">
-    <div style="max-width:1100px;margin:0 auto;">
-      <div style="text-align:center;margin-bottom:56px;"><div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1A3D2E;margin-bottom:12px;">WHAT PEARLIQ DOES</div><h2 style="font-family:'Fraunces',serif;font-size:36px;color:#1C1C1C;margin-bottom:16px;">Three problems. One platform. Zero manual work.</h2><p style="font-size:15px;color:#4A4A4A;max-width:540px;margin:0 auto;line-height:1.8;">Every UK dental practice loses revenue through the same three gaps. PEARLIQ closes all of them automatically.</p></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
-        <div class="reveal reveal-delay-1" style="padding:32px;border:1px solid #E8E4DE;border-radius:8px;"><div style="width:44px;height:44px;background:#E8F5EE;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><h3 style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;margin-bottom:12px;">Treatment Plan Follow-Up</h3><p style="font-size:13px;color:#4A4A4A;line-height:1.8;margin-bottom:16px;">Most practices present treatment plans and never follow up. PEARLIQ sends automated email sequences on day 1, 3, 7, 14 and 30 — personalised by treatment type, with financing options and education included automatically.</p><div style="font-size:12px;color:#1A3D2E;font-weight:500;">+23% more treatment plans converted in 2024</div></div>
-        <div class="reveal reveal-delay-2" style="padding:32px;border:1px solid #E8E4DE;border-radius:8px;"><div style="width:44px;height:44px;background:#E8F5EE;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3 style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;margin-bottom:12px;">Review Generation</h3><p style="font-size:13px;color:#4A4A4A;line-height:1.8;margin-bottom:16px;">93% of patients check online reviews before choosing a dentist. PEARLIQ sends personalised review requests 2 hours after every appointment, driving a steady stream of 5-star Google reviews on autopilot.</p><div style="font-size:12px;color:#1A3D2E;font-weight:500;">+More reviews means more new patients</div></div>
-        <div class="reveal reveal-delay-3" style="padding:32px;border:1px solid #E8E4DE;border-radius:8px;"><div style="width:44px;height:44px;background:#E8F5EE;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><h3 style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;margin-bottom:12px;">Rota &amp; Payroll Intelligence</h3><p style="font-size:13px;color:#4A4A4A;line-height:1.8;margin-bottom:16px;">Staff costs are typically 40-50% of a dental practice's revenue. PEARLIQ detects rota gaps 72 hours in advance, alerts agency contacts automatically, and calculates payroll from your rota at month end.</p><div style="font-size:12px;color:#1A3D2E;font-weight:500;">+Eliminate costly last-minute agency fees</div></div>
-      </div>
-    </div>
-  </section>
-  <section id="roi" style="padding:80px 40px;background:#F5F3EF;display:block;width:100%;box-sizing:border-box;overflow:hidden;position:relative;z-index:1;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
-      <div class="reveal">
-        <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1A3D2E;margin-bottom:12px;">ROI CALCULATOR</div>
-        <h2 style="font-family:'Fraunces',serif;font-size:36px;color:#1C1C1C;margin-bottom:16px;">Calculate your practice's untapped revenue</h2>
-        <p style="font-size:14px;color:#4A4A4A;line-height:1.8;margin-bottom:32px;">Enter your practice numbers below. Based on the Dental Elite 2024 Benchmarking Report, practices using automated follow-up systems convert significantly more treatment plans than those relying on manual processes.</p>
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Treatment plans presented per month</label><input id="roi-plans" type="number" value="40" oninput="calculateROI()" style="width:100%;background:white;border:1px solid #E8E4DE;padding:10px 14px;font-family:'Figtree',sans-serif;font-size:14px;border-radius:4px;outline:none;"></div>
-          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Average treatment value (&pound;)</label><input id="roi-value" type="number" value="1200" oninput="calculateROI()" style="width:100%;background:white;border:1px solid #E8E4DE;padding:10px 14px;font-family:'Figtree',sans-serif;font-size:14px;border-radius:4px;outline:none;"></div>
-          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Current conversion rate (%)</label><input id="roi-rate" type="number" value="25" oninput="calculateROI()" style="width:100%;background:white;border:1px solid #E8E4DE;padding:10px 14px;font-family:'Figtree',sans-serif;font-size:14px;border-radius:4px;outline:none;"></div>
+      <div style="display:flex;gap:0;border:1px solid #E8E4DE;border-radius:8px;overflow:hidden;background:white;">
+        <div style="flex:1;padding:20px 24px;border-right:1px solid #E8E4DE;text-align:center;">
+          <div style="font-family:'Fraunces',serif;font-size:26px;color:#1A3D2E;margin-bottom:3px;">&pound;10.6B</div>
+          <div style="font-size:11px;color:#8A8A8A;font-family:'Figtree',sans-serif;">UK dental market 2024</div>
+        </div>
+        <div style="flex:1;padding:20px 24px;border-right:1px solid #E8E4DE;text-align:center;">
+          <div style="font-family:'Fraunces',serif;font-size:26px;color:#1A3D2E;margin-bottom:3px;">12,000+</div>
+          <div style="font-size:11px;color:#8A8A8A;font-family:'Figtree',sans-serif;">Practices across the UK</div>
+        </div>
+        <div style="flex:1;padding:20px 24px;text-align:center;">
+          <div style="font-family:'Fraunces',serif;font-size:26px;color:#1A3D2E;margin-bottom:3px;">4.9%</div>
+          <div style="font-size:11px;color:#8A8A8A;font-family:'Figtree',sans-serif;">Annual market growth</div>
         </div>
       </div>
-      <div class="reveal reveal-delay-1" style="background:white;border:1px solid #E8E4DE;border-radius:12px;padding:36px;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
-        <div style="margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid #E8E4DE;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:4px;">Currently converting</div><div id="roi-current" style="font-family:'Fraunces',serif;font-size:32px;color:#1C1C1C;">&pound;12,000/mo</div></div>
-        <div style="margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid #E8E4DE;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:4px;">With PEARLIQ automated follow-up</div><div id="roi-with" style="font-family:'Fraunces',serif;font-size:32px;color:#1A3D2E;">&pound;20,160/mo</div></div>
-        <div style="margin-bottom:28px;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:4px;">Additional revenue per month</div><div id="roi-extra" style="font-family:'Fraunces',serif;font-size:42px;color:#1A3D2E;">&pound;8,160</div></div>
-        <div style="background:#F0F7F4;border-radius:6px;padding:14px 16px;margin-bottom:20px;"><div style="font-size:12px;color:#1A3D2E;font-weight:600;margin-bottom:2px;">PEARLIQ costs &pound;1,497/month</div><div id="roi-profit" style="font-size:13px;color:#4A4A4A;">You keep &pound;6,663 in additional profit every month</div></div>
-        <button onclick="showSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:14px;font-family:'Figtree',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:4px;">Start 14-Day Free Trial</button>
+    </div>
+    <div style="background:white;border-radius:16px;padding:36px;box-shadow:0 4px 40px rgba(0,0,0,0.08);border:1px solid #E8E4DE;">
+      <div style="text-align:center;margin-bottom:28px;">
+        <svg viewBox="0 0 200 200" width="150" height="150">
+          <circle cx="100" cy="100" r="84" fill="none" stroke="#E8E4DE" stroke-width="10"/>
+          <circle cx="100" cy="100" r="84" fill="none" stroke="#1A3D2E" stroke-width="10" stroke-linecap="round" stroke-dasharray="527.8" stroke-dashoffset="79" transform="rotate(-90 100 100)"/>
+          <text x="100" y="95" text-anchor="middle" font-family="Fraunces,serif" font-size="38" fill="#1C1C1C">85</text>
+          <text x="100" y="115" text-anchor="middle" font-family="Figtree,sans-serif" font-size="11" fill="#8A8A8A">Health Score</text>
+        </svg>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:#4A4A4A;font-family:'Figtree',sans-serif;">Treatment Conversion</span><span style="font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">87%</span></div><div style="height:5px;background:#E8E4DE;border-radius:3px;overflow:hidden;"><div style="width:87%;height:100%;background:#1A3D2E;border-radius:3px;"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:#4A4A4A;font-family:'Figtree',sans-serif;">Review Velocity</span><span style="font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">91%</span></div><div style="height:5px;background:#E8E4DE;border-radius:3px;overflow:hidden;"><div style="width:91%;height:100%;background:#1A3D2E;border-radius:3px;"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:#4A4A4A;font-family:'Figtree',sans-serif;">Recall Rate</span><span style="font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">78%</span></div><div style="height:5px;background:#E8E4DE;border-radius:3px;overflow:hidden;"><div style="width:78%;height:100%;background:#1A3D2E;border-radius:3px;"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:#4A4A4A;font-family:'Figtree',sans-serif;">Rota Coverage</span><span style="font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">88%</span></div><div style="height:5px;background:#E8E4DE;border-radius:3px;overflow:hidden;"><div style="width:88%;height:100%;background:#1A3D2E;border-radius:3px;"></div></div></div>
       </div>
     </div>
-  </section>
-  <section id="pricing" style="padding:80px 40px;background:white;border-top:1px solid #E8E4DE;display:block;width:100%;box-sizing:border-box;overflow:visible;position:relative;z-index:1;">
-    <div style="max-width:600px;margin:0 auto;text-align:center;">
-      <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1A3D2E;margin-bottom:12px;">SIMPLE PRICING</div>
-      <h2 style="font-family:'Fraunces',serif;font-size:36px;color:#1C1C1C;margin-bottom:16px;">One price. Everything included.</h2>
-      <p style="font-size:14px;color:#4A4A4A;line-height:1.8;margin-bottom:40px;">No tiers, no add-ons, no surprises. Every feature included for every practice.</p>
-      <div class="reveal" style="background:#F5F3EF;border:2px solid #1A3D2E;border-radius:12px;padding:24px;height:auto;overflow:visible;">
-        <div style="font-family:'Fraunces',serif;font-size:56px;color:#1C1C1C;line-height:1;">&pound;1,497</div>
-        <div style="font-size:14px;color:#8A8A8A;margin-bottom:8px;">per practice per month</div>
-        <div style="font-size:12px;color:#1A3D2E;font-weight:500;margin-bottom:32px;">Average ROI: &pound;6,000+ additional revenue per month</div>
-        <div style="display:flex;flex-direction:column;gap:8px;text-align:left;margin-bottom:20px;">
-          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#4A4A4A;"><span style="color:#1A3D2E;font-weight:700;">&#10003;</span> Automated treatment plan follow-up sequences</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#4A4A4A;"><span style="color:#1A3D2E;font-weight:700;">&#10003;</span> Post-appointment review generation</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#4A4A4A;"><span style="color:#1A3D2E;font-weight:700;">&#10003;</span> Staff rota management &amp; payroll preparation</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#4A4A4A;"><span style="color:#1A3D2E;font-weight:700;">&#10003;</span> AI Practice Health Score dashboard</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#4A4A4A;"><span style="color:#1A3D2E;font-weight:700;">&#10003;</span> Patient lifetime value tracking</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#4A4A4A;"><span style="color:#1A3D2E;font-weight:700;">&#10003;</span> 90-day revenue forecasting</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#4A4A4A;"><span style="color:#1A3D2E;font-weight:700;">&#10003;</span> Personal onboarding call included</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:#4A4A4A;"><span style="color:#1A3D2E;font-weight:700;">&#10003;</span> Same-day support via email</div>
+  </div>
+</section>
+
+<!-- OPPORTUNITY -->
+<section id="opportunity" style="padding:80px 60px;background:#1A3D2E;box-sizing:border-box;width:100%;display:block;">
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:52px;">
+      <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:14px;font-family:'Figtree',sans-serif;">THE OPPORTUNITY</div>
+      <h2 style="font-family:'Fraunces',serif;font-size:38px;color:white;margin:0 0 16px;">The UK dental market is booming.<br>Most practices are not capturing it.</h2>
+      <p style="font-size:15px;color:rgba(255,255,255,0.65);max-width:560px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Every practice we speak to is leaving significant revenue on the table. The same three problems, every time.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
+        <div style="font-family:'Fraunces',serif;font-size:42px;color:white;margin-bottom:10px;">4.9%</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Annual UK dental market growth — one of the fastest growing healthcare sectors</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
+        <div style="font-family:'Fraunces',serif;font-size:42px;color:white;margin-bottom:10px;">60%</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Of UK adults do not attend regular check-ups — patients practices are failing to retain</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
+        <div style="font-family:'Fraunces',serif;font-size:42px;color:white;margin-bottom:10px;">23%</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Increase in treatment plans in 2024 — practices that follow up are converting far more</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
+        <div style="font-family:'Fraunces',serif;font-size:42px;color:white;margin-bottom:10px;">93%</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Of patients check online reviews before choosing a dentist — most practices have too few</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="padding:80px 60px;background:white;box-sizing:border-box;width:100%;display:block;">
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:52px;">
+      <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">WHAT PEARLIQ DOES</div>
+      <h2 style="font-family:'Fraunces',serif;font-size:38px;color:#1C1C1C;margin:0 0 16px;">Three problems. One platform. Zero manual work.</h2>
+      <p style="font-size:15px;color:#6B6B6B;max-width:520px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Every UK dental practice loses revenue through the same gaps. PEARLIQ closes all three automatically.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+      <div style="border:1px solid #E8E4DE;border-radius:10px;padding:36px;background:#FAFAF8;">
+        <div style="width:48px;height:48px;background:#E8F5EE;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </div>
-        <button onclick="showSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:16px;font-family:'Figtree',sans-serif;font-size:15px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:8px;">Start 14-Day Free Trial</button>
-        <div style="font-size:12px;color:#8A8A8A;">No credit card required · Cancel anytime · GDPR compliant</div>
+        <h3 style="font-family:'Fraunces',serif;font-size:22px;color:#1C1C1C;margin:0 0 14px;">Treatment Plan Follow-Up</h3>
+        <p style="font-size:13px;color:#6B6B6B;line-height:1.8;margin:0 0 20px;font-family:'Figtree',sans-serif;">Patients leave with a plan but never book. PEARLIQ sends automated email sequences on day 1, 3, 7, 14 and 30 — personalised by treatment type, with financing options included automatically.</p>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          23% more plans converted in 2024
+        </div>
+      </div>
+      <div style="border:1px solid #E8E4DE;border-radius:10px;padding:36px;background:#FAFAF8;">
+        <div style="width:48px;height:48px;background:#E8F5EE;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <h3 style="font-family:'Fraunces',serif;font-size:22px;color:#1C1C1C;margin:0 0 14px;">Review Generation</h3>
+        <p style="font-size:13px;color:#6B6B6B;line-height:1.8;margin:0 0 20px;font-family:'Figtree',sans-serif;">93% of patients check reviews before choosing a dentist. PEARLIQ sends personalised review requests 2 hours after every appointment — driving a steady stream of 5-star Google reviews on autopilot.</p>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          More reviews means more new patients
+        </div>
+      </div>
+      <div style="border:1px solid #E8E4DE;border-radius:10px;padding:36px;background:#FAFAF8;">
+        <div style="width:48px;height:48px;background:#E8F5EE;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <h3 style="font-family:'Fraunces',serif;font-size:22px;color:#1C1C1C;margin:0 0 14px;">Rota &amp; Payroll Intelligence</h3>
+        <p style="font-size:13px;color:#6B6B6B;line-height:1.8;margin:0 0 20px;font-family:'Figtree',sans-serif;">Staff costs are 40-50% of practice revenue. PEARLIQ detects rota gaps 72 hours in advance, contacts agency staff automatically, and calculates payroll from your rota at month end ready to export to Xero.</p>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Eliminate costly last-minute agency fees
+        </div>
       </div>
     </div>
-  </section>
-  <footer style="padding:40px;background:#1C1C1C;text-align:center;">
-    <div style="font-family:'Fraunces',serif;font-size:18px;color:white;margin-bottom:8px;">PEARLIQ</div>
-    <div style="font-size:12px;color:#8A8A8A;margin-bottom:16px;">Dental Practice Intelligence · Built for UK Practices · GDPR Compliant · ICO Registered</div>
-    <div style="display:flex;justify-content:center;gap:24px;margin-bottom:16px;"><a onclick="showPrivacyPolicy()" style="font-size:11px;color:#555;text-decoration:none;cursor:pointer;">Privacy Policy</a><a onclick="showTerms()" style="font-size:11px;color:#555;text-decoration:none;cursor:pointer;">Terms of Service</a><a href="mailto:hello@pearliq.app" style="font-size:11px;color:#555;text-decoration:none;">hello@pearliq.app</a></div>
-    <div style="font-size:11px;color:#444;">&copy; 2026 PEARLIQ · pearliq.app</div>
-  </footer>
+  </div>
+</section>
+
+<!-- ROI CALCULATOR -->
+<section id="roi" style="padding:80px 60px;background:#F5F3EF;box-sizing:border-box;width:100%;display:block;">
+  <div style="max-width:1080px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:52px;">
+      <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">ROI CALCULATOR</div>
+      <h2 style="font-family:'Fraunces',serif;font-size:38px;color:#1C1C1C;margin:0 0 16px;">See your return before you commit</h2>
+      <p style="font-size:15px;color:#6B6B6B;max-width:500px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Enter your practice numbers and see exactly what PEARLIQ generates for you each month.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+      <div style="background:white;border-radius:10px;padding:36px;border:1px solid #E8E4DE;">
+        <h3 style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;margin:0 0 24px;">Your practice numbers</h3>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Treatment plans presented per month</label><input id="roi-plans" type="number" value="40" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:14px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
+          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Average treatment value (&pound;)</label><input id="roi-value" type="number" value="1200" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:14px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
+          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Current conversion rate (%)</label><input id="roi-rate" type="number" value="25" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:14px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
+        </div>
+      </div>
+      <div style="background:white;border-radius:10px;padding:36px;border:2px solid #1A3D2E;">
+        <h3 style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;margin:0 0 24px;">Your projected results</h3>
+        <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #E8E4DE;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:5px;font-family:'Figtree',sans-serif;">Currently converting</div><div id="roi-current" style="font-family:'Fraunces',serif;font-size:30px;color:#1C1C1C;">&pound;12,000/mo</div></div>
+        <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #E8E4DE;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:5px;font-family:'Figtree',sans-serif;">With PEARLIQ automated follow-up</div><div id="roi-with" style="font-family:'Fraunces',serif;font-size:30px;color:#1A3D2E;">&pound;20,160/mo</div></div>
+        <div style="margin-bottom:24px;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:5px;font-family:'Figtree',sans-serif;">Additional revenue per month</div><div id="roi-extra" style="font-family:'Fraunces',serif;font-size:44px;color:#1A3D2E;line-height:1;">&pound;8,160</div></div>
+        <div style="background:#F0F7F4;border-radius:6px;padding:14px 16px;margin-bottom:22px;"><div style="font-size:12px;color:#1A3D2E;font-weight:600;margin-bottom:3px;font-family:'Figtree',sans-serif;">PEARLIQ costs &pound;1,497/month</div><div id="roi-profit" style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;">You keep &pound;6,663 in additional profit every month</div></div>
+        <button onclick="showSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:14px;font-family:'Figtree',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:6px;">Start 14-Day Free Trial</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="padding:80px 60px;background:white;box-sizing:border-box;width:100%;display:block;">
+  <div style="max-width:680px;margin:0 auto;text-align:center;">
+    <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">PRICING</div>
+    <h2 style="font-family:'Fraunces',serif;font-size:38px;color:#1C1C1C;margin:0 0 16px;">One price. Everything included.</h2>
+    <p style="font-size:15px;color:#6B6B6B;margin:0 0 44px;font-family:'Figtree',sans-serif;line-height:1.7;">No tiers, no add-ons, no surprises. Every feature included for every practice from day one.</p>
+    <div style="background:#F5F3EF;border:2px solid #1A3D2E;border-radius:14px;padding:48px;text-align:left;">
+      <div style="text-align:center;margin-bottom:36px;">
+        <div style="font-family:'Fraunces',serif;font-size:64px;color:#1C1C1C;line-height:1;margin-bottom:6px;">&pound;1,497</div>
+        <div style="font-size:15px;color:#8A8A8A;font-family:'Figtree',sans-serif;margin-bottom:10px;">per practice per month</div>
+        <div style="display:inline-block;background:#E8F5EE;border:1px solid #C8E6D4;padding:5px 16px;border-radius:20px;font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">Average ROI: &pound;6,000+ additional revenue per month</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px;">
+        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;line-height:1.5;">Automated treatment plan follow-up sequences</span></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;line-height:1.5;">Post-appointment review generation</span></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;line-height:1.5;">Staff rota management &amp; payroll preparation</span></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;line-height:1.5;">AI Practice Health Score dashboard</span></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;line-height:1.5;">Patient lifetime value tracking</span></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;line-height:1.5;">90-day revenue forecasting</span></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;line-height:1.5;">Personal onboarding call included</span></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;line-height:1.5;">Same-day email support</span></div>
+      </div>
+      <button onclick="showSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:17px;font-family:'Figtree',sans-serif;font-size:15px;font-weight:600;cursor:pointer;border-radius:8px;margin-bottom:14px;">Start 14-Day Free Trial</button>
+      <div style="text-align:center;font-size:12px;color:#8A8A8A;font-family:'Figtree',sans-serif;">No credit card required · Cancel anytime · GDPR compliant</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="padding:48px 60px;background:#1C1C1C;box-sizing:border-box;width:100%;display:block;">
+  <div style="max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+    <div>
+      <div style="font-family:'Fraunces',serif;font-size:20px;color:white;margin-bottom:6px;">PEARLIQ</div>
+      <div style="font-size:12px;color:#666;font-family:'Figtree',sans-serif;">Dental Practice Intelligence · Built for UK Practices</div>
+    </div>
+    <div style="display:flex;gap:28px;align-items:center;">
+      <span onclick="showPrivacyPolicy()" style="font-size:12px;color:#666;cursor:pointer;font-family:'Figtree',sans-serif;">Privacy Policy</span>
+      <span onclick="showTerms()" style="font-size:12px;color:#666;cursor:pointer;font-family:'Figtree',sans-serif;">Terms of Service</span>
+      <a href="mailto:hello@pearliq.app" style="font-size:12px;color:#666;text-decoration:none;font-family:'Figtree',sans-serif;">hello@pearliq.app</a>
+    </div>
+    <div style="font-size:11px;color:#444;font-family:'Figtree',sans-serif;">&copy; 2026 PEARLIQ</div>
+  </div>
+</footer>
 </div>
 
 <!-- AUTH MODAL -->
@@ -1933,7 +2016,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('theme-icon-light').style.display = 'block';
   }
   if (document.getElementById('roi-plans')) calculateROI();
-  initRevealAnimations();
   const { data: { session } } = await pearliqDB.auth.getSession();
   if (session) {
     const roleMap = {
@@ -2063,23 +2145,6 @@ function showTerms() {
   document.getElementById('legal-modal').style.display = 'flex';
 }
 
-// REVEAL ANIMATIONS
-function initRevealAnimations() {
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
-}
-document.querySelectorAll('.landing-nav-links a[href^="#"]').forEach(function(link) {
-  link.addEventListener('click', function() {
-    var targetId = link.getAttribute('href').substring(1);
-    var targetSection = document.getElementById(targetId);
-    if (!targetSection) return;
-    var reveals = targetSection.querySelectorAll('.reveal');
-    reveals.forEach(function(el) { el.classList.remove('visible'); });
-    setTimeout(function() { reveals.forEach(function(el) { el.classList.add('visible'); }); }, 600);
-  });
-});
 
 // AUTH
 let currentRole = 'admin';
