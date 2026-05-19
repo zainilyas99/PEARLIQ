@@ -961,42 +961,6 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
           <div class="table-header"><div class="table-title">All Patients</div><div class="table-tools"><input class="search-input" placeholder="Search patients..."><select class="filter-select"><option>All</option><option>Has Treatment Plan</option><option>Needs Follow-Up</option></select></div></div>
           <table><thead><tr><th>Patient</th><th>Treatment Plan</th><th>Plan Value</th><th>Last Visit</th><th>Status</th><th>Lifetime Value</th><th></th></tr></thead>
           <tbody id="patients-tbody">
-            <tr><td><div style="color:var(--cream);font-weight:500;">James Thompson</div><div style="font-size:10px;color:var(--text-dim);">james.t@email.com</div></td><td>Dental Implant</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;3,200</td><td style="font-size:11px;font-weight:500;">01 Mar 2026</td><td><span class="badge badge-hot">Lapsed 42d</span></td>
-              <td>
-                <div class="ltv-strip" style="border-top:none;padding:0;margin:0;">
-                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;8,400</div><div class="ltv-label">Total</div></div>
-                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;4,200</div><div class="ltv-label">Next 12m</div></div>
-                  <div class="sparkline-wrap"><svg width="48" height="20" viewBox="0 0 48 20"><polyline points="2,16 10,12 18,14 26,8 34,10 42,4 46,6" fill="none" stroke="#1A3D2E" stroke-width="1.5"/></svg></div>
-                </div>
-              </td>
-              <td><button class="btn btn-secondary btn-sm">View</button></td></tr>
-            <tr><td><div style="color:var(--cream);font-weight:500;">Emma Davies</div><div style="font-size:10px;color:var(--text-dim);">emma.d@email.com</div></td><td>Invisalign Full</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;4,800</td><td style="font-size:11px;font-weight:500;">05 Mar 2026</td><td><span class="badge badge-hot">Lapsed 38d</span></td>
-              <td>
-                <div class="ltv-strip" style="border-top:none;padding:0;margin:0;">
-                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;6,200</div><div class="ltv-label">Total</div></div>
-                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;5,800</div><div class="ltv-label">Next 12m</div></div>
-                  <div class="sparkline-wrap"><svg width="48" height="20" viewBox="0 0 48 20"><polyline points="2,14 10,16 18,12 26,10 34,8 42,6 46,4" fill="none" stroke="#1A3D2E" stroke-width="1.5"/></svg></div>
-                </div>
-              </td>
-              <td><button class="btn btn-secondary btn-sm">View</button></td></tr>
-            <tr><td><div style="color:var(--cream);font-weight:500;">Sarah Mitchell</div><div style="font-size:10px;color:var(--text-dim);">sarah.m@email.com</div></td><td>Composite Bonding</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;1,200</td><td style="font-size:11px;font-weight:500;">10 Apr 2026</td><td><span class="badge badge-good">Booked</span></td>
-              <td>
-                <div class="ltv-strip" style="border-top:none;padding:0;margin:0;">
-                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;3,600</div><div class="ltv-label">Total</div></div>
-                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;1,400</div><div class="ltv-label">Next 12m</div></div>
-                  <div class="sparkline-wrap"><svg width="48" height="20" viewBox="0 0 48 20"><polyline points="2,10 10,12 18,8 26,10 34,6 42,8 46,6" fill="none" stroke="#1A3D2E" stroke-width="1.5"/></svg></div>
-                </div>
-              </td>
-              <td><button class="btn btn-secondary btn-sm">View</button></td></tr>
-            <tr><td><div style="color:var(--cream);font-weight:500;">Robert Chen</div><div style="font-size:10px;color:var(--text-dim);">r.chen@email.com</div></td><td>Porcelain Veneers x6</td><td style="color:var(--green);font-family:'Fraunces',serif;">&pound;5,400</td><td style="font-size:11px;font-weight:500;">22 Mar 2026</td><td><span class="badge badge-warm">Warm 21d</span></td>
-              <td>
-                <div class="ltv-strip" style="border-top:none;padding:0;margin:0;">
-                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;12,800</div><div class="ltv-label">Total</div></div>
-                  <div class="ltv-item"><div class="ltv-val" style="font-size:13px;">&pound;6,400</div><div class="ltv-label">Next 12m</div></div>
-                  <div class="sparkline-wrap"><svg width="48" height="20" viewBox="0 0 48 20"><polyline points="2,18 10,14 18,16 26,10 34,6 42,4 46,2" fill="none" stroke="#1A3D2E" stroke-width="1.5"/></svg></div>
-                </div>
-              </td>
-              <td><button class="btn btn-secondary btn-sm">View</button></td></tr>
           </tbody></table>
         </div>
 
@@ -2581,7 +2545,6 @@ async function loadPatients() {
       tbody.innerHTML = '<tr><td colspan="7"><div style="text-align:center;padding:60px 20px;"><div style="width:64px;height:64px;background:var(--green-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div style="font-family:Fraunces,serif;font-size:20px;color:var(--cream);margin-bottom:8px;">No patients yet</div><div style="font-size:13px;color:var(--text-dim);margin-bottom:20px;">Add your first patient to get started</div><button class="btn btn-primary btn-sm" onclick="openModal(\'new-patient-modal\')">+ Add Patient</button></div></td></tr>';
       return;
     }
-    const demoRows = tbody.innerHTML;
     let rows = '';
     data.forEach(p => {
       const date = p.created_at ? new Date(p.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
@@ -2597,7 +2560,7 @@ async function loadPatients() {
         '<td><button class="btn btn-secondary btn-sm">View</button></td>' +
         '</tr>';
     });
-    tbody.innerHTML = rows + demoRows;
+    tbody.innerHTML = rows;
   } catch (e) {
     showToast('Unable to load data — check your connection', 'error');
   }
