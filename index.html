@@ -2017,6 +2017,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('theme-icon-light').style.display = 'block';
   }
   if (document.getElementById('roi-plans')) calculateROI();
+  document.getElementById('login-pw').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('login-email').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('signup-practice').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSignUp(); });
+  document.getElementById('signup-email').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSignUp(); });
+  document.getElementById('signup-pw').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSignUp(); });
   const { data: { session } } = await pearliqDB.auth.getSession();
   if (session) {
     const roleMap = {
