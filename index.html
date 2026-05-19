@@ -2023,8 +2023,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('user-name-display').textContent = roleMap.default.name;
     document.getElementById('user-role-display').textContent = roleMap.default.role;
     document.getElementById('user-avatar').textContent = roleMap.default.initials;
+    document.body.style.overflowY = 'hidden';
     document.getElementById('landing-page').style.display = 'none';
     document.getElementById('app').classList.add('visible');
+    document.getElementById('main-content').scrollTop = 0;
+    window.scrollTo(0, 0);
     initCharts();
     animateDashboard();
     loadDashboardData();
@@ -2184,6 +2187,7 @@ async function doLogin() {
   document.getElementById('user-avatar').textContent = user.initials;
   closeAuthModal();
   setTimeout(() => {
+    document.body.style.overflowY = 'hidden';
     document.getElementById('landing-page').style.display = 'none';
     document.getElementById('auth-modal').style.display = 'none';
     document.getElementById('app').classList.add('visible');
@@ -2198,6 +2202,7 @@ async function doLogin() {
 
 // NAV
 function navigateTo(page) {
+  document.getElementById('main-content').scrollTop = 0;
   window.scrollTo(0, 0);
   closeDetailPanel();
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -2247,6 +2252,7 @@ async function logout() {
   await pearliqDB.auth.signOut();
   document.getElementById('app').classList.remove('visible');
   document.getElementById('landing-page').style.display = 'block';
+  document.body.style.overflowY = 'auto';
   window.history.replaceState(null, '', window.location.pathname);
   showToast('Signed out successfully', 'info');
 }
