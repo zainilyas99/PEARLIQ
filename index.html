@@ -472,7 +472,7 @@ tbody tr:last-child td { border-bottom: none; }
   .charts-row { grid-template-columns: 1fr; }
   .security-grid { grid-template-columns: 1fr; }
 }
-#opportunity, #features, #roi, #pricing { scroll-margin-top: 80px; }
+#opportunity, #features, #roi, #pricing { scroll-margin-top: 80px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 40px 40px; box-sizing: border-box; }
 
 /* DARK MODE */
 body.dark-mode { --bg: #0a0e0f; --bg-2: #10161a; --bg-3: #162024; --bg-4: #1e2c32; --bg-5: #263640; --cream: #e8f4f0; --text: #7a9a94; --text-dim: #4a6660; --text-bright: #b8d4ce; --border: rgba(255,255,255,0.06); --green: #4ecba8; --green-light: #7ddbc4; --green-dim: rgba(78,203,168,0.12); --green-glow: rgba(78,203,168,0.08); --border-green: rgba(78,203,168,0.15); --emerald: #4ecba8; --emerald-dim: rgba(78,203,168,0.12); --rose: #f07068; --rose-dim: rgba(240,112,104,0.12); --amber: #e0a830; --amber-dim: rgba(224,168,48,0.12); }
@@ -647,7 +647,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
 </section>
 
 <!-- ROI CALCULATOR -->
-<section id="roi" style="padding:80px 60px;background:#F5F3EF;box-sizing:border-box;width:100%;display:block;">
+<section id="roi" style="padding-top:0;background:#F5F3EF;box-sizing:border-box;width:100%;">
   <div style="max-width:1080px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:52px;">
       <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">ROI CALCULATOR</div>
@@ -681,7 +681,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
     <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">PRICING</div>
     <h2 style="font-family:'Fraunces',serif;font-size:38px;color:#1C1C1C;margin:0 0 16px;">One price. Everything included.</h2>
     <p style="font-size:15px;color:#6B6B6B;margin:0 0 44px;font-family:'Figtree',sans-serif;line-height:1.7;">No tiers, no add-ons, no surprises. Every feature included for every practice from day one.</p>
-    <div style="background:#F5F3EF;border:2px solid #1A3D2E;border-radius:14px;padding:48px;text-align:left;">
+    <div style="background:#F5F3EF;border:2px solid #1A3D2E;border-radius:14px;padding:28px;text-align:left;">
       <div style="text-align:center;margin-bottom:36px;">
         <div style="font-family:'Fraunces',serif;font-size:64px;color:#1C1C1C;line-height:1;margin-bottom:6px;">&pound;1,497</div>
         <div style="font-size:15px;color:#8A8A8A;font-family:'Figtree',sans-serif;margin-bottom:10px;">per practice per month</div>
