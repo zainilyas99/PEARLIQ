@@ -729,14 +729,14 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
     </div>
     <div style="padding:28px 32px;">
       <div id="signin-form">
-        <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="login-email" placeholder="hello@palmerdental.co.uk" style="width:100%;"></div>
+        <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="login-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
         <div style="margin-bottom:20px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="login-pw" placeholder="Enter password" style="width:100%;"></div>
         <button onclick="doLogin()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Sign In</button>
         <div style="text-align:center;font-size:12px;color:#8A8A8A;">Don't have an account? <span onclick="showSignUp()" style="color:#1A3D2E;cursor:pointer;font-weight:500;">Start free trial</span></div>
       </div>
       <div id="signup-form" style="display:none;">
-        <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Practice Name</label><input class="form-input" id="signup-practice" placeholder="Palmer Dental" style="width:100%;"></div>
-        <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="signup-email" placeholder="hello@palmerdental.co.uk" style="width:100%;"></div>
+        <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Practice Name</label><input class="form-input" id="signup-practice" placeholder="Your Practice" style="width:100%;"></div>
+        <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="signup-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
         <div style="margin-bottom:20px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="signup-pw" placeholder="Create a password (min 6 characters)" style="width:100%;"></div>
         <button onclick="doSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Start Free Trial</button>
         <div style="text-align:center;font-size:12px;color:#8A8A8A;">Already have an account? <span onclick="showSignIn()" style="color:#1A3D2E;cursor:pointer;font-weight:500;">Sign in</span></div>
@@ -1738,7 +1738,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
       <!-- SECURITY -->
       <div class="page" id="page-security">
         <div class="page-header">
-          <div><div class="page-eyebrow">Platform · Security</div><h1 class="page-title">Security Centre</h1><div class="page-subtitle">GDPR compliant · ICO registered · Audit trail active</div></div>
+          <div><div class="page-eyebrow">Platform · Security</div><h1 class="page-title">Security Centre</h1><div class="page-subtitle">GDPR compliant · AES-256 encrypted</div></div>
         </div>
         <div style="background:var(--bg-2);border:1px solid var(--border-green);padding:22px;margin-bottom:18px;display:flex;align-items:center;gap:28px;border-radius:var(--radius);box-shadow:var(--shadow-md);">
           <div style="text-align:center;flex-shrink:0;">
@@ -1751,9 +1751,6 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
             <div style="display:flex;gap:18px;flex-wrap:wrap;">
               <span style="font-size:11px;color:var(--green);font-weight:500;">AES-256 Encryption</span>
               <span style="font-size:11px;color:var(--green);font-weight:500;">GDPR Compliant</span>
-              <span style="font-size:11px;color:var(--green);font-weight:500;">ICO Registered</span>
-              <span style="font-size:11px;color:var(--green);font-weight:500;">2FA Enforced</span>
-              <span style="font-size:11px;color:var(--green);font-weight:500;">Audit Trail Active</span>
             </div>
           </div>
         </div>
@@ -2065,7 +2062,7 @@ async function sendEmail(to, subject, html) {
 
 async function sendTreatmentFollowUp(patientName, patientEmail, treatmentType, value, dayNumber) {
   var subjects = {
-    1: 'Your ' + treatmentType + ' treatment plan from Palmer Dental',
+    1: 'Your ' + treatmentType + ' treatment plan from your dental practice',
     3: 'Have you had a chance to think about your ' + treatmentType + '?',
     7: 'Flexible payment options for your ' + treatmentType,
     14: 'We\'d love to help you with your ' + treatmentType,
@@ -2080,7 +2077,7 @@ async function sendTreatmentFollowUp(patientName, patientEmail, treatmentType, v
     '<p style="color:#4A4A4A;font-size:14px;line-height:1.8;margin-bottom:20px;">Thank you for visiting us. We wanted to follow up on the <strong>' + treatmentType + '</strong> treatment plan we discussed with you, valued at <strong>\u00A3' + parseInt(value).toLocaleString() + '</strong>.</p>' +
     financeBlock +
     '<p style="color:#4A4A4A;font-size:14px;line-height:1.8;margin-bottom:28px;">We\'re here to answer any questions you may have. Please don\'t hesitate to get in touch or book a consultation.</p>' +
-    '<a href="mailto:hello@palmerdental.co.uk" style="background:#1A3D2E;color:white;padding:14px 28px;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:0.08em;display:inline-block;">GET IN TOUCH</a></div>' +
+    '<a href="mailto:hello@pearliq.app" style="background:#1A3D2E;color:white;padding:14px 28px;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:0.08em;display:inline-block;">GET IN TOUCH</a></div>' +
     '<div style="background:#E8E4DE;padding:20px 32px;"><p style="color:#8A8A8A;font-size:11px;margin:0;">This email was sent by your dental practice via PEARLIQ. To unsubscribe, reply with STOP.</p></div></div>';
   await sendEmail(patientEmail, subject, html);
 }
@@ -2115,8 +2112,16 @@ async function doSignUp() {
   var { data, error } = await pearliqDB.auth.signUp({ email: email, password: password, options: { data: { practice_name: practice } } });
   if (error) { showToast(error.message, 'error'); return; }
   closeAuthModal();
-  document.getElementById('auth-modal').style.display = 'flex';
-  document.getElementById('auth-modal').querySelector('div').innerHTML = '<div style="text-align:center;padding:48px 32px;"><div style="width:56px;height:56px;background:#E8F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-family:Fraunces,serif;font-size:24px;color:#1C1C1C;margin-bottom:12px;">Check your email</div><div style="font-size:14px;color:#4A4A4A;line-height:1.8;margin-bottom:28px;">We have sent a confirmation link to your email address. Click the link to activate your account and start your 14-day free trial.</div><button onclick="document.getElementById(\'auth-modal\').style.display=\'none\'" style="background:#1A3D2E;color:white;border:none;padding:13px 32px;font-family:Figtree,sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;">Got it</button></div>';
+  var successDiv = document.getElementById('signup-success-overlay');
+  if (!successDiv) {
+    successDiv = document.createElement('div');
+    successDiv.id = 'signup-success-overlay';
+    successDiv.style.cssText = 'position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
+    successDiv.innerHTML = '<div style="background:white;width:440px;border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2);text-align:center;padding:48px 32px;"><div style="width:56px;height:56px;background:#E8F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-family:Fraunces,serif;font-size:24px;color:#1C1C1C;margin-bottom:12px;">Check your email</div><div style="font-size:14px;color:#4A4A4A;line-height:1.8;margin-bottom:28px;">We have sent a confirmation link to your email address. Click the link to activate your account and start your 14-day free trial.</div><button onclick="this.closest(\'#signup-success-overlay\').remove()" style="background:#1A3D2E;color:white;border:none;padding:13px 32px;font-family:Figtree,sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;">Got it</button></div>';
+    document.body.appendChild(successDiv);
+  } else {
+    successDiv.style.display = 'flex';
+  }
 }
 
 function calculateROI() {
@@ -2416,8 +2421,17 @@ async function saveTreatmentPlan() {
   if (!patientName) { showToast('Please enter a patient name', 'error'); return; }
   if (!treatment) { showToast('Please select a treatment type', 'error'); return; }
   const confidenceScore = Math.floor(Math.random() * 36) + 60;
+  // Look up patient email/phone before insert
+  var patEmail = null;
+  var patPhone = null;
+  try {
+    var patRes = await pearliqDB.from('patients').select('email, phone').eq('name', patientName).limit(1).maybeSingle();
+    if (patRes.data) { patEmail = patRes.data.email || null; patPhone = patRes.data.phone || null; }
+  } catch(e) {}
   const { error } = await pearliqDB.from('treatment_plans').insert([{
     patient_name: patientName,
+    patient_email: patEmail,
+    patient_phone: patPhone,
     treatment_type: treatment,
     value: value,
     status: 'presented',
@@ -2429,12 +2443,9 @@ async function saveTreatmentPlan() {
   closeModal('new-plan-modal');
   showToast('Treatment plan created. Follow-up sequence started.', 'success');
   // Send Day 1 welcome email if patient has email on file
-  try {
-    var patRes = await pearliqDB.from('patients').select('email').eq('name', patientName).limit(1).single();
-    if (patRes.data && patRes.data.email) {
-      sendTreatmentFollowUp(patientName, patRes.data.email, treatment, value, 1);
-    }
-  } catch(e) {}
+  if (patEmail) {
+    sendTreatmentFollowUp(patientName, patEmail, treatment, value, 1);
+  }
   document.getElementById('plan-patient').value = '';
   document.getElementById('plan-treatment').selectedIndex = 0;
   document.getElementById('plan-value').value = '';
@@ -2736,7 +2747,7 @@ function initForecastChart() {
   const labels = [];
   const actual = [];
   const forecast = [];
-  const today = new Date(2026, 3, 21);
+  const today = new Date();
   for (let i = -30; i <= 60; i += 5) {
     const d = new Date(today);
     d.setDate(d.getDate() + i);
@@ -2754,8 +2765,8 @@ function initForecastChart() {
     data: {
       labels,
       datasets: [
-        { label: 'Actual Revenue', data: actual, borderColor: chartColors.green, backgroundColor: chartColors.greenLight, fill: true, tension: 0.3, pointRadius: 2, spanGaps: false },
-        { label: 'Forecast', data: forecast, borderColor: chartColors.amber, backgroundColor: chartColors.amberLight, fill: true, tension: 0.3, pointRadius: 2, borderDash: [5, 3], spanGaps: false }
+        { label: 'Actual Revenue', data: actual, borderColor: chartColors.p1, backgroundColor: 'rgba(26,61,46,0.08)', fill: true, tension: 0.3, pointRadius: 2, spanGaps: false },
+        { label: 'Forecast', data: forecast, borderColor: chartColors.p4, backgroundColor: 'rgba(184,134,11,0.08)', fill: true, tension: 0.3, pointRadius: 2, borderDash: [5, 3], spanGaps: false }
       ]
     },
     options: {
