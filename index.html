@@ -508,6 +508,19 @@ body.dark-mode .chart-card { background: #10161a; }
 body.dark-mode .priority-action-card { background: #162024; border-color: rgba(255,255,255,0.06); }
 body.dark-mode .filter-select { background: #162024; border-color: rgba(255,255,255,0.08); color: #b8d4ce; }
 body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,255,0.08); color: #b8d4ce; }
+@media (max-width: 768px) {
+  .main-content { padding: 16px; }
+  .top-nav { overflow-x: auto; padding: 0 16px; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .charts-row { grid-template-columns: 1fr; }
+  .security-grid { grid-template-columns: 1fr; }
+  .settings-layout { grid-template-columns: 1fr; }
+  .staff-grid { grid-template-columns: 1fr; }
+  .review-grid { grid-template-columns: 1fr; }
+  .tp-grid { grid-template-columns: 1fr; }
+  .payroll-body { grid-template-columns: 1fr 1fr; }
+  .health-hero-metrics { flex-direction: column; }
+}
 </style>
 </head>
 <body>
@@ -724,7 +737,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
       <span onclick="showTerms()" style="font-size:12px;color:#666;cursor:pointer;font-family:'Figtree',sans-serif;">Terms of Service</span>
       <a href="mailto:hello@pearliq.app" style="font-size:12px;color:#666;text-decoration:none;font-family:'Figtree',sans-serif;">hello@pearliq.app</a>
     </div>
-    <div style="font-size:11px;color:#444;font-family:'Figtree',sans-serif;">&copy; 2026 PEARLIQ</div>
+    <div style="font-size:11px;color:#444;font-family:'Figtree',sans-serif;">&copy; <span id="copyright-year">2026</span> PEARLIQ</div>
   </div>
 </footer>
 </div>
@@ -742,13 +755,21 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
         <div style="margin-bottom:20px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="login-pw" placeholder="Enter password" style="width:100%;"></div>
         <button onclick="doLogin()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Sign In</button>
         <div style="text-align:center;font-size:12px;color:#8A8A8A;">Don't have an account? <span onclick="showSignUp()" style="color:#1A3D2E;cursor:pointer;font-weight:500;">Start free trial</span></div>
+        <div style="text-align:center;margin-top:8px;"><span onclick="showForgotPassword()" style="font-size:12px;color:#1A3D2E;cursor:pointer;font-weight:500;">Forgot password?</span></div>
       </div>
       <div id="signup-form" style="display:none;">
         <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Practice Name</label><input class="form-input" id="signup-practice" placeholder="Your Practice" style="width:100%;"></div>
         <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="signup-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
-        <div style="margin-bottom:20px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="signup-pw" placeholder="Create a password (min 6 characters)" style="width:100%;"></div>
+        <div style="margin-bottom:20px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="signup-pw" placeholder="Create a password (min 8 characters)" style="width:100%;"></div>
         <button onclick="doSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Start Free Trial</button>
         <div style="text-align:center;font-size:12px;color:#8A8A8A;">Already have an account? <span onclick="showSignIn()" style="color:#1A3D2E;cursor:pointer;font-weight:500;">Sign in</span></div>
+      </div>
+      <div id="forgot-pw-form" style="display:none;">
+        <div onclick="showSignIn()" style="font-size:12px;color:#1A3D2E;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Back to sign in</div>
+        <div style="font-family:Fraunces,serif;font-size:18px;color:#1C1C1C;margin-bottom:16px;">Reset your password</div>
+        <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" id="forgot-pw-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
+        <button onclick="sendPasswordReset()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;" id="reset-pw-btn">Send Reset Link</button>
+        <div id="reset-pw-success" style="display:none;text-align:center;padding:20px 0;"><div style="font-size:13px;color:#1A3D2E;font-weight:500;">Check your email for a reset link</div></div>
       </div>
     </div>
     <div style="padding:0 32px 20px;text-align:center;"><button onclick="closeAuthModal()" style="background:transparent;border:none;font-size:12px;color:#8A8A8A;cursor:pointer;">Back to pearliq.app</button></div>
@@ -776,7 +797,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
     <div class="header-actions">
       <div class="secure-pill"><div class="secure-dot"></div><div class="secure-text">SECURED</div></div>
       <button class="h-action" id="theme-toggle" onclick="toggleDarkMode()" title="Toggle dark mode"><svg id="theme-icon-dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg id="theme-icon-light" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
-      <button class="h-action" onclick="toggleNotif()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-badge">4</div></button>
+      <button class="h-action" onclick="toggleNotif()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-badge" style="display:none;">0</div></button>
       <button class="h-action" onclick="navigateTo('reviews')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
       <button class="h-action" onclick="navigateTo('settings')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
       <div class="header-stat-pill"><strong>142</strong> Patients</div>
@@ -817,27 +838,27 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
 
     <!-- TOP NAV -->
 <nav class="top-nav">
-  <button class="top-nav-btn active" onclick="navigateTo('dashboard')" title="Dashboard" data-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
-  <button class="top-nav-btn" onclick="navigateTo('patients')" title="Patients" data-label="Patients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
-  <button class="top-nav-btn" onclick="navigateTo('appointments')" title="Appointments" data-label="Appts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+  <button class="top-nav-btn active" onclick="navigateTo('dashboard')" title="Dashboard" data-label="Home" data-page="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('patients')" title="Patients" data-label="Patients" data-page="patients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('appointments')" title="Appointments" data-label="Appts" data-page="appointments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
   <div class="top-nav-divider"></div>
-  <button class="top-nav-btn" onclick="navigateTo('treatment-plans')" title="Treatment Plans" data-label="Plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></button>
-  <button class="top-nav-btn" onclick="navigateTo('follow-up')" title="Patient Journeys" data-label="Journeys"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
-  <button class="top-nav-btn" onclick="navigateTo('financing')" title="Financing Options" data-label="Finance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('treatment-plans')" title="Treatment Plans" data-label="Plans" data-page="treatment-plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('follow-up')" title="Patient Journeys" data-label="Journeys" data-page="follow-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('financing')" title="Financing Options" data-label="Finance" data-page="financing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></button>
   <div class="top-nav-divider"></div>
-  <button class="top-nav-btn" onclick="navigateTo('reviews')" title="Review Management" data-label="Reviews"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
-  <button class="top-nav-btn" onclick="navigateTo('review-triggers')" title="Reputation Engine" data-label="Engine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('reviews')" title="Review Management" data-label="Reviews" data-page="reviews"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('review-triggers')" title="Reputation Engine" data-label="Engine" data-page="review-triggers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button>
   <div class="top-nav-divider"></div>
-  <button class="top-nav-btn" onclick="navigateTo('staff')" title="Clinical Team" data-label="Team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></button>
-  <button class="top-nav-btn" onclick="navigateTo('payroll')" title="Pay &amp; Hours" data-label="Pay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('staff')" title="Clinical Team" data-label="Team" data-page="staff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('payroll')" title="Pay &amp; Hours" data-label="Pay" data-page="payroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
   <div class="top-nav-divider"></div>
-  <button class="top-nav-btn" onclick="navigateTo('practice-health')" title="Practice Health" data-label="Health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
-  <button class="top-nav-btn" onclick="navigateTo('ai-insights')" title="AI Insights" data-label="AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5L12 2z"/><path d="M18 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"/></svg></button>
-  <button class="top-nav-btn" onclick="navigateTo('revenue-forecast')" title="Revenue Forecast" data-label="Forecast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('practice-health')" title="Practice Health" data-label="Health" data-page="practice-health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('ai-insights')" title="AI Insights" data-label="AI" data-page="ai-insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5L12 2z"/><path d="M18 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('revenue-forecast')" title="Revenue Forecast" data-label="Forecast" data-page="revenue-forecast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></button>
   <div class="top-nav-divider"></div>
-  <button class="top-nav-btn" onclick="navigateTo('analytics')" title="Analytics" data-label="Stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button>
-  <button class="top-nav-btn" onclick="navigateTo('security')" title="Security" data-label="Secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></button>
-  <button class="top-nav-btn" onclick="navigateTo('settings')" title="Settings" data-label="Config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('analytics')" title="Analytics" data-label="Stats" data-page="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('security')" title="Security" data-label="Secure" data-page="security"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></button>
+  <button class="top-nav-btn" onclick="navigateTo('settings')" title="Settings" data-label="Config" data-page="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
 </nav>
 
     <!-- MAIN CONTENT -->
@@ -2016,6 +2037,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('theme-icon-dark').style.display = 'none';
     document.getElementById('theme-icon-light').style.display = 'block';
   }
+  var cyEl = document.getElementById('copyright-year');
+  if (cyEl) cyEl.textContent = new Date().getFullYear();
   if (document.getElementById('roi-plans')) calculateROI();
   document.getElementById('login-pw').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
   document.getElementById('login-email').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
@@ -2031,6 +2054,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('user-role-display').textContent = roleMap.default.role;
     document.getElementById('user-avatar').textContent = roleMap.default.initials;
     document.body.style.overflowY = 'hidden';
+    document.body.style.overflow = 'hidden';
     document.getElementById('landing-page').style.display = 'none';
     document.getElementById('app').classList.add('visible');
     document.getElementById('main-content').scrollTop = 0;
@@ -2100,6 +2124,9 @@ function showSignIn() {
   document.getElementById('auth-modal').style.display = 'flex';
   document.getElementById('signin-form').style.display = 'block';
   document.getElementById('signup-form').style.display = 'none';
+  document.getElementById('forgot-pw-form').style.display = 'none';
+  document.getElementById('reset-pw-btn').style.display = 'block';
+  document.getElementById('reset-pw-success').style.display = 'none';
   document.getElementById('auth-modal-title').textContent = 'Sign In to PEARLIQ';
   document.getElementById('auth-modal-subtitle').textContent = 'Welcome back';
 }
@@ -2116,14 +2143,36 @@ function closeAuthModal() {
   document.getElementById('auth-modal').style.display = 'none';
 }
 
+function showForgotPassword() {
+  document.getElementById('signin-form').style.display = 'none';
+  document.getElementById('signup-form').style.display = 'none';
+  document.getElementById('forgot-pw-form').style.display = 'block';
+  document.getElementById('auth-modal-title').textContent = 'Reset Password';
+  document.getElementById('auth-modal-subtitle').textContent = 'We will send you a reset link';
+}
+
+async function sendPasswordReset() {
+  var email = document.getElementById('forgot-pw-email').value.trim();
+  if (!email) { showToast('Please enter your email', 'error'); return; }
+  var btn = document.getElementById('reset-pw-btn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  var { error } = await pearliqDB.auth.resetPasswordForEmail(email, { redirectTo: 'https://pearliq.app' });
+  btn.disabled = false; btn.textContent = 'Send Reset Link';
+  if (error) { showToast(error.message, 'error'); return; }
+  btn.style.display = 'none';
+  document.getElementById('reset-pw-success').style.display = 'block';
+}
+
 async function doSignUp() {
+  var signupBtn = document.querySelector('#signup-form button[onclick="doSignUp()"]');
+  if (signupBtn) { signupBtn.disabled = true; signupBtn.textContent = 'Creating account...'; }
   var practice = document.getElementById('signup-practice').value.trim();
   var email = document.getElementById('signup-email').value.trim();
   var password = document.getElementById('signup-pw').value;
-  if (!practice || !email || !password) { showToast('Please fill in all fields', 'error'); return; }
-  if (password.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+  if (!practice || !email || !password) { if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = 'Start Free Trial'; } showToast('Please fill in all fields', 'error'); return; }
+  if (password.length < 8) { if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = 'Start Free Trial'; } showToast('Password must be at least 8 characters', 'error'); return; }
   var { data, error } = await pearliqDB.auth.signUp({ email: email, password: password, options: { data: { practice_name: practice } } });
-  if (error) { showToast(error.message, 'error'); return; }
+  if (error) { if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = 'Start Free Trial'; } showToast(error.message, 'error'); return; }
   closeAuthModal();
   var successDiv = document.getElementById('signup-success-overlay');
   if (!successDiv) {
@@ -2179,11 +2228,13 @@ function togglePw() {
 }
 
 async function doLogin() {
+  var loginBtn = document.querySelector('#signin-form button[onclick="doLogin()"]');
+  if (loginBtn) { loginBtn.disabled = true; loginBtn.textContent = 'Signing in...'; }
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-pw').value;
-  if (!email || !password) { showToast('Please enter your email and password', 'error'); return; }
+  if (!email || !password) { if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; } showToast('Please enter your email and password', 'error'); return; }
   const { data, error } = await pearliqDB.auth.signInWithPassword({ email, password });
-  if (error) { showToast('Invalid email or password', 'error'); return; }
+  if (error) { if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; } showToast('Invalid email or password', 'error'); return; }
   const roleMap = {
     admin: { name: 'Dr. Sarah Clarke', role: 'Practice Manager', initials: 'SC' },
     dentist: { name: 'Dr. Raj Patel', role: 'Associate Dentist', initials: 'RP' },
@@ -2193,9 +2244,10 @@ async function doLogin() {
   document.getElementById('user-name-display').textContent = user.name;
   document.getElementById('user-role-display').textContent = user.role;
   document.getElementById('user-avatar').textContent = user.initials;
+  if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; }
   closeAuthModal();
   setTimeout(() => {
-    document.body.style.overflowY = 'hidden';
+    document.body.style.overflow = 'hidden';
     document.getElementById('landing-page').style.display = 'none';
     document.getElementById('auth-modal').style.display = 'none';
     document.getElementById('app').classList.add('visible');
@@ -2219,8 +2271,8 @@ function navigateTo(page) {
   document.querySelectorAll('.top-nav-btn').forEach(n => n.classList.remove('active'));
   const el = document.getElementById('page-' + page);
   if (el) el.classList.add('active');
-  document.querySelectorAll('.top-nav-btn').forEach(n => {
-    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + page + "'")) n.classList.add('active');
+  document.querySelectorAll('.top-nav-btn').forEach(function(n) {
+    if (n.getAttribute('data-page') === page) n.classList.add('active');
   });
   if (page === 'analytics') setTimeout(initAnalyticsCharts, 100);
   if (page === 'practice-health') setTimeout(initHealthChart, 100);
@@ -2263,6 +2315,7 @@ async function logout() {
   document.getElementById('app').classList.remove('visible');
   document.getElementById('landing-page').style.display = 'block';
   document.body.style.overflowY = 'auto';
+  document.body.style.overflow = 'auto';
   window.history.replaceState(null, '', window.location.pathname);
   showToast('Signed out successfully', 'info');
 }
@@ -2370,6 +2423,8 @@ function renderFinancingOptions(options) {
 }
 
 async function saveFinancingOption() {
+  var saveBtn = document.querySelector('#financing-modal .modal-footer .btn-primary');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
   var name = document.getElementById('fin-name').value.trim();
   var description = document.getElementById('fin-description').value.trim();
   var max_amount = parseFloat(document.getElementById('fin-max-amount').value.replace(/[£,]/g, '')) || null;
@@ -2377,10 +2432,11 @@ async function saveFinancingOption() {
   var min_term = parseInt(document.getElementById('fin-min-term').value) || 6;
   var max_term = parseInt(document.getElementById('fin-max-term').value) || 24;
   var treatment_types = document.getElementById('fin-treatment-types').value.trim();
-  if (!name) { showToast('Please enter a name for this financing option', 'error'); return; }
-  if (!max_amount) { showToast('Please enter a maximum treatment amount', 'error'); return; }
+  if (!name) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; } showToast('Please enter a name for this financing option', 'error'); return; }
+  if (!max_amount) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; } showToast('Please enter a maximum treatment amount', 'error'); return; }
   var { error } = await pearliqDB.from('financing_options').insert([{ name: name, description: description, max_amount: max_amount, interest_rate: interest_rate, min_term: min_term, max_term: max_term, treatment_types: treatment_types }]);
-  if (error) { showToast('Error saving: ' + error.message, 'error'); return; }
+  if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; } showToast('Error saving: ' + error.message, 'error'); return; }
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; }
   closeModal('financing-modal');
   showToast('Financing option added', 'success');
   document.getElementById('fin-name').value = '';
@@ -2403,14 +2459,16 @@ async function deleteFinancingOption(id) {
 
 // SAVE FUNCTIONS
 async function savePatient() {
+  var saveBtn = document.querySelector('#new-patient-modal .modal-footer .btn-primary');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
   const first = document.getElementById('pat-first').value.trim();
   const last = document.getElementById('pat-last').value.trim();
   const email = document.getElementById('pat-email').value.trim();
   const phone = document.getElementById('pat-phone').value.trim();
   const dob = document.getElementById('pat-dob').value || null;
-  if (!first || !last) { showToast('Please enter patient name', 'error'); return; }
-  if (!email) { showToast('Please enter an email address', 'error'); return; }
-  if (!phone) { showToast('Please enter a phone number', 'error'); return; }
+  if (!first || !last) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter patient name', 'error'); return; }
+  if (!email) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter an email address', 'error'); return; }
+  if (!phone) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter a phone number', 'error'); return; }
   const { error } = await pearliqDB.from('patients').insert([{
     name: first + ' ' + last,
     email: email,
@@ -2418,7 +2476,8 @@ async function savePatient() {
     date_of_birth: dob,
     status: 'active'
   }]);
-  if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Error: ' + error.message, 'error'); return; }
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; }
   closeModal('new-patient-modal');
   showToast(first + ' ' + last + ' added successfully', 'success');
   document.getElementById('pat-first').value = '';
@@ -2431,13 +2490,15 @@ async function savePatient() {
 }
 
 async function saveTreatmentPlan() {
+  var saveBtn = document.querySelector('#new-plan-modal .modal-footer .btn-primary');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Creating...'; }
   const patientName = document.getElementById('plan-patient').value.trim();
   const treatment = document.getElementById('plan-treatment').value;
   const rawValue = document.getElementById('plan-value').value;
   const value = parseFloat(rawValue.replace(/[£,\s]/g, '')) || 0;
   const notes = document.getElementById('plan-notes').value.trim();
-  if (!patientName) { showToast('Please enter a patient name', 'error'); return; }
-  if (!treatment) { showToast('Please select a treatment type', 'error'); return; }
+  if (!patientName) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Create Plan & Start Sequence'; } showToast('Please enter a patient name', 'error'); return; }
+  if (!treatment) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Create Plan & Start Sequence'; } showToast('Please select a treatment type', 'error'); return; }
   const confidenceScore = Math.floor(Math.random() * 36) + 60;
   // Look up patient email/phone before insert
   var patEmail = null;
@@ -2457,7 +2518,8 @@ async function saveTreatmentPlan() {
     notes: notes,
     confidence_score: confidenceScore
   }]);
-  if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Create Plan & Start Sequence'; } showToast('Error: ' + error.message, 'error'); return; }
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Create Plan & Start Sequence'; }
   closeModal('new-plan-modal');
   showToast('Treatment plan created. Follow-up sequence started.', 'success');
   // Send Day 1 welcome email if patient has email on file
@@ -2473,6 +2535,8 @@ async function saveTreatmentPlan() {
 }
 
 async function saveStaff() {
+  var saveBtn = document.querySelector('#invite-staff-modal .modal-footer .btn-primary');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
   const first = document.getElementById('staff-first').value.trim();
   const last = document.getElementById('staff-last').value.trim();
   const email = document.getElementById('staff-email').value.trim();
@@ -2481,8 +2545,8 @@ async function saveStaff() {
   const rawRate = document.getElementById('staff-rate').value;
   const hourlyRate = parseFloat(rawRate.replace(/[£,\s]/g, '')) || null;
   const gdcNumber = document.getElementById('staff-gdc').value.trim() || null;
-  if (!first || !last) { showToast('Please enter staff name', 'error'); return; }
-  if (!role) { showToast('Please select a role', 'error'); return; }
+  if (!first || !last) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Team Member'; } showToast('Please enter staff name', 'error'); return; }
+  if (!role) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Team Member'; } showToast('Please select a role', 'error'); return; }
   const { error } = await pearliqDB.from('staff').insert([{
     name: first + ' ' + last,
     email: email,
@@ -2492,7 +2556,8 @@ async function saveStaff() {
     gdc_number: gdcNumber,
     status: 'active'
   }]);
-  if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Team Member'; } showToast('Error: ' + error.message, 'error'); return; }
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Team Member'; }
   closeModal('invite-staff-modal');
   showToast(first + ' ' + last + ' added to the team', 'success');
   document.getElementById('staff-first').value = '';
@@ -2526,6 +2591,15 @@ async function loadDashboardData() {
         const display = total >= 1000 ? '\u00A3' + Math.round(total / 1000) + 'K' : '\u00A3' + total;
         document.getElementById('kpi-revenue').textContent = display;
       }
+    }
+    var convRes = await pearliqDB.from('treatment_plans').select('status');
+    if (convRes.data && convRes.data.length > 0) {
+      var total = convRes.data.length;
+      var converted = convRes.data.filter(function(p) { return p.status === 'booked' || p.status === 'converted'; }).length;
+      var rate = Math.round((converted / total) * 100);
+      document.getElementById('kpi-conversion').textContent = rate + '%';
+    } else {
+      document.getElementById('kpi-conversion').textContent = '0%';
     }
   } catch (e) {
     showToast('Unable to load data — check your connection', 'error');
@@ -2596,7 +2670,14 @@ function closeDetailPanel() {
   document.getElementById('detail-panel').classList.remove('open');
   document.getElementById('detail-overlay').classList.remove('open');
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetailPanel(); });
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeDetailPanel();
+    document.querySelectorAll('.modal-overlay.open').forEach(function(m) { m.classList.remove('open'); });
+    document.getElementById('auth-modal').style.display = 'none';
+    document.getElementById('legal-modal').style.display = 'none';
+  }
+});
 
 // COUNT-UP ANIMATION
 function animateCountUp(el, target, duration, prefix, suffix) {
@@ -2615,12 +2696,23 @@ function animateCountUp(el, target, duration, prefix, suffix) {
   requestAnimationFrame(update);
 }
 
-function animateDashboard() {
+async function animateDashboard() {
   // Animate health score dial
   const ring = document.getElementById('health-hero-ring');
   const numEl = document.getElementById('health-hero-num');
   if (ring && numEl) {
-    const targetScore = 85;
+    var targetScore = 0;
+    try {
+      var healthRes = await Promise.all([
+        pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+        pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true })
+      ]);
+      var patCount = (healthRes[0].count || 0);
+      var planCount = (healthRes[1].count || 0);
+      if (patCount > 0 || planCount > 0) {
+        targetScore = Math.min(95, Math.round(40 + patCount * 2 + planCount * 3));
+      }
+    } catch(e) { targetScore = 0; }
     const circumference = 527.8;
     const targetOffset = circumference - (circumference * targetScore / 100);
     ring.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)';
@@ -2692,6 +2784,16 @@ const chartColors = {
   tickFont: { family: 'Figtree', size: 11 }
 };
 
+function getLast6Months() {
+  var months = [];
+  var now = new Date();
+  for (var i = 5; i >= 0; i--) {
+    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push(d.toLocaleString('en-GB', { month: 'short' }));
+  }
+  return months;
+}
+
 // CHARTS
 let chartsInited = false;
 function initCharts() {
@@ -2699,7 +2801,7 @@ function initCharts() {
   chartsInited = true;
   const ctx = document.getElementById('revenue-chart');
   if (!ctx) return;
-  const months = ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'];
+  const months = getLast6Months();
   new Chart(ctx, {
     type: 'bar',
     data: {
@@ -2737,7 +2839,7 @@ function initAnalyticsCharts() {
     new Chart(rCtx, {
       type: 'bar',
       data: {
-        labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+        labels: getLast6Months(),
         datasets: [
           { label: 'Google', data: [18, 22, 20, 26, 28, 34], backgroundColor: chartColors.p2, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 },
           { label: 'Trustpilot', data: [8, 10, 12, 14, 16, 18], backgroundColor: chartColors.p4, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 }
@@ -2763,7 +2865,7 @@ function initHealthChart() {
   new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+      labels: getLast6Months(),
       datasets: [{
         label: 'Health Score', data: [72, 74, 78, 80, 82, 85],
         borderColor: chartColors.p1, backgroundColor: 'rgba(26,61,46,0.08)',
