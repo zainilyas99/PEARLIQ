@@ -1061,7 +1061,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
             </div>
             <div class="tp-card-footer">
               <span style="font-size:10px;color:var(--rose);font-weight:500;">42 days without booking</span>
-              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();var email=prompt('Enter patient email to send Day 7 follow-up:');if(email)sendTreatmentFollowUp('James Thompson',email,'Dental Implant',3200,7)">Send Day 7</button>
+              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openSendFollowUpModal('James Thompson',7,'Dental Implant',3200)">Send Day 7</button>
             </div>
           </div>
 
@@ -1090,7 +1090,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
             </div>
             <div class="tp-card-footer">
               <span style="font-size:10px;color:var(--rose);font-weight:500;">38 days without booking</span>
-              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();var email=prompt('Enter patient email to send Day 3 follow-up:');if(email)sendTreatmentFollowUp('Emma Davies',email,'Invisalign Full',4800,3)">Send Day 3</button>
+              <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openSendFollowUpModal('Emma Davies',3,'Invisalign Full',4800)">Send Day 3</button>
             </div>
           </div>
 
@@ -2860,7 +2860,45 @@ function animateSectionHeading(sectionId) {
     heading.textContent = text;
   }, text.length * 40 + 800);
 }
+
+var pendingFollowUp = {};
+
+function openSendFollowUpModal(patientName, dayNumber, treatmentType, value) {
+  pendingFollowUp = { patientName: patientName, dayNumber: dayNumber, treatmentType: treatmentType, value: value };
+  document.getElementById('send-followup-title').textContent = 'Send Day ' + dayNumber + ' Follow-Up';
+  document.getElementById('send-followup-desc').textContent = 'Enter the email address for ' + patientName + ' to send their Day ' + dayNumber + ' ' + treatmentType + ' follow-up.';
+  document.getElementById('send-followup-email').value = '';
+  openModal('send-followup-modal');
+}
+
+async function confirmSendFollowUp() {
+  var email = document.getElementById('send-followup-email').value.trim();
+  if (!email) { showToast('Please enter an email address', 'error'); return; }
+  closeModal('send-followup-modal');
+  await sendTreatmentFollowUp(pendingFollowUp.patientName, email, pendingFollowUp.treatmentType, pendingFollowUp.value, pendingFollowUp.dayNumber);
+}
 </script>
+<!-- SEND FOLLOW-UP MODAL -->
+<div class="modal-overlay" id="send-followup-modal">
+  <div class="modal" style="width:480px;">
+    <div class="modal-header">
+      <div class="modal-title" id="send-followup-title">Send Follow-Up Email</div>
+      <button class="modal-close" onclick="closeModal('send-followup-modal')">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-dim);margin-bottom:20px;" id="send-followup-desc">Send the next follow-up email to this patient.</p>
+      <div class="form-group">
+        <label class="form-label">Patient Email Address</label>
+        <input class="form-input" id="send-followup-email" type="email" placeholder="patient@email.com">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('send-followup-modal')">Cancel</button>
+      <button class="btn btn-primary" id="send-followup-btn" onclick="confirmSendFollowUp()">Send Email</button>
+    </div>
+  </div>
+</div>
+
 <!-- DETAIL PANEL -->
 <div class="detail-panel-overlay" id="detail-overlay" onclick="closeDetailPanel()"></div>
 <div class="detail-panel" id="detail-panel">
