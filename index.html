@@ -1480,19 +1480,19 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
                 stroke-dasharray="314" stroke-dashoffset="47" transform="rotate(-90 60 60)"/>
             </svg>
             <div class="health-dial-score">
-              <div class="score-num">85</div>
+              <div class="score-num">0</div>
               <div class="score-label">Health Score</div>
             </div>
           </div>
           <div style="flex:1;">
-            <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:4px;">Overall Practice Health: Excellent</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;">Your practice is performing well across all key metrics. Review velocity and conversion rate are standout areas.</div>
+            <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:4px;">Overall Practice Health: No Data Yet</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;">Add patients and treatment plans to generate your health score.</div>
             <div class="health-breakdown">
-              <div class="health-metric"><div class="health-metric-label">Occupancy Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:82%;"></div></div><div class="health-metric-val">82%</div></div>
-              <div class="health-metric"><div class="health-metric-label">Conversion Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:87%;"></div></div><div class="health-metric-val">87%</div></div>
-              <div class="health-metric"><div class="health-metric-label">Review Velocity</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:91%;"></div></div><div class="health-metric-val">91%</div></div>
-              <div class="health-metric"><div class="health-metric-label">Recall Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:78%;"></div></div><div class="health-metric-val">78%</div></div>
-              <div class="health-metric"><div class="health-metric-label">Rota Coverage</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:88%;"></div></div><div class="health-metric-val">88%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Occupancy Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:0%;"></div></div><div class="health-metric-val">0%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Conversion Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:0%;"></div></div><div class="health-metric-val">0%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Review Velocity</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:0%;"></div></div><div class="health-metric-val">0%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Recall Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:0%;"></div></div><div class="health-metric-val">0%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Rota Coverage</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:0%;"></div></div><div class="health-metric-val">0%</div></div>
             </div>
           </div>
         </div>
@@ -1503,11 +1503,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
           </div>
           <div class="chart-card">
             <div class="chart-header"><div class="chart-title">Recommendations</div></div>
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:var(--amber-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div style="font-size:12px;color:var(--text-bright);font-weight:500;">Improve recall rate</div><div style="font-size:11px;color:var(--text-dim);">78% recall rate is below target. Consider adding a recall reminder sequence.</div></div></div>
-              <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:var(--green-glow);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div><div style="font-size:12px;color:var(--text-bright);font-weight:500;">Review velocity is excellent</div><div style="font-size:11px;color:var(--text-dim);">34 reviews this month. Keep the automated triggers running.</div></div></div>
-              <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:var(--amber-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div><div style="font-size:12px;color:var(--text-bright);font-weight:500;">Wednesday chair utilisation low</div><div style="font-size:11px;color:var(--text-dim);">Only 1 clinician on Wednesdays. Consider adding a half-day session.</div></div></div>
-            </div>
+            <div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px;">Recommendations will appear once your practice has data.</div>
           </div>
         </div>
       </div>
@@ -1553,10 +1549,10 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
           <div class="page-actions"><button class="btn btn-secondary btn-sm">Export PDF</button></div>
         </div>
         <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Revenue YTD</div></div><div class="kpi-value">&pound;186K</div><div class="kpi-delta up">+&pound;24K vs last year</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Plans Recovered</div></div><div class="kpi-value">&pound;42K</div><div class="kpi-delta up">+Via follow-up automation</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Review Growth</div></div><div class="kpi-value">+186</div><div class="kpi-delta up">+Google reviews YTD</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Treatment Value</div></div><div class="kpi-value">&pound;2,840</div><div class="kpi-delta up">+&pound;420 vs last year</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Revenue YTD</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta up"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Plans Recovered</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta up"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Review Growth</div></div><div class="kpi-value">0</div><div class="kpi-delta up"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Treatment Value</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta up"></div></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
           <div class="chart-card"><div class="chart-header"><div class="chart-title">Revenue by Treatment Type</div></div><div class="chart-canvas-wrap"><canvas id="treatment-chart"></canvas></div></div>
@@ -1571,12 +1567,12 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
         </div>
         <div style="background:var(--bg-2);border:1px solid var(--border-green);padding:22px;margin-bottom:18px;display:flex;align-items:center;gap:28px;border-radius:var(--radius);box-shadow:var(--shadow-md);">
           <div style="text-align:center;flex-shrink:0;">
-            <div style="font-family:'Fraunces',serif;font-size:48px;color:var(--green);line-height:1;">98</div>
+            <div style="font-family:'Fraunces',serif;font-size:48px;color:var(--green);line-height:1;">&mdash;</div>
             <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.14em;font-weight:600;">Security Score</div>
           </div>
           <div style="flex:1;">
             <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:5px;">Platform Status: Secure</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-bottom:12px;">All systems operational. GDPR & ICO compliant.</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-bottom:12px;">All systems operational. GDPR compliant.</div>
             <div style="display:flex;gap:18px;flex-wrap:wrap;">
               <span style="font-size:11px;color:var(--green);font-weight:500;">AES-256 Encryption</span>
               <span style="font-size:11px;color:var(--green);font-weight:500;">GDPR Compliant</span>
@@ -1588,11 +1584,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
             <div class="security-card-title">Audit Log</div>
             <div class="security-card-desc">All user actions — last 24 hours</div>
             <div class="audit-list">
-              <div class="audit-item"><div class="audit-icon ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div style="flex:1;"><div class="audit-action">Dr. Clarke signed in</div><div class="audit-meta">2FA verified · Chrome 122</div></div><div class="audit-time">08:28</div></div>
-              <div class="audit-item"><div class="audit-icon info"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div style="flex:1;"><div class="audit-action">Follow-up sequence triggered — 6 patients</div><div class="audit-meta">AI Automation · Day 7 finance email</div></div><div class="audit-time">09:00</div></div>
-              <div class="audit-item"><div class="audit-icon ok"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div style="flex:1;"><div class="audit-action">Review trigger sent — Sarah Mitchell</div><div class="audit-meta">Post-appointment · Google</div></div><div class="audit-time">11:00</div></div>
-              <div class="audit-item"><div class="audit-icon info"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div style="flex:1;"><div class="audit-action">Payroll calculated — April 2026</div><div class="audit-meta">Auto-generated from rota data</div></div><div class="audit-time">14:00</div></div>
-              <div class="audit-item"><div class="audit-icon warn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div style="flex:1;"><div class="audit-action">Patient data exported</div><div class="audit-meta">Dr. Clarke · GDPR: Legitimate interest</div></div><div class="audit-time">15:30</div></div>
+              <div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px;">No activity logged yet</div>
             </div>
           </div>
           <div class="security-card">
@@ -2719,7 +2711,7 @@ function initAnalyticsCharts() {
     tCtx.setAttribute('data-init', '1');
     new Chart(tCtx, {
       type: 'doughnut',
-      data: { labels: ['Implants', 'Invisalign', 'Veneers', 'Bonding', 'Other'], datasets: [{ data: [34, 28, 18, 12, 8], backgroundColor: [chartColors.p1, chartColors.p2, chartColors.p3, chartColors.p4, chartColors.p5], borderWidth: 2, borderColor: '#FFFFFF' }] },
+      data: { labels: ['Implants', 'Invisalign', 'Veneers', 'Bonding', 'Other'], datasets: [{ data: [0, 0, 0, 0, 0], backgroundColor: [chartColors.p1, chartColors.p2, chartColors.p3, chartColors.p4, chartColors.p5], borderWidth: 2, borderColor: '#FFFFFF' }] },
       options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'right', labels: { color: chartColors.text, font: chartColors.tickFont, padding: 14, usePointStyle: true, pointStyleWidth: 8 } } } }
     });
   }
@@ -2730,8 +2722,8 @@ function initAnalyticsCharts() {
       data: {
         labels: getLast6Months(),
         datasets: [
-          { label: 'Google', data: [18, 22, 20, 26, 28, 34], backgroundColor: chartColors.p2, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 },
-          { label: 'Trustpilot', data: [8, 10, 12, 14, 16, 18], backgroundColor: chartColors.p4, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 }
+          { label: 'Google', data: [0, 0, 0, 0, 0, 0], backgroundColor: chartColors.p2, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 },
+          { label: 'Trustpilot', data: [0, 0, 0, 0, 0, 0], backgroundColor: chartColors.p4, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 }
         ]
       },
       options: {
@@ -2756,7 +2748,7 @@ function initHealthChart() {
     data: {
       labels: getLast6Months(),
       datasets: [{
-        label: 'Health Score', data: [72, 74, 78, 80, 82, 85],
+        label: 'Health Score', data: [0, 0, 0, 0, 0, 0],
         borderColor: chartColors.p1, backgroundColor: 'rgba(26,61,46,0.08)',
         borderWidth: 2, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#FFFFFF', pointBorderColor: chartColors.p1, pointBorderWidth: 2, pointHoverRadius: 6
       }]
