@@ -523,6 +523,19 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
   .payroll-body { grid-template-columns: 1fr 1fr; }
   .health-hero-metrics { flex-direction: column; }
 }
+.csv-steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; }
+.csv-step { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; font-family: 'Figtree', sans-serif; }
+.csv-step.active { background: #1A3D2E; color: white; }
+.csv-step.inactive { background: var(--bg-4); color: var(--text-dim); }
+.csv-step.done { background: var(--emerald-dim); color: var(--green); }
+.csv-step-line { width: 24px; height: 2px; background: var(--bg-5); }
+.csv-step-line.done { background: var(--green); }
+.csv-dropzone { border: 2px dashed var(--border-green); border-radius: 8px; padding: 48px; text-align: center; cursor: pointer; transition: all 0.2s; }
+.csv-dropzone:hover { background: var(--green-glow); border-color: var(--green); }
+.csv-map-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.csv-map-row:last-child { border-bottom: none; }
+.csv-map-label { flex: 1; font-size: 13px; color: var(--cream); font-weight: 500; }
+.csv-map-select { flex: 1; }
 </style>
 </head>
 <body>
@@ -977,6 +990,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
           <div><div class="page-eyebrow">CRM · Patients</div><h1 class="page-title">Patient Records</h1><div class="page-subtitle">342 registered patients · 142 active treatment plans</div></div>
           <div class="page-actions">
             <select class="filter-select"><option>All Patients</option><option>Active Plans</option><option>Lapsed Plans</option><option>Completed</option></select>
+            <button class="btn btn-secondary btn-sm" onclick="openModal('csv-import-modal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Import CSV</button>
             <button class="btn btn-primary btn-sm" onclick="openModal('new-patient-modal')">+ Add Patient</button>
           </div>
         </div>
@@ -2013,6 +2027,61 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
   </div>
 </div>
 
+<div class="modal-overlay" id="csv-import-modal">
+  <div class="modal" style="width:560px;">
+    <div class="modal-header">
+      <div class="modal-title">Import Patients</div>
+      <button class="modal-close" onclick="closeModal('csv-import-modal');resetCSVImport()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="csv-steps" id="csv-steps">
+        <div class="csv-step active" id="csv-s1">1</div>
+        <div class="csv-step-line" id="csv-l1"></div>
+        <div class="csv-step inactive" id="csv-s2">2</div>
+        <div class="csv-step-line" id="csv-l2"></div>
+        <div class="csv-step inactive" id="csv-s3">3</div>
+      </div>
+      <div id="csv-step-1">
+        <div class="csv-dropzone" onclick="document.getElementById('csv-file-input').click()">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" style="margin-bottom:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div style="font-family:'Fraunces',serif;font-size:16px;color:var(--cream);margin-bottom:8px;">Drop your CSV file here or click to browse</div>
+          <div style="font-size:12px;color:var(--text-dim);">Accepts .csv files only</div>
+        </div>
+        <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCSVFile(this)">
+        <div style="font-size:11px;color:var(--text-dim);margin-top:14px;line-height:1.6;">Export your patient list from your existing software as a CSV and upload it here. We support SOE Exact, Dentally, Carestream and any standard CSV format.</div>
+      </div>
+      <div id="csv-step-2" style="display:none;">
+        <div style="font-family:'Fraunces',serif;font-size:16px;color:var(--cream);margin-bottom:4px;">Map your columns</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Match your CSV columns to PEARLIQ fields</div>
+        <div id="csv-mapping"></div>
+        <div style="margin-top:16px;"><div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">Preview (first 3 rows)</div><div id="csv-preview" style="font-size:12px;background:var(--bg-3);border-radius:6px;padding:12px;overflow-x:auto;"></div></div>
+      </div>
+      <div id="csv-step-3" style="display:none;">
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="width:56px;height:56px;background:var(--green-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <div style="font-family:'Fraunces',serif;font-size:20px;color:var(--cream);margin-bottom:4px;" id="csv-summary-title">Ready to import</div>
+          <div style="font-size:13px;color:var(--text-dim);" id="csv-summary-sub"></div>
+        </div>
+        <div id="csv-summary-names" style="margin-bottom:16px;"></div>
+        <div id="csv-summary-warning" style="display:none;background:var(--amber-dim);border:1px solid rgba(184,134,11,0.2);border-radius:6px;padding:12px 14px;font-size:12px;color:var(--amber);margin-bottom:16px;"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div id="csv-footer-1">
+        <button class="btn btn-secondary" onclick="closeModal('csv-import-modal');resetCSVImport()">Cancel</button>
+      </div>
+      <div id="csv-footer-2" style="display:none;">
+        <button class="btn btn-secondary" onclick="csvGoToStep(1)">Back</button>
+        <button class="btn btn-primary" onclick="csvPreviewImport()">Preview Import</button>
+      </div>
+      <div id="csv-footer-3" style="display:none;">
+        <button class="btn btn-secondary" onclick="csvGoToStep(2)">Back</button>
+        <button class="btn btn-primary" id="confirm-import-btn" onclick="executeImport(csvMappedData)">Import Patients</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast-container" id="toast-container"></div>
 
 <script>
@@ -2985,6 +3054,176 @@ async function sendFollowUpAuto(patientName, dayNumber, treatmentType, value) {
   } catch(e) {
     showToast('Could not send — check patient profile has an email', 'error');
   }
+}
+
+var csvParsedData = null;
+var csvMappedData = [];
+var csvColumnMap = { name: '', email: '', phone: '', dob: '' };
+
+function resetCSVImport() {
+  csvParsedData = null;
+  csvMappedData = [];
+  csvColumnMap = { name: '', email: '', phone: '', dob: '' };
+  document.getElementById('csv-file-input').value = '';
+  csvGoToStep(1);
+}
+
+function csvGoToStep(step) {
+  document.getElementById('csv-step-1').style.display = step === 1 ? 'block' : 'none';
+  document.getElementById('csv-step-2').style.display = step === 2 ? 'block' : 'none';
+  document.getElementById('csv-step-3').style.display = step === 3 ? 'block' : 'none';
+  document.getElementById('csv-footer-1').style.display = step === 1 ? 'flex' : 'none';
+  document.getElementById('csv-footer-2').style.display = step === 2 ? 'flex' : 'none';
+  document.getElementById('csv-footer-3').style.display = step === 3 ? 'flex' : 'none';
+  for (var i = 1; i <= 3; i++) {
+    var s = document.getElementById('csv-s' + i);
+    s.className = 'csv-step ' + (i < step ? 'done' : i === step ? 'active' : 'inactive');
+  }
+  document.getElementById('csv-l1').className = 'csv-step-line' + (step > 1 ? ' done' : '');
+  document.getElementById('csv-l2').className = 'csv-step-line' + (step > 2 ? ' done' : '');
+}
+
+function handleCSVFile(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    csvParsedData = parseCSV(e.target.result);
+    if (!csvParsedData.headers.length || !csvParsedData.rows.length) {
+      showToast('Could not parse CSV — check the file format', 'error');
+      return;
+    }
+    buildColumnMapping();
+    csvGoToStep(2);
+  };
+  reader.readAsText(file);
+}
+
+function parseCSV(text) {
+  var lines = text.trim().split('\n');
+  var headers = lines[0].split(',').map(function(h) { return h.trim().replace(/"/g, ''); });
+  var rows = [];
+  for (var i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    var values = lines[i].split(',').map(function(v) { return v.trim().replace(/"/g, ''); });
+    var row = {};
+    headers.forEach(function(h, idx) { row[h] = values[idx] || ''; });
+    rows.push(row);
+  }
+  return { headers: headers, rows: rows };
+}
+
+function buildColumnMapping() {
+  var headers = csvParsedData.headers;
+  var hl = headers.map(function(h) { return h.toLowerCase(); });
+  var nameIdx = hl.findIndex(function(h) { return h === 'name' || h === 'patient' || h === 'patient name' || h === 'full name'; });
+  var firstIdx = hl.findIndex(function(h) { return h === 'first name' || h === 'firstname' || h === 'first'; });
+  var lastIdx = hl.findIndex(function(h) { return h === 'last name' || h === 'lastname' || h === 'last' || h === 'surname'; });
+  var emailIdx = hl.findIndex(function(h) { return h === 'email' || h === 'email address' || h === 'e-mail'; });
+  var phoneIdx = hl.findIndex(function(h) { return h === 'phone' || h === 'mobile' || h === 'telephone' || h === 'tel' || h === 'phone number'; });
+  var dobIdx = hl.findIndex(function(h) { return h === 'dob' || h === 'date of birth' || h === 'birth date' || h === 'birthdate'; });
+
+  var hasFirstLast = firstIdx >= 0 && lastIdx >= 0;
+  var fields = [
+    { key: 'name', label: 'Patient Name', auto: hasFirstLast ? '__first_last__' : (nameIdx >= 0 ? headers[nameIdx] : '') },
+    { key: 'email', label: 'Email', auto: emailIdx >= 0 ? headers[emailIdx] : '' },
+    { key: 'phone', label: 'Phone', auto: phoneIdx >= 0 ? headers[phoneIdx] : '' },
+    { key: 'dob', label: 'Date of Birth', auto: dobIdx >= 0 ? headers[dobIdx] : '' }
+  ];
+
+  var optionsHtml = '<option value="">— Skip —</option>' + (hasFirstLast ? '<option value="__first_last__">First Name + Last Name (combined)</option>' : '') + headers.map(function(h) { return '<option value="' + h + '">' + h + '</option>'; }).join('');
+
+  var mapHtml = '';
+  fields.forEach(function(f) {
+    mapHtml += '<div class="csv-map-row"><div class="csv-map-label">' + f.label + '</div><select class="filter-select csv-map-select" id="csv-map-' + f.key + '" onchange="csvColumnMap[\'' + f.key + '\']=this.value">' + optionsHtml + '</select></div>';
+  });
+  document.getElementById('csv-mapping').innerHTML = mapHtml;
+
+  fields.forEach(function(f) {
+    var sel = document.getElementById('csv-map-' + f.key);
+    if (f.auto) { sel.value = f.auto; csvColumnMap[f.key] = f.auto; }
+  });
+
+  var previewHtml = '<table style="width:100%;font-size:11px;border-collapse:collapse;"><thead><tr>' + headers.map(function(h) { return '<th style="padding:4px 8px;text-align:left;color:var(--text-dim);font-weight:500;white-space:nowrap;">' + h + '</th>'; }).join('') + '</tr></thead><tbody>';
+  csvParsedData.rows.slice(0, 3).forEach(function(row) {
+    previewHtml += '<tr>' + headers.map(function(h) { return '<td style="padding:4px 8px;color:var(--text);white-space:nowrap;">' + (row[h] || '') + '</td>'; }).join('') + '</tr>';
+  });
+  previewHtml += '</tbody></table>';
+  document.getElementById('csv-preview').innerHTML = previewHtml;
+}
+
+function csvPreviewImport() {
+  var headers = csvParsedData.headers;
+  var hl = headers.map(function(h) { return h.toLowerCase(); });
+  var firstIdx = hl.findIndex(function(h) { return h === 'first name' || h === 'firstname' || h === 'first'; });
+  var lastIdx = hl.findIndex(function(h) { return h === 'last name' || h === 'lastname' || h === 'last' || h === 'surname'; });
+
+  csvMappedData = csvParsedData.rows.map(function(row) {
+    var name = '';
+    if (csvColumnMap.name === '__first_last__') {
+      name = ((row[headers[firstIdx]] || '') + ' ' + (row[headers[lastIdx]] || '')).trim();
+    } else if (csvColumnMap.name) {
+      name = row[csvColumnMap.name] || '';
+    }
+    return {
+      name: name,
+      email: csvColumnMap.email ? (row[csvColumnMap.email] || '') : '',
+      phone: csvColumnMap.phone ? (row[csvColumnMap.phone] || '') : '',
+      dob: csvColumnMap.dob ? (row[csvColumnMap.dob] || '') : ''
+    };
+  }).filter(function(p) { return p.name; });
+
+  var total = csvMappedData.length;
+  var noEmail = csvMappedData.filter(function(p) { return !p.email; }).length;
+
+  document.getElementById('csv-summary-title').textContent = 'Ready to import ' + total + ' patients';
+  document.getElementById('csv-summary-sub').textContent = total + ' patients will be added to your practice';
+  document.getElementById('confirm-import-btn').textContent = 'Import ' + total + ' Patients';
+
+  var namesHtml = '';
+  csvMappedData.slice(0, 5).forEach(function(p) {
+    namesHtml += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);"><div style="width:28px;height:28px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;flex-shrink:0;">' + p.name.split(' ').map(function(n){return n[0]}).join('').substring(0,2).toUpperCase() + '</div><div><div style="font-size:13px;color:var(--cream);font-weight:500;">' + p.name + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.email || 'No email') + '</div></div></div>';
+  });
+  if (total > 5) namesHtml += '<div style="padding:8px 0;font-size:12px;color:var(--text-dim);">+ ' + (total - 5) + ' more patients</div>';
+  document.getElementById('csv-summary-names').innerHTML = namesHtml;
+
+  var warningEl = document.getElementById('csv-summary-warning');
+  if (noEmail > 0) {
+    warningEl.style.display = 'block';
+    warningEl.textContent = noEmail + ' patient' + (noEmail > 1 ? 's have' : ' has') + ' no email — they will be imported but won\'t receive automated follow-ups.';
+  } else {
+    warningEl.style.display = 'none';
+  }
+
+  csvGoToStep(3);
+}
+
+async function executeImport(mappedData) {
+  var btn = document.getElementById('confirm-import-btn');
+  btn.textContent = 'Importing...';
+  btn.disabled = true;
+  var imported = 0;
+  var failed = 0;
+  for (var i = 0; i < mappedData.length; i++) {
+    var patient = mappedData[i];
+    if (!patient.name) continue;
+    var res = await pearliqDB.from('patients').insert([{
+      name: patient.name,
+      email: patient.email || null,
+      phone: patient.phone || null,
+      date_of_birth: patient.dob || null,
+      status: 'active'
+    }]);
+    if (res.error) { failed++; } else { imported++; }
+  }
+  closeModal('csv-import-modal');
+  resetCSVImport();
+  if (failed > 0) {
+    showToast(imported + ' patients imported. ' + failed + ' failed (duplicates skipped).', 'info');
+  } else {
+    showToast(imported + ' patients imported successfully!', 'success');
+  }
+  loadPatients();
 }
 </script>
 <!-- DETAIL PANEL -->
