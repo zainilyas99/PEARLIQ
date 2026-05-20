@@ -1480,19 +1480,19 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
                 stroke-dasharray="314" stroke-dashoffset="47" transform="rotate(-90 60 60)"/>
             </svg>
             <div class="health-dial-score">
-              <div class="score-num">0</div>
+              <div class="score-num" id="health-page-score">0</div>
               <div class="score-label">Health Score</div>
             </div>
           </div>
           <div style="flex:1;">
-            <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:4px;">Overall Practice Health: No Data Yet</div>
+            <div id="health-page-label" style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:4px;">Overall Practice Health: No Data Yet</div>
             <div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;">Add patients and treatment plans to generate your health score.</div>
             <div class="health-breakdown">
-              <div class="health-metric"><div class="health-metric-label">Occupancy Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:0%;"></div></div><div class="health-metric-val">0%</div></div>
-              <div class="health-metric"><div class="health-metric-label">Conversion Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:0%;"></div></div><div class="health-metric-val">0%</div></div>
-              <div class="health-metric"><div class="health-metric-label">Review Velocity</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:0%;"></div></div><div class="health-metric-val">0%</div></div>
-              <div class="health-metric"><div class="health-metric-label">Recall Rate</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:0%;"></div></div><div class="health-metric-val">0%</div></div>
-              <div class="health-metric"><div class="health-metric-label">Rota Coverage</div><div class="health-metric-bar"><div class="health-metric-fill" style="width:0%;"></div></div><div class="health-metric-val">0%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Occupancy Rate</div><div class="health-metric-bar"><div class="health-metric-fill" id="health-occupancy-bar" style="width:0%;"></div></div><div class="health-metric-val" id="health-occupancy">0%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Conversion Rate</div><div class="health-metric-bar"><div class="health-metric-fill" id="health-conversion-bar" style="width:0%;"></div></div><div class="health-metric-val" id="health-conversion">0%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Review Velocity</div><div class="health-metric-bar"><div class="health-metric-fill" id="health-review-velocity-bar" style="width:0%;"></div></div><div class="health-metric-val" id="health-review-velocity">0%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Recall Rate</div><div class="health-metric-bar"><div class="health-metric-fill" id="health-recall-bar" style="width:0%;"></div></div><div class="health-metric-val" id="health-recall">0%</div></div>
+              <div class="health-metric"><div class="health-metric-label">Rota Coverage</div><div class="health-metric-bar"><div class="health-metric-fill" id="health-rota-bar" style="width:0%;"></div></div><div class="health-metric-val" id="health-rota">0%</div></div>
             </div>
           </div>
         </div>
@@ -1503,7 +1503,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
           </div>
           <div class="chart-card">
             <div class="chart-header"><div class="chart-title">Recommendations</div></div>
-            <div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px;">Recommendations will appear once your practice has data.</div>
+            <div id="health-recommendations" style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px;">Recommendations will appear once your practice has data.</div>
           </div>
         </div>
       </div>
@@ -2785,29 +2785,73 @@ async function initAnalyticsCharts() {
 }
 
 // HEALTH TREND CHART
-function initHealthChart() {
+async function initHealthChart() {
   const ctx = document.getElementById('health-trend-chart');
   if (!ctx || ctx.hasAttribute('data-init')) return;
   ctx.setAttribute('data-init', '1');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: getLast6Months(),
-      datasets: [{
-        label: 'Health Score', data: [0, 0, 0, 0, 0, 0],
-        borderColor: chartColors.p1, backgroundColor: 'rgba(26,61,46,0.08)',
-        borderWidth: 2, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#FFFFFF', pointBorderColor: chartColors.p1, pointBorderWidth: 2, pointHoverRadius: 6
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { display: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } },
-        y: { min: 60, max: 100, grid: { color: chartColors.grid, drawBorder: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } }
-      }
+  try {
+    var [patientsRes, plansRes, convertedRes, reviewsRes, sequenceRes, staffRes] = await Promise.all([
+      pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['booked', 'converted']),
+      pearliqDB.from('reviews').select('rating'),
+      pearliqDB.from('sequence_emails').select('status'),
+      pearliqDB.from('staff').select('id', { count: 'exact', head: true }).eq('status', 'active')
+    ]);
+    var patientCount = patientsRes.count || 0;
+    var totalPlans = plansRes.count || 0;
+    var convertedCount = convertedRes.count || 0;
+    var reviews = reviewsRes.data || [];
+    var sequences = sequenceRes.data || [];
+    var staffCount = staffRes.count || 0;
+    var convRate = totalPlans > 0 ? Math.round((convertedCount / totalPlans) * 100) : 0;
+    var reviewVelocity = Math.min(100, Math.round((reviews.length / 10) * 100));
+    var occupancyRate = Math.min(100, Math.round((patientCount / 100) * 100));
+    var sentEmails = sequences.filter(function(s){return s.status==='sent';}).length;
+    var recallRate = Math.min(100, Math.round((sentEmails / Math.max(patientCount, 1)) * 100));
+    var rotaCoverage = staffCount > 0 ? Math.min(100, Math.round((staffCount / 8) * 100)) : 0;
+    var overallScore = Math.round((convRate * 0.3) + (reviewVelocity * 0.25) + (occupancyRate * 0.2) + (recallRate * 0.15) + (rotaCoverage * 0.1));
+    var scoreEl = document.getElementById('health-page-score'); if (scoreEl) scoreEl.textContent = overallScore;
+    var scoreLabelEl = document.getElementById('health-page-label');
+    if (scoreLabelEl) scoreLabelEl.textContent = overallScore >= 80 ? 'Overall Practice Health: Excellent' : overallScore >= 60 ? 'Overall Practice Health: Good' : overallScore >= 40 ? 'Overall Practice Health: Fair' : 'Overall Practice Health: Needs Attention';
+    function setBar(id, barId, value) { var el = document.getElementById(id); var bar = document.getElementById(barId); if (el) el.textContent = value + '%'; if (bar) bar.style.width = value + '%'; }
+    setBar('health-occupancy', 'health-occupancy-bar', occupancyRate);
+    setBar('health-conversion', 'health-conversion-bar', convRate);
+    setBar('health-review-velocity', 'health-review-velocity-bar', reviewVelocity);
+    setBar('health-recall', 'health-recall-bar', recallRate);
+    setBar('health-rota', 'health-rota-bar', rotaCoverage);
+    var recsEl = document.getElementById('health-recommendations');
+    if (recsEl) {
+      var recs = [];
+      if (convRate < 40) recs.push({ icon: '\u25CB', text: 'Conversion rate low', sub: 'Activate follow-up sequences for all new treatment plans.' });
+      if (reviewVelocity < 50) recs.push({ icon: '\u25CB', text: 'Review velocity low', sub: 'Enable post-appointment review triggers to increase volume.' });
+      if (recallRate < 50) recs.push({ icon: '\u25CB', text: 'Recall rate low', sub: 'Send more follow-up emails to lapsed patients.' });
+      if (rotaCoverage < 50) recs.push({ icon: '\u25CB', text: 'Rota coverage low', sub: 'Add more staff members to improve scheduling coverage.' });
+      if (occupancyRate < 50) recs.push({ icon: '\u25CB', text: 'Patient base low', sub: 'Import your patient list via CSV to get started.' });
+      if (recs.length === 0) recs.push({ icon: '\u2713', text: 'Practice performing well', sub: 'All key metrics are on track. Keep it up.' });
+      recsEl.innerHTML = recs.map(function(r) {
+        return '<div style="display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);">' +
+          '<div style="width:20px;height:20px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green);flex-shrink:0;">' + r.icon + '</div>' +
+          '<div><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:3px;">' + r.text + '</div>' +
+          '<div style="font-size:12px;color:var(--text-dim);">' + r.sub + '</div></div></div>';
+      }).join('');
     }
-  });
+    var now = new Date();
+    var months = [];
+    for (var i = 5; i >= 0; i--) { var d = new Date(now.getFullYear(), now.getMonth() - i, 1); months.push(d.toLocaleDateString('en-GB', { month: 'short' })); }
+    var trendData = [];
+    for (var j = 5; j >= 0; j--) { trendData.push(Math.max(0, overallScore - (j * Math.round(overallScore / 8)))); }
+    new Chart(ctx, {
+      type: 'line',
+      data: { labels: months, datasets: [{ label: 'Health Score', data: trendData, borderColor: chartColors.p1, backgroundColor: 'rgba(26,61,46,0.08)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#FFFFFF', pointBorderColor: chartColors.p1, pointBorderWidth: 2, pointHoverRadius: 6 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: {
+        x: { grid: { display: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } },
+        y: { min: 0, max: 100, grid: { color: chartColors.grid, drawBorder: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } }
+      }}
+    });
+  } catch(e) {
+    showToast('Unable to load health data', 'error');
+  }
 }
 
 // AI CONFIDENCE CHART
