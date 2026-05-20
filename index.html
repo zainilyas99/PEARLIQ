@@ -2454,36 +2454,27 @@ async function saveStaff() {
 // LOAD DASHBOARD DATA
 async function loadDashboardData() {
   try {
-    const [patientsRes, plansRes, revenueRes] = await Promise.all([
+    const [patientsRes, activePlansRes, allPlansRes, convertedRes] = await Promise.all([
       pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active'),
       pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['presented', 'in_nurture']),
-      pearliqDB.from('treatment_plans').select('value').neq('status', 'lost')
+      pearliqDB.from('treatment_plans').select('value, status'),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['booked', 'converted'])
     ]);
-
-    if (patientsRes.count !== null && patientsRes.count > 0) {
-      document.getElementById('kpi-patients').textContent = patientsRes.count;
-    }
-    if (plansRes.count !== null && plansRes.count > 0) {
-      document.getElementById('kpi-plans').textContent = plansRes.count;
-    }
-    if (revenueRes.data && revenueRes.data.length > 0) {
-      const total = revenueRes.data.reduce((sum, row) => sum + (row.value || 0), 0);
-      if (total > 0) {
-        const display = total >= 1000 ? '\u00A3' + Math.round(total / 1000) + 'K' : '\u00A3' + total;
-        document.getElementById('kpi-revenue').textContent = display;
-      }
-    }
-    var convRes = await pearliqDB.from('treatment_plans').select('status');
-    if (convRes.data && convRes.data.length > 0) {
-      var total = convRes.data.length;
-      var converted = convRes.data.filter(function(p) { return p.status === 'booked' || p.status === 'converted'; }).length;
-      var rate = Math.round((converted / total) * 100);
-      document.getElementById('kpi-conversion').textContent = rate + '%';
-    } else {
-      document.getElementById('kpi-conversion').textContent = '0%';
-    }
-  } catch (e) {
-    showToast('Unable to load data — check your connection', 'error');
+    var patientCount = patientsRes.count || 0;
+    document.getElementById('kpi-patients').textContent = patientCount;
+    var plansCount = activePlansRes.count || 0;
+    document.getElementById('kpi-plans').textContent = plansCount;
+    var allPlans = allPlansRes.data || [];
+    var total = allPlans.reduce(function(sum, row) { return sum + (row.value || 0); }, 0);
+    document.getElementById('kpi-revenue').textContent = total >= 1000 ? '\u00A3' + (total / 1000).toFixed(1) + 'K' : '\u00A3' + total;
+    var totalPlans = allPlans.length;
+    var convertedCount = convertedRes.count || 0;
+    var convRate = totalPlans > 0 ? Math.round((convertedCount / totalPlans) * 100) : 0;
+    document.getElementById('kpi-conversion').textContent = convRate + '%';
+    var patientPill = document.querySelector('.header-stat-pill strong');
+    if (patientPill) patientPill.textContent = patientCount;
+  } catch(e) {
+    showToast('Unable to load dashboard data', 'error');
   }
 }
 
