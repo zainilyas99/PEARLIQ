@@ -1451,20 +1451,20 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
       <!-- PAY & HOURS (was Payroll) -->
       <div class="page" id="page-payroll">
         <div class="page-header">
-          <div><div class="page-eyebrow">Finance · Pay & Hours</div><h1 class="page-title">Pay & Hours</h1><div class="page-subtitle">April 2026 · Auto-calculated from rota · Export ready</div></div>
+          <div><div class="page-eyebrow">Finance · Pay & Hours</div><h1 class="page-title">Pay & Hours</h1><div class="page-subtitle" id="payroll-month">Auto-calculated from rota · Export ready</div></div>
           <div class="page-actions">
             <button class="btn btn-secondary btn-sm" onclick="showToast('Exporting to Xero...','info')">Export to Xero</button>
             <button class="btn btn-primary btn-sm" onclick="showToast('Sending payroll to accountant...','success')">Send to Accountant</button>
           </div>
         </div>
         <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Total Payroll April</div><div class="kpi-icon" style="background:var(--green-glow);color:var(--green);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta neutral">0 staff members</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Total Hours</div></div><div class="kpi-value">0</div><div class="kpi-delta neutral"></div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Employer NI</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta neutral">Auto-calculated</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Total Payroll</div><div class="kpi-icon" style="background:var(--green-glow);color:var(--green);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div></div><div class="kpi-value" id="payroll-total">&pound;0</div><div class="kpi-delta neutral" id="payroll-staff-count">0 staff members</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Total Hours</div></div><div class="kpi-value" id="payroll-hours">0</div><div class="kpi-delta neutral"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Employer NI</div></div><div class="kpi-value" id="payroll-ni">&pound;0</div><div class="kpi-delta neutral">Auto-calculated</div></div>
           <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Payroll Status</div></div><div class="kpi-value">&mdash;</div><div class="kpi-delta neutral"></div></div>
         </div>
 
-        <div style="text-align:center;padding:40px;color:var(--text-dim);font-size:13px;">No staff added yet — add your team to calculate payroll</div>
+        <div id="payroll-staff-list"><div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;">No staff added yet — add your team to calculate payroll.</div></div>
       </div>
 
       <!-- PRACTICE HEALTH -->
@@ -2159,6 +2159,7 @@ function navigateTo(page) {
   if (page === 'patients') loadPatients();
   if (page === 'reviews') loadReviewsData();
   if (page === 'review-triggers') loadReputationData();
+  if (page === 'payroll') loadPayrollData();
   if (page === 'financing') loadFinancingOptions();
   document.getElementById('main-content').scrollTop = 0;
   closeNotif();
@@ -3252,6 +3253,56 @@ async function loadReputationData() {
     }
   } catch(e) {
     showToast('Unable to load reputation data', 'error');
+  }
+}
+
+async function loadPayrollData() {
+  try {
+    var { data: staffData, error } = await pearliqDB.from('staff').select('*').eq('status', 'active').order('created_at', { ascending: true });
+    if (error) throw error;
+    var staff = staffData || [];
+    var totalPayroll = 0, totalHours = 0, employerNI = 0;
+    staff.forEach(function(s) {
+      var hours = s.contract_type === 'Full Time' ? 168 : s.contract_type === 'Part Time' ? 80 : 0;
+      var rate = s.hourly_rate || 0;
+      var gross = hours * rate;
+      totalPayroll += gross;
+      totalHours += hours;
+      var niable = Math.max(0, gross - 758);
+      employerNI += niable * 0.138;
+    });
+    var totalEl = document.getElementById('payroll-total'); if (totalEl) totalEl.textContent = '\u00A3' + Math.round(totalPayroll).toLocaleString();
+    var hoursEl = document.getElementById('payroll-hours'); if (hoursEl) hoursEl.textContent = totalHours.toLocaleString();
+    var niEl = document.getElementById('payroll-ni'); if (niEl) niEl.textContent = '\u00A3' + Math.round(employerNI).toLocaleString();
+    var staffCountEl = document.getElementById('payroll-staff-count'); if (staffCountEl) staffCountEl.textContent = staff.length + ' staff members';
+    var now = new Date();
+    var monthName = now.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+    var monthEl = document.getElementById('payroll-month'); if (monthEl) monthEl.textContent = monthName + ' \u00B7 Auto-calculated from rota \u00B7 Export ready';
+    var container = document.getElementById('payroll-staff-list');
+    if (container) {
+      if (staff.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;">No staff added yet \u2014 add your team to calculate payroll.</div>';
+      } else {
+        container.innerHTML = staff.map(function(s) {
+          var hours = s.contract_type === 'Full Time' ? 168 : s.contract_type === 'Part Time' ? 80 : 0;
+          var rate = s.hourly_rate || 0;
+          var gross = hours * rate;
+          var pension = Math.round(gross * 0.05);
+          var netPay = Math.round(gross - pension);
+          return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:20px 28px;margin-bottom:12px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><div><div style="font-family:Fraunces,serif;font-size:17px;color:var(--cream);">' + (s.name || '') + ' \u2014 ' + (s.role || '') + '</div></div><span class="badge badge-good">CONFIRMED</span></div>' +
+            '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;">' +
+            '<div><div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Basic Salary</div><div style="font-size:18px;font-weight:600;color:var(--cream);">\u00A3' + Math.round(gross).toLocaleString() + '</div></div>' +
+            '<div><div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Hours Worked</div><div style="font-size:18px;font-weight:600;color:var(--cream);">' + hours + 'h</div></div>' +
+            '<div><div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Overtime</div><div style="font-size:18px;font-weight:600;color:var(--cream);">\u00A30</div></div>' +
+            '<div><div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Pension (5%)</div><div style="font-size:18px;font-weight:600;color:var(--cream);">\u00A3' + pension.toLocaleString() + '</div></div>' +
+            '<div><div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Net Pay</div><div style="font-size:18px;font-weight:600;color:var(--green);">\u00A3' + netPay.toLocaleString() + '</div></div>' +
+            '</div><div style="margin-top:16px;display:flex;justify-content:flex-end;"><button class="btn btn-secondary btn-sm">View Payslip</button></div></div>';
+        }).join('');
+      }
+    }
+  } catch(e) {
+    showToast('Unable to load payroll data', 'error');
   }
 }
 </script>
