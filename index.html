@@ -1307,7 +1307,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
       <!-- REVIEWS -->
       <div class="page" id="page-reviews">
         <div class="page-header">
-          <div><div class="page-eyebrow">Reputation · Reviews</div><h1 class="page-title">Review Management</h1><div class="page-subtitle">No reviews yet</div></div>
+          <div><div class="page-eyebrow">Reputation · Reviews</div><h1 class="page-title">Review Management</h1><div class="page-subtitle" id="reviews-subtitle">No reviews yet</div></div>
           <div class="page-actions">
             <button class="btn btn-secondary btn-sm" onclick="showToast('Exporting review report...','info')">Export</button>
             <button class="btn btn-primary btn-sm" onclick="openModal('manual-review-modal')">+ Manual Request</button>
@@ -1316,19 +1316,19 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
 
         <div class="review-stats">
           <div class="review-stat-card">
-            <div class="review-stat-val">0.0</div>
+            <div class="review-stat-val" id="reviews-google-rating">0.0</div>
             <div style="font-size:16px;margin-bottom:4px;color:var(--amber);">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
             <div class="review-stat-label">Google Rating</div>
-            <div class="review-stat-sub">0 reviews</div>
+            <div class="review-stat-sub" id="reviews-google-count">0 reviews</div>
           </div>
           <div class="review-stat-card">
-            <div class="review-stat-val">0.0</div>
+            <div class="review-stat-val" id="reviews-trustpilot-rating">0.0</div>
             <div style="font-size:16px;margin-bottom:4px;color:var(--amber);">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
             <div class="review-stat-label">Trustpilot Rating</div>
-            <div class="review-stat-sub">0 reviews</div>
+            <div class="review-stat-sub" id="reviews-trustpilot-count">0 reviews</div>
           </div>
           <div class="review-stat-card">
-            <div class="review-stat-val">0</div>
+            <div class="review-stat-val" id="reviews-new-count">0</div>
             <div style="font-size:16px;margin-bottom:4px;color:var(--green);">+</div>
             <div class="review-stat-label">New This Month</div>
             <div class="review-stat-sub">0% trigger response rate</div>
@@ -1349,7 +1349,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
           </div>
         </div>
 
-        <div class="review-grid">
+        <div class="review-grid" id="reviews-cards">
 <div style="text-align:center;padding:40px;color:var(--text-dim);font-size:13px;grid-column:1/-1;">No reviews yet — reviews will appear here once patients submit them</div>
         </div>
       </div>
@@ -2157,6 +2157,7 @@ function navigateTo(page) {
   if (page === 'ai-insights') setTimeout(initConfidenceChart, 100);
   if (page === 'revenue-forecast') setTimeout(initForecastChart, 100);
   if (page === 'patients') loadPatients();
+  if (page === 'reviews') loadReviewsData();
   if (page === 'financing') loadFinancingOptions();
   document.getElementById('main-content').scrollTop = 0;
   closeNotif();
@@ -3128,6 +3129,48 @@ async function executeImport(mappedData) {
     showToast(imported + ' patients imported successfully!', 'success');
   }
   loadPatients();
+}
+
+async function loadReviewsData() {
+  try {
+    var { data: reviews, error } = await pearliqDB.from('reviews').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    var allReviews = reviews || [];
+    var googleReviews = allReviews.filter(function(r) { return (r.platform || '').toLowerCase().includes('google'); });
+    var trustpilotReviews = allReviews.filter(function(r) { return (r.platform || '').toLowerCase().includes('trustpilot'); });
+    var googleAvg = googleReviews.length > 0 ? (googleReviews.reduce(function(s, r) { return s + (r.rating || 0); }, 0) / googleReviews.length).toFixed(1) : '0.0';
+    var trustpilotAvg = trustpilotReviews.length > 0 ? (trustpilotReviews.reduce(function(s, r) { return s + (r.rating || 0); }, 0) / trustpilotReviews.length).toFixed(1) : '0.0';
+    var now = new Date();
+    var thisMonthReviews = allReviews.filter(function(r) { var d = new Date(r.created_at); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); });
+    var gRatingEl = document.getElementById('reviews-google-rating'); if (gRatingEl) gRatingEl.textContent = googleAvg;
+    var gCountEl = document.getElementById('reviews-google-count'); if (gCountEl) gCountEl.textContent = googleReviews.length + ' reviews';
+    var tRatingEl = document.getElementById('reviews-trustpilot-rating'); if (tRatingEl) tRatingEl.textContent = trustpilotAvg;
+    var tCountEl = document.getElementById('reviews-trustpilot-count'); if (tCountEl) tCountEl.textContent = trustpilotReviews.length + ' reviews';
+    var newEl = document.getElementById('reviews-new-count'); if (newEl) newEl.textContent = thisMonthReviews.length;
+    var subtitleEl = document.getElementById('reviews-subtitle');
+    if (subtitleEl) subtitleEl.textContent = allReviews.length > 0 ? (googleAvg + ' average \u00B7 ' + googleReviews.length + ' Google reviews \u00B7 ' + trustpilotReviews.length + ' Trustpilot') : 'No reviews yet';
+    var cardsContainer = document.getElementById('reviews-cards');
+    if (cardsContainer) {
+      if (allReviews.length === 0) {
+        cardsContainer.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);font-size:13px;">No reviews yet — they will appear here once patients submit them.</div>';
+      } else {
+        cardsContainer.innerHTML = allReviews.slice(0, 9).map(function(r) {
+          var stars = '';
+          for (var i = 0; i < 5; i++) { stars += '<span style="color:' + (i < (r.rating || 0) ? '#C4922A' : '#E0DDD8') + ';">\u2605</span>'; }
+          var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
+          return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:20px 24px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+            '<div style="font-weight:600;color:var(--cream);font-size:13px;">' + (r.patient_name || 'Patient') + '</div>' +
+            '<div style="font-size:11px;color:var(--text-dim);">' + date + '</div></div>' +
+            '<div style="margin-bottom:8px;">' + stars + '</div>' +
+            '<div style="font-size:12px;color:var(--text-dim);line-height:1.7;">' + (r.review_text || '') + '</div>' +
+            '<div style="margin-top:10px;font-size:10px;color:var(--green);letter-spacing:0.08em;text-transform:uppercase;">' + (r.platform || '') + '</div></div>';
+        }).join('');
+      }
+    }
+  } catch(e) {
+    showToast('Unable to load reviews data', 'error');
+  }
 }
 </script>
 <!-- DETAIL PANEL -->
