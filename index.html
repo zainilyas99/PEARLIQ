@@ -1184,96 +1184,27 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
       <!-- PATIENT JOURNEYS (was Follow-Up Sequences) -->
       <div class="page" id="page-follow-up">
         <div class="page-header">
-          <div><div class="page-eyebrow">Automation · Nurture</div><h1 class="page-title">Patient Journeys</h1><div class="page-subtitle">6 active sequences · 87% conversion rate · &pound;42K recovered this month</div></div>
+          <div><div class="page-eyebrow">Automation · Nurture</div><h1 class="page-title">Patient Journeys</h1><div class="page-subtitle">Automated follow-up sequences for treatment plans</div></div>
           <div class="page-actions">
             <button class="btn btn-primary btn-sm" onclick="openModal('new-sequence-modal')">+ New Sequence</button>
           </div>
         </div>
 
-        <div class="sequence-card">
-          <div class="sequence-header">
-            <div>
-              <div class="sequence-name">High-Value Treatment Plan Nurture</div>
-              <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Triggers for treatment plans over &pound;1,500 · Implants, Invisalign, Veneers</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span class="badge badge-good">Active</span>
-              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-            </div>
-          </div>
-          <div class="sequence-body">
-            <div class="sequence-steps">
-              <div class="sequence-step">
-                <div class="step-node sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-                <div class="step-label">Welcome Email</div>
-                <div class="step-day">Day 1</div>
-              </div>
-              <div class="step-connector done"></div>
-              <div class="sequence-step">
-                <div class="step-node sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
-                <div class="step-label">SMS Reminder</div>
-                <div class="step-day">Day 3</div>
-              </div>
-              <div class="step-connector done"></div>
-              <div class="sequence-step">
-                <div class="step-node pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
-                <div class="step-label">Finance Offer</div>
-                <div class="step-day">Day 7</div>
-              </div>
-              <div class="step-connector"></div>
-              <div class="sequence-step">
-                <div class="step-node waiting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
-                <div class="step-label">Education Email</div>
-                <div class="step-day">Day 14</div>
-              </div>
-              <div class="step-connector"></div>
-              <div class="sequence-step">
-                <div class="step-node waiting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
-                <div class="step-label">Call Prompt</div>
-                <div class="step-day">Day 21</div>
-              </div>
-              <div class="step-connector"></div>
-              <div class="sequence-step">
-                <div class="step-node waiting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
-                <div class="step-label">Final Offer</div>
-                <div class="step-day">Day 30</div>
-              </div>
-            </div>
-          </div>
-          <div class="sequence-footer">
-            <div class="sequence-stat"><strong>24</strong> patients in sequence</div>
-            <div class="sequence-stat"><strong>&pound;32K</strong> recovered this month</div>
-            <div class="sequence-stat"><strong>87%</strong> conversion rate</div>
-            <button class="btn btn-secondary btn-sm">Edit Sequence</button>
-          </div>
+        <div class="kpi-grid" style="margin-bottom:24px;">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Active Sequences</div></div><div class="kpi-value" id="followup-active">0</div><div class="kpi-delta neutral">Plans with active follow-up</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Emails Sent</div></div><div class="kpi-value" id="followup-sent">0</div><div class="kpi-delta neutral">Total sent</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Open Rate</div></div><div class="kpi-value" id="followup-open-rate">0%</div><div class="kpi-delta neutral">Of sent emails</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Click Rate</div></div><div class="kpi-value" id="followup-click-rate">0%</div><div class="kpi-delta neutral">Of sent emails</div></div>
         </div>
 
-        <div class="sequence-card">
-          <div class="sequence-header">
-            <div>
-              <div class="sequence-name">Standard Treatment Re-engagement</div>
-              <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">Triggers for all treatment plans under &pound;1,500</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span class="badge badge-good">Active</span>
-              <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-            </div>
-          </div>
-          <div class="sequence-body">
-            <div class="sequence-steps">
-              <div class="sequence-step"><div class="step-node sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="step-label">Welcome Email</div><div class="step-day">Day 1</div></div>
-              <div class="step-connector done"></div>
-              <div class="sequence-step"><div class="step-node sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div class="step-label">SMS Nudge</div><div class="step-day">Day 5</div></div>
-              <div class="step-connector done"></div>
-              <div class="sequence-step"><div class="step-node pending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="step-label">Final Email</div><div class="step-day">Day 14</div></div>
-            </div>
-          </div>
-          <div class="sequence-footer">
-            <div class="sequence-stat"><strong>18</strong> patients in sequence</div>
-            <div class="sequence-stat"><strong>&pound;10K</strong> recovered this month</div>
-            <div class="sequence-stat"><strong>74%</strong> conversion rate</div>
-            <button class="btn btn-secondary btn-sm">Edit Sequence</button>
-          </div>
+        <div id="followup-sequences-list" style="margin-bottom:24px;">
+          <div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;">No active follow-up sequences — create a treatment plan to start one automatically.</div>
+        </div>
+
+        <div class="data-table-wrap">
+          <div class="table-header"><div class="table-title">Email Log</div></div>
+          <table><thead><tr><th>Patient</th><th>Day</th><th>Email</th><th>Sent</th><th>Status</th></tr></thead>
+          <tbody id="followup-email-log"><tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No emails sent yet</td></tr></tbody></table>
         </div>
       </div>
 
@@ -2157,6 +2088,7 @@ function navigateTo(page) {
   if (page === 'review-triggers') loadReputationData();
   if (page === 'payroll') loadPayrollData();
   if (page === 'staff') loadStaffData();
+  if (page === 'follow-up') loadFollowUpData();
   if (page === 'financing') loadFinancingOptions();
   document.getElementById('main-content').scrollTop = 0;
   closeNotif();
@@ -3365,6 +3297,73 @@ async function loadStaffData() {
     }
   } catch(e) {
     showToast('Unable to load staff data', 'error');
+  }
+}
+
+async function loadFollowUpData() {
+  try {
+    var [sequenceRes, plansRes] = await Promise.all([
+      pearliqDB.from('sequence_emails').select('*').order('created_at', { ascending: false }),
+      pearliqDB.from('treatment_plans').select('*').eq('sequence_active', true).order('created_at', { ascending: false })
+    ]);
+    var sequences = sequenceRes.data || [];
+    var activePlans = plansRes.data || [];
+    var totalSent = sequences.filter(function(s) { return s.status === 'sent'; }).length;
+    var openRate = totalSent > 0 ? Math.round((sequences.filter(function(s) { return s.status === 'opened'; }).length / totalSent) * 100) : 0;
+    var clickRate = totalSent > 0 ? Math.round((sequences.filter(function(s) { return s.status === 'clicked'; }).length / totalSent) * 100) : 0;
+    var activeEl = document.getElementById('followup-active'); if (activeEl) activeEl.textContent = activePlans.length;
+    var sentEl = document.getElementById('followup-sent'); if (sentEl) sentEl.textContent = totalSent;
+    var openEl = document.getElementById('followup-open-rate'); if (openEl) openEl.textContent = openRate + '%';
+    var clickEl = document.getElementById('followup-click-rate'); if (clickEl) clickEl.textContent = clickRate + '%';
+    var container = document.getElementById('followup-sequences-list');
+    if (container) {
+      if (activePlans.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;">No active follow-up sequences \u2014 create a treatment plan to start one automatically.</div>';
+      } else {
+        container.innerHTML = activePlans.map(function(plan) {
+          var planSequences = sequences.filter(function(s) { return s.treatment_plan_id === plan.id; });
+          var lastSent = planSequences.length > 0 ? planSequences[0] : null;
+          var lastDayNum = lastSent ? (lastSent.day_number || 0) : 0;
+          var nextDay = lastDayNum === 0 ? 1 : lastDayNum === 1 ? 3 : lastDayNum === 3 ? 7 : lastDayNum === 7 ? 14 : lastDayNum === 14 ? 30 : null;
+          var daysSinceCreated = Math.floor((new Date() - new Date(plan.created_at)) / (1000 * 60 * 60 * 24));
+          var statusClass = daysSinceCreated > 30 ? 'badge-hot' : daysSinceCreated > 7 ? 'badge-warm' : 'badge-good';
+          var statusText = daysSinceCreated > 30 ? 'LAPSED' : daysSinceCreated > 7 ? 'WARM' : 'ACTIVE';
+          var steps = [1, 3, 7, 14, 30];
+          var progressDots = steps.map(function(day) {
+            var sent = planSequences.find(function(s) { return s.day_number === day; });
+            var dotColor = sent ? 'var(--green)' : 'var(--bg-5)';
+            return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:28px;height:28px;border-radius:50%;background:' + dotColor + ';display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-size:9px;color:var(--text-dim);">Day ' + day + '</div></div>';
+          }).join('<div style="flex:1;height:1px;background:var(--border);margin-top:14px;"></div>');
+          return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:12px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;"><div><div style="font-family:Fraunces,serif;font-size:16px;color:var(--cream);margin-bottom:2px;">' + (plan.patient_name || '\u2014') + '</div>' +
+            '<div style="font-size:12px;color:var(--text-dim);">' + (plan.treatment_type || '\u2014') + ' \u00B7 \u00A3' + parseInt(plan.value || 0).toLocaleString() + '</div></div>' +
+            '<span class="badge ' + statusClass + '">' + statusText + '</span></div>' +
+            '<div style="display:flex;align-items:center;gap:0;margin-bottom:14px;">' + progressDots + '</div>' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+            '<div style="font-size:11px;color:var(--text-dim);">' + daysSinceCreated + ' days since plan created \u00B7 ' + (lastSent ? 'Day ' + lastDayNum + ' sent' : 'No emails sent yet') + '</div>' +
+            (nextDay ? '<button class="btn btn-primary btn-sm" onclick="sendFollowUpAuto(\'' + (plan.patient_name||'').replace(/'/g,"\\'") + '\',' + nextDay + ',\'' + (plan.treatment_type||'').replace(/'/g,"\\'") + '\',' + (plan.value||0) + ')">Send Day ' + nextDay + '</button>' : '<span style="font-size:11px;color:var(--green);">Sequence complete</span>') +
+            '</div></div>';
+        }).join('');
+      }
+    }
+    var logContainer = document.getElementById('followup-email-log');
+    if (logContainer) {
+      if (sequences.length === 0) {
+        logContainer.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No emails sent yet</td></tr>';
+      } else {
+        logContainer.innerHTML = sequences.slice(0, 20).map(function(s) {
+          var date = s.sent_at ? new Date(s.sent_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '\u2014';
+          var statusClass = s.status === 'sent' ? 'badge-good' : s.status === 'opened' ? 'badge-warm' : 'badge-neutral';
+          return '<tr><td style="padding:10px 12px;font-size:13px;color:var(--cream);font-weight:500;">' + (s.patient_name || '\u2014') + '</td>' +
+            '<td style="padding:10px 12px;font-size:12px;color:var(--text-dim);">Day ' + (s.day_number || '\u2014') + '</td>' +
+            '<td style="padding:10px 12px;font-size:12px;color:var(--text-dim);">' + (s.patient_email || '\u2014') + '</td>' +
+            '<td style="padding:10px 12px;">' + date + '</td>' +
+            '<td style="padding:10px 12px;"><span class="badge ' + statusClass + '">' + (s.status || 'pending') + '</span></td></tr>';
+        }).join('');
+      }
+    }
+  } catch(e) {
+    showToast('Unable to load follow-up data', 'error');
   }
 }
 </script>
