@@ -1835,15 +1835,15 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
         </div>
         <div class="settings-layout">
           <div class="settings-nav">
-            <div class="settings-nav-item active" onclick="settingsNav(this)">Practice Profile</div>
-            <div class="settings-nav-item" onclick="settingsNav(this)">Follow-Up Settings</div>
-            <div class="settings-nav-item" onclick="settingsNav(this)">Review Settings</div>
-            <div class="settings-nav-item" onclick="settingsNav(this)">Payroll Settings</div>
-            <div class="settings-nav-item" onclick="settingsNav(this)">Integrations</div>
-            <div class="settings-nav-item" onclick="settingsNav(this)">Billing</div>
+            <div class="settings-nav-item active" onclick="settingsNav(this,'profile')">Practice Profile</div>
+            <div class="settings-nav-item" onclick="settingsNav(this,'followup')">Follow-Up Settings</div>
+            <div class="settings-nav-item" onclick="settingsNav(this,'reviews')">Review Settings</div>
+            <div class="settings-nav-item" onclick="settingsNav(this,'payroll')">Payroll Settings</div>
+            <div class="settings-nav-item" onclick="settingsNav(this,'integrations')">Integrations</div>
+            <div class="settings-nav-item" onclick="settingsNav(this,'billing')">Billing</div>
           </div>
           <div class="settings-panel">
-            <div class="settings-section">
+            <div class="settings-section" id="settings-profile">
               <div class="settings-section-title">Practice Profile</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                 <div class="form-group"><label class="form-label">Practice Name</label><input class="form-input" value="Clarke Dental"></div>
@@ -1852,17 +1852,40 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
                 <div class="form-group"><label class="form-label">Practice Software</label><select class="form-input filter-select"><option>Dentally</option><option>SOE Exact</option><option>Carestream R4</option><option>Other</option></select></div>
               </div>
             </div>
-            <div class="settings-section">
+            <div class="settings-section" id="settings-followup" style="display:none;">
               <div class="settings-section-title">Follow-Up Automation</div>
               <div class="settings-row"><div><div class="settings-label">Auto-trigger follow-up sequences</div><div class="settings-sublabel">Starts automatically when treatment plan created</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
               <div class="settings-row"><div><div class="settings-label">Include financing options</div><div class="settings-sublabel">Add Chrysalis Finance offer at Day 7</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
               <div class="settings-row"><div><div class="settings-label">Lapsed plan alerts</div><div class="settings-sublabel">Alert manager when plan lapsed 30+ days</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
             </div>
-            <div class="settings-section">
+            <div class="settings-section" id="settings-reviews" style="display:none;">
               <div class="settings-section-title">Review Automation</div>
               <div class="settings-row"><div><div class="settings-label">Auto-trigger post appointment</div><div class="settings-sublabel">Send review request 2 hours after appointment ends</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
               <div class="settings-row"><div><div class="settings-label">Primary review platform</div></div><select class="filter-select"><option>Google (primary)</option><option>Trustpilot (primary)</option><option>Split 70/30</option></select></div>
               <div class="settings-row"><div><div class="settings-label">Pre-screen low satisfaction</div><div class="settings-sublabel">Redirect negative experience to internal feedback</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            </div>
+            <div class="settings-section" id="settings-payroll" style="display:none;">
+              <div class="settings-section-title">Payroll Settings</div>
+              <div class="settings-row"><div><div class="settings-label">Auto-calculate from rota</div><div class="settings-sublabel">Generate payroll figures automatically from weekly rota data</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><div><div class="settings-label">Include pension contributions</div><div class="settings-sublabel">Auto-deduct workplace pension at configured rate</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+              <div class="settings-row"><div><div class="settings-label">Export format</div></div><select class="filter-select"><option>Xero CSV</option><option>QuickBooks</option><option>Standard CSV</option></select></div>
+            </div>
+            <div class="settings-section" id="settings-integrations" style="display:none;">
+              <div class="settings-section-title">Integrations</div>
+              <div class="settings-row"><div><div class="settings-label">Practice management software</div><div class="settings-sublabel">Connect your PMS for automatic patient sync</div></div><select class="filter-select"><option>Dentally</option><option>SOE Exact</option><option>Carestream R4</option><option>Not connected</option></select></div>
+              <div class="settings-row"><div><div class="settings-label">Accounting software</div><div class="settings-sublabel">Export payroll data directly</div></div><select class="filter-select"><option>Xero</option><option>QuickBooks</option><option>Not connected</option></select></div>
+              <div class="settings-row"><div><div class="settings-label">Google Business Profile</div><div class="settings-sublabel">Required for review management</div></div><button class="btn btn-secondary btn-sm">Connect</button></div>
+            </div>
+            <div class="settings-section" id="settings-billing" style="display:none;">
+              <div class="settings-section-title">Billing</div>
+              <div style="padding:20px 0;">
+                <div style="font-size:13px;color:var(--cream);font-weight:500;margin-bottom:4px;">Current Plan: PEARLIQ Professional</div>
+                <div style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">&pound;1,497/month · Next billing date: 1 June 2026</div>
+                <div style="display:flex;gap:8px;">
+                  <button class="btn btn-secondary btn-sm">Update Payment Method</button>
+                  <button class="btn btn-ghost btn-sm" style="color:var(--rose);">Cancel Subscription</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -2447,9 +2470,12 @@ async function globalSearch(query) {
 document.addEventListener('click', function(e) { if (!e.target.closest('.header-search')) { var r = document.getElementById('search-results'); if (r) r.style.display = 'none'; } });
 
 // SETTINGS NAV
-function settingsNav(el) {
-  el.closest('.settings-nav').querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+function settingsNav(el, section) {
+  el.closest('.settings-nav').querySelectorAll('.settings-nav-item').forEach(function(i) { i.classList.remove('active'); });
   el.classList.add('active');
+  document.querySelectorAll('.settings-panel .settings-section').forEach(function(s) { s.style.display = 'none'; });
+  var target = document.getElementById('settings-' + section);
+  if (target) target.style.display = 'block';
 }
 
 // REQUIRED SQL: create table if not exists financing_options (id uuid default gen_random_uuid() primary key, name text not null, description text, max_amount numeric, interest_rate numeric default 0, min_term integer default 6, max_term integer default 24, treatment_types text, created_at timestamp default now());
