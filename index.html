@@ -482,8 +482,8 @@ tbody tr:last-child td { border-bottom: none; }
   .security-grid { grid-template-columns: 1fr; }
 }
 #opportunity, #features, #roi, #pricing { scroll-margin-top: 80px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 60px 40px 40px; box-sizing: border-box; }
-@keyframes letterBounce { 0% { transform: translateY(0); } 30% { transform: translateY(-8px); } 60% { transform: translateY(2px); } 80% { transform: translateY(-4px); } 100% { transform: translateY(0); } }
-.bounce-letter { display: inline-block; animation: letterBounce 0.6s ease forwards; }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+.bounce-letter { display: inline-block; animation: fadeDown 0.5s ease forwards; opacity: 0; }
 
 /* DARK MODE */
 body.dark-mode { --bg: #0a0e0f; --bg-2: #10161a; --bg-3: #162024; --bg-4: #1e2c32; --bg-5: #263640; --cream: #e8f4f0; --text: #7a9a94; --text-dim: #4a6660; --text-bright: #b8d4ce; --border: rgba(255,255,255,0.06); --green: #4ecba8; --green-light: #7ddbc4; --green-dim: rgba(78,203,168,0.12); --green-glow: rgba(78,203,168,0.08); --border-green: rgba(78,203,168,0.15); --emerald: #4ecba8; --emerald-dim: rgba(78,203,168,0.12); --rose: #f07068; --rose-dim: rgba(240,112,104,0.12); --amber: #e0a830; --amber-dim: rgba(224,168,48,0.12); }
@@ -2964,14 +2964,13 @@ function animateSectionHeading(sectionId) {
   if (!section) return;
   var heading = section.querySelector('h2');
   if (!heading) return;
-  var text = heading.textContent;
-  heading.innerHTML = text.split('').map(function(char, i) {
-    if (char === ' ') return '<span style="display:inline-block;">&nbsp;</span>';
-    return '<span class="bounce-letter" style="animation-delay:' + (i * 0.04) + 's;">' + char + '</span>';
-  }).join('');
+  heading.style.opacity = '0';
+  heading.style.transform = 'translateY(-16px)';
+  heading.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   setTimeout(function() {
-    heading.textContent = text;
-  }, text.length * 40 + 800);
+    heading.style.opacity = '1';
+    heading.style.transform = 'translateY(0)';
+  }, 50);
 }
 
 async function sendFollowUpAuto(patientName, dayNumber, treatmentType, value) {
