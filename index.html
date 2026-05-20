@@ -1549,10 +1549,10 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
           <div class="page-actions"><button class="btn btn-secondary btn-sm">Export PDF</button></div>
         </div>
         <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Revenue YTD</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta up"></div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Plans Recovered</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta up"></div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Review Growth</div></div><div class="kpi-value">0</div><div class="kpi-delta up"></div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Treatment Value</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta up"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Revenue YTD</div></div><div class="kpi-value" id="analytics-revenue">&pound;0</div><div class="kpi-delta up"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Plans Recovered</div></div><div class="kpi-value" id="analytics-recovered">&pound;0</div><div class="kpi-delta up"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Review Growth</div></div><div class="kpi-value" id="analytics-reviews">0</div><div class="kpi-delta up"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Treatment Value</div></div><div class="kpi-value" id="analytics-avg">&pound;0</div><div class="kpi-delta up"></div></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
           <div class="chart-card"><div class="chart-header"><div class="chart-title">Revenue by Treatment Type</div></div><div class="chart-canvas-wrap"><canvas id="treatment-chart"></canvas></div></div>
@@ -2709,37 +2709,76 @@ function initCharts() {
   });
 }
 
-function initAnalyticsCharts() {
-  const tCtx = document.getElementById('treatment-chart');
-  const rCtx = document.getElementById('reviews-chart');
-  if (tCtx && !tCtx.hasAttribute('data-init')) {
-    tCtx.setAttribute('data-init', '1');
-    new Chart(tCtx, {
-      type: 'doughnut',
-      data: { labels: ['Implants', 'Invisalign', 'Veneers', 'Bonding', 'Other'], datasets: [{ data: [0, 0, 0, 0, 0], backgroundColor: [chartColors.p1, chartColors.p2, chartColors.p3, chartColors.p4, chartColors.p5], borderWidth: 2, borderColor: '#FFFFFF' }] },
-      options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'right', labels: { color: chartColors.text, font: chartColors.tickFont, padding: 14, usePointStyle: true, pointStyleWidth: 8 } } } }
-    });
-  }
-  if (rCtx && !rCtx.hasAttribute('data-init')) {
-    rCtx.setAttribute('data-init', '1');
-    new Chart(rCtx, {
-      type: 'bar',
-      data: {
-        labels: getLast6Months(),
-        datasets: [
-          { label: 'Google', data: [0, 0, 0, 0, 0, 0], backgroundColor: chartColors.p2, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 },
-          { label: 'Trustpilot', data: [0, 0, 0, 0, 0, 0], backgroundColor: chartColors.p4, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: chartColors.text, font: chartColors.tickFont, usePointStyle: true, pointStyleWidth: 8, padding: 14 } } },
-        scales: {
-          x: { stacked: true, grid: { display: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } },
-          y: { stacked: true, grid: { color: chartColors.grid, drawBorder: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } }
+async function initAnalyticsCharts() {
+  try {
+    const [plansRes, convertedRes, reviewsRes] = await Promise.all([
+      pearliqDB.from('treatment_plans').select('value, status, treatment_type, created_at'),
+      pearliqDB.from('treatment_plans').select('value').in('status', ['booked', 'converted']),
+      pearliqDB.from('reviews').select('rating, platform, created_at')
+    ]);
+    var allPlans = plansRes.data || [];
+    var convertedPlans = convertedRes.data || [];
+    var allReviews = reviewsRes.data || [];
+    var now = new Date();
+    var startOfYear = new Date(now.getFullYear(), 0, 1);
+    var revenueYTD = allPlans.filter(function(p) { return new Date(p.created_at) >= startOfYear; }).reduce(function(sum, p) { return sum + (p.value || 0); }, 0);
+    var revenueEl = document.getElementById('analytics-revenue');
+    if (revenueEl) revenueEl.textContent = revenueYTD >= 1000 ? '\u00A3' + (revenueYTD/1000).toFixed(0) + 'K' : '\u00A3' + revenueYTD;
+    var recoveredTotal = convertedPlans.reduce(function(sum, p) { return sum + (p.value || 0); }, 0);
+    var recoveredEl = document.getElementById('analytics-recovered');
+    if (recoveredEl) recoveredEl.textContent = recoveredTotal >= 1000 ? '\u00A3' + (recoveredTotal/1000).toFixed(0) + 'K' : '\u00A3' + recoveredTotal;
+    var reviewGrowthEl = document.getElementById('analytics-reviews');
+    if (reviewGrowthEl) reviewGrowthEl.textContent = '+' + allReviews.length;
+    var avgValue = allPlans.length > 0 ? Math.round(allPlans.reduce(function(s,p) { return s + (p.value||0); }, 0) / allPlans.length) : 0;
+    var avgEl = document.getElementById('analytics-avg');
+    if (avgEl) avgEl.textContent = '\u00A3' + avgValue.toLocaleString();
+    var months = [];
+    for (var i = 5; i >= 0; i--) { var d = new Date(now.getFullYear(), now.getMonth() - i, 1); months.push(d.toLocaleDateString('en-GB', { month: 'short' })); }
+    var typeMap = {};
+    allPlans.forEach(function(p) { var t = p.treatment_type || 'Other'; typeMap[t] = (typeMap[t] || 0) + (p.value || 0); });
+    var typeLabels = Object.keys(typeMap);
+    var typeData = typeLabels.map(function(k) { return typeMap[k]; });
+    var googleByMonth = new Array(6).fill(0);
+    var trustpilotByMonth = new Array(6).fill(0);
+    allReviews.forEach(function(r) {
+      var rd = new Date(r.created_at);
+      for (var i = 0; i < 6; i++) {
+        var monthDate = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+        if (rd.getMonth() === monthDate.getMonth() && rd.getFullYear() === monthDate.getFullYear()) {
+          if ((r.platform || '').toLowerCase().includes('google')) googleByMonth[i]++; else trustpilotByMonth[i]++;
         }
       }
     });
+    var tCtx = document.getElementById('treatment-chart');
+    if (tCtx && !tCtx.hasAttribute('data-init')) {
+      tCtx.setAttribute('data-init', '1');
+      new Chart(tCtx, {
+        type: 'doughnut',
+        data: { labels: typeLabels.length > 0 ? typeLabels : ['No data yet'], datasets: [{ data: typeData.length > 0 ? typeData : [1], backgroundColor: [chartColors.p1, chartColors.p2, chartColors.p3, chartColors.p4, chartColors.p5], borderWidth: 2, borderColor: '#FFFFFF' }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'right', labels: { color: chartColors.text, font: chartColors.tickFont, padding: 14, usePointStyle: true, pointStyleWidth: 8 } } } }
+      });
+    }
+    var rCtx = document.getElementById('reviews-chart');
+    if (rCtx && !rCtx.hasAttribute('data-init')) {
+      rCtx.setAttribute('data-init', '1');
+      new Chart(rCtx, {
+        type: 'bar',
+        data: { labels: months, datasets: [
+          { label: 'Google', data: googleByMonth, backgroundColor: chartColors.p2, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 },
+          { label: 'Trustpilot', data: trustpilotByMonth, backgroundColor: chartColors.p4, borderRadius: 4, barPercentage: 0.5, categoryPercentage: 0.7 }
+        ]},
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: chartColors.text, font: chartColors.tickFont, usePointStyle: true, pointStyleWidth: 8, padding: 14 } } },
+          scales: {
+            x: { stacked: true, grid: { display: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } },
+            y: { stacked: true, grid: { color: chartColors.grid, drawBorder: false }, border: { display: false }, ticks: { color: chartColors.text, font: chartColors.tickFont } }
+          }
+        }
+      });
+    }
+  } catch(e) {
+    showToast('Unable to load analytics data', 'error');
   }
 }
 
