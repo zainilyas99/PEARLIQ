@@ -1360,10 +1360,10 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
           <div><div class="page-eyebrow">Automation · Reputation</div><h1 class="page-title">Reputation Engine</h1><div class="page-subtitle">Post-appointment triggers · Smart timing · Platform routing</div></div>
         </div>
         <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Triggers Sent Today</div></div><div class="kpi-value">0</div><div class="kpi-delta neutral"></div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Response Rate</div></div><div class="kpi-value">0%</div><div class="kpi-delta neutral"></div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Google vs Trustpilot</div></div><div class="kpi-value">0/0</div><div class="kpi-delta neutral"></div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">5-Star Rate</div></div><div class="kpi-value">0%</div><div class="kpi-delta neutral"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Triggers Sent Today</div></div><div class="kpi-value" id="rep-triggers-today">0</div><div class="kpi-delta neutral"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Response Rate</div></div><div class="kpi-value" id="rep-response-rate">0%</div><div class="kpi-delta neutral"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Google vs Trustpilot</div></div><div class="kpi-value" id="rep-platform-split">0/0</div><div class="kpi-delta neutral"></div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">5-Star Rate</div></div><div class="kpi-value" id="rep-five-star">0%</div><div class="kpi-delta neutral"></div></div>
         </div>
         <div class="chart-card" style="margin-bottom:16px;">
           <div class="chart-header"><div class="chart-title">Trigger Workflow — Post Appointment</div></div>
@@ -1402,7 +1402,7 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
         <div class="data-table-wrap">
           <div class="table-header"><div class="table-title">Today's Review Triggers</div></div>
           <table><thead><tr><th>Patient</th><th>Treatment</th><th>Sent At</th><th>Platform</th><th>Status</th><th>Rating</th></tr></thead>
-          <tbody>
+          <tbody id="review-triggers-tbody">
 <tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No review triggers sent today</td></tr>
           </tbody></table>
         </div>
@@ -2158,6 +2158,7 @@ function navigateTo(page) {
   if (page === 'revenue-forecast') setTimeout(initForecastChart, 100);
   if (page === 'patients') loadPatients();
   if (page === 'reviews') loadReviewsData();
+  if (page === 'review-triggers') loadReputationData();
   if (page === 'financing') loadFinancingOptions();
   document.getElementById('main-content').scrollTop = 0;
   closeNotif();
@@ -3170,6 +3171,43 @@ async function loadReviewsData() {
     }
   } catch(e) {
     showToast('Unable to load reviews data', 'error');
+  }
+}
+
+async function loadReputationData() {
+  try {
+    var [sequenceRes, reviewsRes] = await Promise.all([
+      pearliqDB.from('sequence_emails').select('*').order('created_at', { ascending: false }),
+      pearliqDB.from('reviews').select('rating, platform, created_at')
+    ]);
+    var sequences = sequenceRes.data || [];
+    var reviews = reviewsRes.data || [];
+    var today = new Date();
+    var todaySequences = sequences.filter(function(s) { var d = new Date(s.created_at); return d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear(); });
+    var sentCount = sequences.filter(function(s) { return s.status === 'sent'; }).length;
+    var responseRate = sentCount > 0 ? Math.round((reviews.length / sentCount) * 100) : 0;
+    var googleCount = reviews.filter(function(r) { return (r.platform || '').toLowerCase().includes('google'); }).length;
+    var trustpilotCount = reviews.filter(function(r) { return (r.platform || '').toLowerCase().includes('trustpilot'); }).length;
+    var fiveStarCount = reviews.filter(function(r) { return r.rating === 5; }).length;
+    var fiveStarRate = reviews.length > 0 ? Math.round((fiveStarCount / reviews.length) * 100) : 0;
+    var triggersEl = document.getElementById('rep-triggers-today'); if (triggersEl) triggersEl.textContent = todaySequences.length;
+    var responseEl = document.getElementById('rep-response-rate'); if (responseEl) responseEl.textContent = responseRate + '%';
+    var splitEl = document.getElementById('rep-platform-split'); if (splitEl) splitEl.textContent = googleCount + '/' + trustpilotCount;
+    var fiveStarEl = document.getElementById('rep-five-star'); if (fiveStarEl) fiveStarEl.textContent = fiveStarRate + '%';
+    var tbody = document.getElementById('review-triggers-tbody');
+    if (tbody) {
+      if (todaySequences.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No review triggers sent today</td></tr>';
+      } else {
+        tbody.innerHTML = todaySequences.map(function(s) {
+          var time = s.created_at ? new Date(s.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '\u2014';
+          var statusClass = s.status === 'sent' ? 'badge-good' : 'badge-neutral';
+          return '<tr><td><div style="font-weight:500;color:var(--cream);">' + (s.patient_name || '\u2014') + '</div></td><td>' + (s.treatment_type || '\u2014') + '</td><td>' + time + '</td><td>Email</td><td>\u2014</td><td><span class="badge ' + statusClass + '">' + (s.status || 'pending') + '</span></td></tr>';
+        }).join('');
+      }
+    }
+  } catch(e) {
+    showToast('Unable to load reputation data', 'error');
   }
 }
 </script>
