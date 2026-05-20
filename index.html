@@ -1531,10 +1531,10 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
           <div><div class="page-eyebrow">Intelligence · Forecasting</div><h1 class="page-title">Revenue Forecast</h1><div class="page-subtitle">90-day revenue projection based on current pipeline and historical conversion</div></div>
         </div>
         <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Forecast — 30 Days</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta neutral">No data yet</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Forecast — 60 Days</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta neutral">No data yet</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Forecast — 90 Days</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta neutral">No data yet</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Pipeline Value</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta neutral">0 active plans</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Forecast — 30 Days</div></div><div class="kpi-value" id="forecast-30">&pound;0</div><div class="kpi-delta neutral">No data yet</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Forecast — 60 Days</div></div><div class="kpi-value" id="forecast-60">&pound;0</div><div class="kpi-delta neutral">No data yet</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Forecast — 90 Days</div></div><div class="kpi-value" id="forecast-90">&pound;0</div><div class="kpi-delta neutral">No data yet</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Pipeline Value</div></div><div class="kpi-value" id="forecast-pipeline">&pound;0</div><div class="kpi-delta neutral">0 active plans</div></div>
         </div>
         <div class="forecast-card">
           <div class="chart-header"><div class="chart-title">90-Day Revenue Forecast</div></div>
@@ -2837,45 +2837,72 @@ function initConfidenceChart() {
 }
 
 // REVENUE FORECAST CHART
-function initForecastChart() {
+async function initForecastChart() {
   const ctx = document.getElementById('forecast-chart');
   if (!ctx || ctx.hasAttribute('data-init')) return;
   ctx.setAttribute('data-init', '1');
-  const labels = [];
-  const actual = [];
-  const forecast = [];
-  const today = new Date();
-  for (let i = -30; i <= 60; i += 5) {
-    const d = new Date(today);
-    d.setDate(d.getDate() + i);
-    labels.push(d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
-    if (i <= 0) {
-      actual.push(Math.round(48000 + (i + 30) * 520 + Math.random() * 2000));
-      forecast.push(null);
-    } else {
-      actual.push(null);
-      forecast.push(Math.round(48000 + 30 * 520 + i * 580 + Math.random() * 3000));
+  try {
+    const [plansRes, convertedRes] = await Promise.all([
+      pearliqDB.from('treatment_plans').select('value, status, created_at'),
+      pearliqDB.from('treatment_plans').select('value, created_at').in('status', ['booked', 'converted'])
+    ]);
+    var allPlans = plansRes.data || [];
+    var convertedPlans = convertedRes.data || [];
+    var totalConverted = convertedPlans.reduce(function(s, p) { return s + (p.value || 0); }, 0);
+    var monthsActive = 1;
+    if (convertedPlans.length > 0) {
+      var earliest = new Date(convertedPlans.reduce(function(min, p) { return new Date(p.created_at) < new Date(min) ? p.created_at : min; }, convertedPlans[0].created_at));
+      var now = new Date();
+      monthsActive = Math.max(1, Math.round((now - earliest) / (1000 * 60 * 60 * 24 * 30)));
     }
-  }
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Actual Revenue', data: actual, borderColor: chartColors.p1, backgroundColor: 'rgba(26,61,46,0.08)', fill: true, tension: 0.3, pointRadius: 2, spanGaps: false },
-        { label: 'Forecast', data: forecast, borderColor: chartColors.p4, backgroundColor: 'rgba(184,134,11,0.08)', fill: true, tension: 0.3, pointRadius: 2, borderDash: [5, 3], spanGaps: false }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: chartColors.text, font: { family: 'Figtree', size: 10 } } } },
-      scales: {
-        x: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 9 }, maxRotation: 45 } },
-        y: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 10 },
-          callback: function(v) { return '£' + (v/1000).toFixed(0) + 'K'; } } }
+    var avgMonthlyRevenue = totalConverted / monthsActive;
+    var pipelineValue = allPlans.filter(function(p) { return p.status === 'presented' || p.status === 'in_nurture'; }).reduce(function(s, p) { return s + (p.value || 0); }, 0);
+    var convRate = allPlans.length > 0 ? convertedPlans.length / allPlans.length : 0.3;
+    var projectedMonthly = avgMonthlyRevenue + (pipelineValue * convRate / 3);
+    function fmtK(v) { return v >= 1000 ? '\u00A3' + (v/1000).toFixed(0) + 'K' : '\u00A3' + v; }
+    var f30 = Math.round(projectedMonthly);
+    var f60 = Math.round(projectedMonthly * 2);
+    var f90 = Math.round(projectedMonthly * 3);
+    var f30El = document.getElementById('forecast-30'); if (f30El) f30El.textContent = fmtK(f30);
+    var f60El = document.getElementById('forecast-60'); if (f60El) f60El.textContent = fmtK(f60);
+    var f90El = document.getElementById('forecast-90'); if (f90El) f90El.textContent = fmtK(f90);
+    var fpEl = document.getElementById('forecast-pipeline'); if (fpEl) fpEl.textContent = fmtK(pipelineValue);
+    var today = new Date();
+    var labels = [];
+    var actual = [];
+    var forecast = [];
+    for (var i = -30; i <= 60; i += 5) {
+      var d = new Date(today);
+      d.setDate(d.getDate() + i);
+      labels.push(d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }));
+      if (i <= 0) {
+        var actualVal = convertedPlans.filter(function(p) { return new Date(p.created_at) <= d; }).reduce(function(s, p) { return s + (p.value || 0); }, 0);
+        actual.push(actualVal);
+        forecast.push(null);
+      } else {
+        actual.push(null);
+        var forecastVal = totalConverted + Math.round((projectedMonthly / 30) * (i + 30));
+        forecast.push(forecastVal);
       }
     }
-  });
+    new Chart(ctx, {
+      type: 'line',
+      data: { labels: labels, datasets: [
+        { label: 'Actual Revenue', data: actual, borderColor: chartColors.p1, backgroundColor: 'rgba(26,61,46,0.08)', fill: true, tension: 0.3, pointRadius: 2, spanGaps: false },
+        { label: 'Forecast', data: forecast, borderColor: chartColors.p4, backgroundColor: 'rgba(184,134,11,0.08)', fill: true, tension: 0.3, pointRadius: 2, borderDash: [5, 3], spanGaps: false }
+      ]},
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: chartColors.text, font: { family: 'Figtree', size: 10 } } } },
+        scales: {
+          x: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 9 }, maxRotation: 45 } },
+          y: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 10 }, callback: function(v) { return '\u00A3' + (v/1000).toFixed(0) + 'K'; } } }
+        }
+      }
+    });
+  } catch(e) {
+    showToast('Unable to load forecast data', 'error');
+  }
 }
 
 function animateSectionHeading(sectionId) {
