@@ -1514,10 +1514,10 @@ body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,2
           <div><div class="page-eyebrow">Intelligence · AI</div><h1 class="page-title">AI Insights</h1><div class="page-subtitle">Machine learning-powered practice intelligence</div></div>
         </div>
         <div class="kpi-grid">
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Confidence Score</div></div><div class="kpi-value">0</div><div class="kpi-delta neutral">No data yet</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Predictions Made</div></div><div class="kpi-value">0</div><div class="kpi-delta neutral">No predictions yet</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Accuracy Rate</div></div><div class="kpi-value">0%</div><div class="kpi-delta up">Last 90 days</div></div>
-          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Revenue Recovered</div></div><div class="kpi-value">&pound;0</div><div class="kpi-delta up">AI-assisted this month</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Avg Confidence Score</div></div><div class="kpi-value" id="ai-avg-confidence">0</div><div class="kpi-delta neutral">No data yet</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Predictions Made</div></div><div class="kpi-value" id="ai-predictions">0</div><div class="kpi-delta neutral">No predictions yet</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Accuracy Rate</div></div><div class="kpi-value" id="ai-accuracy">0%</div><div class="kpi-delta up">Last 90 days</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Revenue Recovered</div></div><div class="kpi-value" id="ai-revenue">&pound;0</div><div class="kpi-delta up">AI-assisted this month</div></div>
         </div>
         <div class="chart-card">
           <div class="chart-header"><div class="chart-title">AI Treatment Confidence Distribution</div></div>
@@ -2809,31 +2809,58 @@ function initHealthChart() {
 }
 
 // AI CONFIDENCE CHART
-function initConfidenceChart() {
+async function initConfidenceChart() {
   const ctx = document.getElementById('confidence-dist-chart');
   if (!ctx || ctx.hasAttribute('data-init')) return;
   ctx.setAttribute('data-init', '1');
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['0-20', '21-40', '41-60', '61-80', '81-100'],
-      datasets: [{
-        label: 'Treatment Plans', data: [0, 0, 0, 0, 0],
+  try {
+    const [plansRes, convertedRes, sequenceRes] = await Promise.all([
+      pearliqDB.from('treatment_plans').select('confidence_score, value, status'),
+      pearliqDB.from('treatment_plans').select('value').in('status', ['booked', 'converted']),
+      pearliqDB.from('sequence_emails').select('status')
+    ]);
+    var plans = plansRes.data || [];
+    var converted = convertedRes.data || [];
+    var sequences = sequenceRes.data || [];
+    var avgConf = plans.length > 0 ? Math.round(plans.reduce(function(s, p) { return s + (p.confidence_score || 0); }, 0) / plans.length) : 0;
+    var highConf = plans.filter(function(p) { return (p.confidence_score || 0) > 70; });
+    var highConfConverted = highConf.filter(function(p) { return p.status === 'booked' || p.status === 'converted'; });
+    var accuracyRate = highConf.length > 0 ? Math.round((highConfConverted.length / highConf.length) * 100) : 0;
+    var recoveredValue = converted.reduce(function(s, p) { return s + (p.value || 0); }, 0);
+    var avgEl = document.getElementById('ai-avg-confidence'); if (avgEl) avgEl.textContent = avgConf;
+    var predEl = document.getElementById('ai-predictions'); if (predEl) predEl.textContent = plans.length;
+    var accEl = document.getElementById('ai-accuracy'); if (accEl) accEl.textContent = accuracyRate + '%';
+    var revEl = document.getElementById('ai-revenue'); if (revEl) revEl.textContent = recoveredValue >= 1000 ? '\u00A3' + (recoveredValue/1000).toFixed(0) + 'K' : '\u00A3' + recoveredValue;
+    var buckets = [0, 0, 0, 0, 0];
+    plans.forEach(function(p) {
+      var score = p.confidence_score || 0;
+      if (score <= 20) buckets[0]++;
+      else if (score <= 40) buckets[1]++;
+      else if (score <= 60) buckets[2]++;
+      else if (score <= 80) buckets[3]++;
+      else buckets[4]++;
+    });
+    new Chart(ctx, {
+      type: 'bar',
+      data: { labels: ['0-20', '21-40', '41-60', '61-80', '81-100'], datasets: [{
+        label: 'Treatment Plans', data: buckets,
         backgroundColor: ['rgba(196,68,58,0.5)', 'rgba(196,68,58,0.3)', 'rgba(184,134,11,0.4)', 'rgba(26,61,46,0.4)', 'rgba(26,61,46,0.7)'],
         borderRadius: 4
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 10 } },
-          title: { display: true, text: 'Confidence Score Range', color: chartColors.text, font: { family: 'Figtree', size: 10 } } },
-        y: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 10 } },
-          title: { display: true, text: 'Number of Plans', color: chartColors.text, font: { family: 'Figtree', size: 10 } } }
+      }]},
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 10 } },
+            title: { display: true, text: 'Confidence Score Range', color: chartColors.text, font: { family: 'Figtree', size: 10 } } },
+          y: { grid: { color: chartColors.grid }, ticks: { color: chartColors.text, font: { family: 'Figtree', size: 10 } },
+            title: { display: true, text: 'Number of Plans', color: chartColors.text, font: { family: 'Figtree', size: 10 } } }
+        }
       }
-    }
-  });
+    });
+  } catch(e) {
+    showToast('Unable to load AI insights data', 'error');
+  }
 }
 
 // REVENUE FORECAST CHART
