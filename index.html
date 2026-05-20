@@ -486,30 +486,42 @@ tbody tr:last-child td { border-bottom: none; }
 .bounce-letter { display: inline-block; animation: fadeDown 0.5s ease forwards; opacity: 0; }
 
 /* DARK MODE */
-body.dark-mode { --bg: #0a0e0f; --bg-2: #10161a; --bg-3: #162024; --bg-4: #1e2c32; --bg-5: #263640; --cream: #e8f4f0; --text: #7a9a94; --text-dim: #4a6660; --text-bright: #b8d4ce; --border: rgba(255,255,255,0.06); --green: #4ecba8; --green-light: #7ddbc4; --green-dim: rgba(78,203,168,0.12); --green-glow: rgba(78,203,168,0.08); --border-green: rgba(78,203,168,0.15); --emerald: #4ecba8; --emerald-dim: rgba(78,203,168,0.12); --rose: #f07068; --rose-dim: rgba(240,112,104,0.12); --amber: #e0a830; --amber-dim: rgba(224,168,48,0.12); }
-body.dark-mode .app-header { background: #10161a; border-bottom-color: rgba(255,255,255,0.06); box-shadow: none; }
-body.dark-mode .top-nav { background: #10161a; border-bottom-color: rgba(255,255,255,0.06); }
-body.dark-mode .top-nav-btn:hover { background: rgba(255,255,255,0.05); }
-body.dark-mode .top-nav-btn.active { background: #1A3D2E; }
-body.dark-mode .top-nav-btn::after { background: #e8f4f0; color: #0a0e0f; }
-body.dark-mode .main-content { background: #0a0e0f; }
-body.dark-mode .modal { background: #10161a; border-color: rgba(255,255,255,0.1); }
-body.dark-mode .form-input { background: #162024; border-color: rgba(255,255,255,0.08); color: #e8f4f0; }
-body.dark-mode table tbody td { border-bottom-color: rgba(255,255,255,0.03); }
-body.dark-mode .health-hero { background: #10161a; box-shadow: 0 2px 16px rgba(0,0,0,0.3); }
-body.dark-mode .health-hero-num { color: #4ecba8; }
-body.dark-mode .toast { background: #10161a; border-color: rgba(255,255,255,0.08); }
-body.dark-mode .header-search { background: #162024; border-color: rgba(255,255,255,0.08); }
-body.dark-mode .header-search input { color: #e8f4f0; }
-body.dark-mode .notif-panel { background: #10161a; border-color: rgba(255,255,255,0.08); }
-body.dark-mode .user-menu { background: #10161a; border-color: rgba(255,255,255,0.08); }
-body.dark-mode .user-menu-item:hover { background: rgba(255,255,255,0.05); }
-body.dark-mode .detail-panel { background: #10161a; }
-body.dark-mode #search-results { background: #10161a !important; border-color: rgba(255,255,255,0.08) !important; }
-body.dark-mode .chart-card { background: #10161a; }
-body.dark-mode .priority-action-card { background: #162024; border-color: rgba(255,255,255,0.06); }
-body.dark-mode .filter-select { background: #162024; border-color: rgba(255,255,255,0.08); color: #b8d4ce; }
-body.dark-mode .search-input { background: #162024; border-color: rgba(255,255,255,0.08); color: #b8d4ce; }
+body.dark-mode { --bg: #141414; --bg-2: #1C1C1C; --bg-3: #222222; --bg-4: #2A2A2A; --bg-5: #333333; --cream: #E8E6E1; --text: #A8A29E; --text-dim: #6B6461; --text-bright: #D4D0CA; --border: rgba(255,255,255,0.08); --green: #4A9B72; --green-light: #5BB885; --green-dim: rgba(74,155,114,0.12); --green-glow: rgba(74,155,114,0.07); --border-green: rgba(74,155,114,0.2); --emerald: #4A9B72; --emerald-dim: rgba(74,155,114,0.12); --rose: #E05C52; --rose-dim: rgba(224,92,82,0.1); --amber: #C4922A; --amber-dim: rgba(196,146,42,0.1); --violet: #7C6BA8; --violet-dim: rgba(124,107,168,0.1); --shadow-sm: 0 1px 3px rgba(0,0,0,0.3); --shadow-md: 0 4px 12px rgba(0,0,0,0.4); --shadow-lg: 0 12px 40px rgba(0,0,0,0.5); }
+body.dark-mode .app-header { background: #1C1C1C; border-bottom-color: rgba(255,255,255,0.08); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+body.dark-mode .top-nav { background: #1C1C1C; border-bottom-color: rgba(255,255,255,0.08); }
+body.dark-mode .top-nav-btn:hover { background: #2A2A2A; }
+body.dark-mode .top-nav-btn.active { background: #4A9B72; }
+body.dark-mode .top-nav-btn::after { background: #E8E6E1; color: #141414; }
+body.dark-mode .main-content { background: #141414; }
+body.dark-mode .modal { background: #1C1C1C; border: 1px solid rgba(255,255,255,0.08); }
+body.dark-mode .modal-header { background: #222222; border-bottom-color: rgba(255,255,255,0.08); }
+body.dark-mode .form-input { background: #222222; border-color: rgba(255,255,255,0.08); color: #D4D0CA; }
+body.dark-mode .form-input:focus { border-color: #4A9B72; }
+body.dark-mode .btn-primary { background: #4A9B72; color: white; }
+body.dark-mode .btn-secondary { background: transparent; border-color: rgba(255,255,255,0.12); color: #A8A29E; }
+body.dark-mode .btn-secondary:hover { background: #2A2A2A; color: #D4D0CA; }
+body.dark-mode table { background: #1C1C1C; }
+body.dark-mode table tbody td { border-bottom-color: rgba(255,255,255,0.04); }
+body.dark-mode tr:hover td { background: #222222; }
+body.dark-mode .health-hero { background: #1C1C1C; box-shadow: 0 2px 16px rgba(0,0,0,0.4); }
+body.dark-mode .health-hero-num { color: #4A9B72; }
+body.dark-mode .toast { background: #2A2A2A; border-color: rgba(255,255,255,0.08); color: #D4D0CA; }
+body.dark-mode .header-search { background: #222222; border-color: rgba(255,255,255,0.08); }
+body.dark-mode .header-search input { color: #D4D0CA; }
+body.dark-mode .notif-panel { background: #1C1C1C; border-color: rgba(255,255,255,0.08); }
+body.dark-mode .user-menu { background: #1C1C1C; border-color: rgba(255,255,255,0.08); }
+body.dark-mode .user-menu-item:hover { background: #2A2A2A; }
+body.dark-mode .detail-panel { background: #1C1C1C; border-left-color: rgba(255,255,255,0.08); }
+body.dark-mode .settings-nav { background: #1C1C1C; border-right-color: rgba(255,255,255,0.08); }
+body.dark-mode .settings-nav-item.active { background: #222222; color: #4A9B72; }
+body.dark-mode .badge-good { background: rgba(74,155,114,0.15); color: #4A9B72; }
+body.dark-mode .badge-hot { background: rgba(224,92,82,0.15); color: #E05C52; }
+body.dark-mode .badge-warm { background: rgba(196,146,42,0.15); color: #C4922A; }
+body.dark-mode #search-results { background: #1C1C1C !important; border-color: rgba(255,255,255,0.08) !important; }
+body.dark-mode .chart-card { background: #1C1C1C; }
+body.dark-mode .priority-action-card { background: #222222; border-color: rgba(255,255,255,0.08); }
+body.dark-mode .filter-select { background: #222222; border-color: rgba(255,255,255,0.08); color: #D4D0CA; }
+body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,255,0.08); color: #D4D0CA; }
 @media (max-width: 768px) {
   .main-content { padding: 16px; }
   .top-nav { overflow-x: auto; padding: 0 16px; }
