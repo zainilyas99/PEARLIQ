@@ -2089,6 +2089,7 @@ function navigateTo(page) {
   if (page === 'payroll') loadPayrollData();
   if (page === 'staff') loadStaffData();
   if (page === 'follow-up') loadFollowUpData();
+  if (page === 'treatment-plans') loadTreatmentPlans();
   if (page === 'financing') loadFinancingOptions();
   document.getElementById('main-content').scrollTop = 0;
   closeNotif();
@@ -2300,6 +2301,8 @@ async function savePatient() {
   document.getElementById('pat-dob').value = '';
   document.getElementById('pat-type').selectedIndex = 0;
   document.getElementById('pat-dentist').selectedIndex = 0;
+  loadPatients();
+  loadDashboardData();
 }
 
 async function saveTreatmentPlan() {
@@ -2345,6 +2348,9 @@ async function saveTreatmentPlan() {
   document.getElementById('plan-notes').value = '';
   document.getElementById('plan-finance').selectedIndex = 0;
   document.getElementById('plan-sequence').selectedIndex = 0;
+  loadTreatmentPlans();
+  loadFollowUpData();
+  loadDashboardData();
 }
 
 async function saveStaff() {
@@ -3364,6 +3370,59 @@ async function loadFollowUpData() {
     }
   } catch(e) {
     showToast('Unable to load follow-up data', 'error');
+  }
+}
+
+async function loadTreatmentPlans() {
+  try {
+    var { data, error } = await pearliqDB.from('treatment_plans').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    var plans = data || [];
+    var listView = document.getElementById('tp-list-view');
+    var boardView = document.getElementById('tp-board-view');
+    if (listView) {
+      if (plans.length === 0) {
+        listView.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;">No treatment plans yet \u2014 click + New Treatment Plan to create your first one.</div>';
+      } else {
+        listView.innerHTML = '<div class="tp-grid">' + plans.map(function(p) {
+          var daysSince = Math.floor((new Date() - new Date(p.created_at)) / (1000*60*60*24));
+          var statusClass = p.status === 'converted' || p.status === 'booked' ? 'badge-good' : daysSince > 30 ? 'badge-hot' : daysSince > 7 ? 'badge-warm' : 'badge-blue';
+          var statusText = p.status ? p.status.charAt(0).toUpperCase() + p.status.slice(1) : 'Presented';
+          var score = p.confidence_score || 0;
+          var ringColor = score > 70 ? '#1A3D2E' : score > 40 ? '#B8860B' : '#C4443A';
+          var circumference = 125.6;
+          var offset = circumference - (circumference * score / 100);
+          return '<div class="tp-card" onclick="openPatientPanel(\'' + (p.patient_name||'').replace(/'/g,"\\'") + '\',\'' + (p.treatment_type||'').replace(/'/g,"\\'") + '\',\'' + (p.value||0) + '\',\'' + statusText + '\',\'' + daysSince + ' days\',\'' + (p.status||'presented') + '\',\'' + (p.notes||'').replace(/'/g,"\\'") + '\')">' +
+            '<div class="tp-card-header"><div style="flex:1;"><div class="tp-patient">' + (p.patient_name||'\u2014') + '</div><div class="tp-treatment">' + (p.treatment_type||'\u2014') + '</div></div>' +
+            '<div style="display:flex;align-items:center;gap:10px;"><div class="confidence-ring"><svg viewBox="0 0 48 48"><circle class="ring-bg" cx="24" cy="24" r="20"/><circle class="ring-fill" cx="24" cy="24" r="20" stroke="' + ringColor + '" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '" transform="rotate(-90 24 24)"/></svg><div class="ring-text">' + score + '</div></div>' +
+            '<span class="badge ' + statusClass + '">' + statusText + '</span></div></div>' +
+            '<div class="tp-card-body"><div class="tp-meta">' +
+            '<div class="tp-meta-row">Plan value: <strong style="color:var(--cream);">\u00A3' + parseInt(p.value||0).toLocaleString() + '</strong></div>' +
+            '<div class="tp-meta-row">Created: ' + new Date(p.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) + '</div>' +
+            '<div class="tp-meta-row">Status: ' + statusText + '</div></div></div>' +
+            '<div class="tp-card-footer"><span style="font-size:10px;color:var(--text-dim);font-weight:500;">' + daysSince + ' days since plan</span>' +
+            '<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();sendFollowUpAuto(\'' + (p.patient_name||'').replace(/'/g,"\\'") + '\',7,\'' + (p.treatment_type||'').replace(/'/g,"\\'") + '\',' + (p.value||0) + ')">Send Follow-Up</button></div></div>';
+        }).join('') + '</div>';
+      }
+    }
+    if (boardView) {
+      var presented = plans.filter(function(p) { return p.status === 'presented' || p.status === 'in_nurture'; });
+      var warm = plans.filter(function(p) { var d = Math.floor((new Date()-new Date(p.created_at))/(1000*60*60*24)); return d > 7 && d <= 30 && p.status !== 'booked' && p.status !== 'converted'; });
+      var booked = plans.filter(function(p) { return p.status === 'booked'; });
+      var converted = plans.filter(function(p) { return p.status === 'converted'; });
+      function boardCol(title, items, badgeClass) {
+        var cards = items.length > 0 ? items.map(function(p) {
+          return '<div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel(\'' + (p.patient_name||'').replace(/'/g,"\\'") + '\',\'' + (p.treatment_type||'').replace(/'/g,"\\'") + '\',\'' + (p.value||0) + '\',\'' + (p.status||'') + '\',\'\',\'\',\'\')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">' + (p.patient_name||'\u2014') + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.treatment_type||'') + '</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">\u00A3' + parseInt(p.value||0).toLocaleString() + '</div></div>';
+        }).join('') : '<div style="text-align:center;padding:28px;color:var(--text-dim);font-size:11px;">None</div>';
+        return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:200px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:15px;color:var(--cream);">' + title + '</span><span class="badge ' + badgeClass + '">' + items.length + '</span></div><div style="display:flex;flex-direction:column;gap:10px;">' + cards + '</div></div>';
+      }
+      boardView.innerHTML = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">' +
+        boardCol('Presented', presented, 'badge-amber') + boardCol('Warm', warm, 'badge-warm') + boardCol('Booked', booked, 'badge-good') + boardCol('Converted', converted, 'badge-good') + '</div>';
+    }
+    var subtitleEl = document.querySelector('#page-treatment-plans .page-subtitle');
+    if (subtitleEl) subtitleEl.textContent = plans.length + ' active plans \u00B7 \u00A3' + Math.round(plans.reduce(function(s,p){return s+(p.value||0);},0)/1000) + 'K pipeline';
+  } catch(e) {
+    showToast('Unable to load treatment plans', 'error');
   }
 }
 </script>
