@@ -2569,27 +2569,41 @@ function animateCountUp(el, target, duration, prefix, suffix) {
 }
 
 async function animateDashboard() {
-  // Animate health score dial
   const ring = document.getElementById('health-hero-ring');
   const numEl = document.getElementById('health-hero-num');
-  if (ring && numEl) {
-    var targetScore = 0;
-    try {
-      var healthRes = await Promise.all([
-        pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active'),
-        pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true })
-      ]);
-      var patCount = (healthRes[0].count || 0);
-      var planCount = (healthRes[1].count || 0);
-      if (patCount > 0 || planCount > 0) {
-        targetScore = Math.min(95, Math.round(40 + patCount * 2 + planCount * 3));
-      }
-    } catch(e) { targetScore = 0; }
+  if (!ring || !numEl) return;
+  try {
+    const [patientsRes, plansRes, convertedRes, reviewsRes, sequenceRes] = await Promise.all([
+      pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['booked', 'converted']),
+      pearliqDB.from('reviews').select('rating'),
+      pearliqDB.from('sequence_emails').select('status')
+    ]);
+    var patientCount = patientsRes.count || 0;
+    var totalPlans = plansRes.count || 0;
+    var convertedPlans = convertedRes.count || 0;
+    var reviews = reviewsRes.data || [];
+    var sequences = sequenceRes.data || [];
+    var patientScore = Math.min(25, Math.round((patientCount / 50) * 25));
+    var convRate = totalPlans > 0 ? convertedPlans / totalPlans : 0;
+    var convScore = Math.min(30, Math.round(convRate * 60));
+    var avgRating = reviews.length > 0 ? reviews.reduce(function(s, r) { return s + (r.rating || 0); }, 0) / reviews.length : 0;
+    var reviewScore = Math.min(25, Math.round((avgRating / 5) * 25));
+    var sentEmails = sequences.filter(function(s) { return s.status === 'sent'; }).length;
+    var emailScore = Math.min(20, Math.round((sentEmails / 20) * 20));
+    var totalScore = patientScore + convScore + reviewScore + emailScore;
     const circumference = 527.8;
-    const targetOffset = circumference - (circumference * targetScore / 100);
+    const targetOffset = circumference - (circumference * totalScore / 100);
     ring.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)';
-    setTimeout(() => { ring.setAttribute('stroke-dashoffset', targetOffset); }, 50);
-    animateCountUp(numEl, targetScore, 1200, '', '');
+    setTimeout(function() { ring.setAttribute('stroke-dashoffset', targetOffset); }, 50);
+    animateCountUp(numEl, totalScore, 1200, '', '');
+    var healthPageNum = document.getElementById('health-score-num');
+    if (healthPageNum) healthPageNum.textContent = totalScore;
+  } catch(e) {
+    const circumference = 527.8;
+    ring.setAttribute('stroke-dashoffset', circumference);
+    numEl.textContent = '0';
   }
 }
 
