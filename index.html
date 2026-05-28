@@ -20,6 +20,14 @@
   --fs-page: 30px;
   --fs-display: 36px;
   --fs-hero: 56px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-card-sm: 20px;
+  --space-card: 24px;
+  --space-card-lg: 32px;
+  --space-section: 80px;
   --bg: #F5F3EF;
   --bg-2: #FFFFFF;
   --bg-3: #FAF9F7;
@@ -252,7 +260,7 @@ tbody tr:last-child td { border-bottom: none; }
 
 /* REVIEW CARDS */
 .review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 14px; }
-.review-card { background: var(--bg-2); border: 1px solid var(--border); padding: 18px; transition: all 0.2s; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.review-card { background: var(--bg-2); border: 1px solid var(--border); padding: 20px; transition: all 0.2s; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .review-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
 .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
 .review-patient { font-size: 13px; font-weight: 500; color: var(--cream); }
@@ -267,7 +275,7 @@ tbody tr:last-child td { border-bottom: none; }
 .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 14px; }
 .staff-card { background: var(--bg-2); border: 1px solid var(--border); overflow: hidden; transition: all 0.2s; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .staff-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
-.staff-card-header { padding: 18px; display: flex; align-items: flex-start; gap: 12px; border-bottom: 1px solid var(--border); }
+.staff-card-header { padding: 20px; display: flex; align-items: flex-start; gap: 12px; border-bottom: 1px solid var(--border); }
 .staff-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 14px; color: white; flex-shrink: 0; }
 .staff-name { font-size: 13px; font-weight: 500; color: var(--cream); margin-bottom: 2px; }
 .staff-role-text { font-size: 11px; color: var(--text-dim); }
@@ -330,7 +338,7 @@ tbody tr:last-child td { border-bottom: none; }
 .health-dial-score .score-label { font-size: 8px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-dim); margin-top: 2px; font-weight: 600; }
 
 /* HEALTH HERO */
-.health-hero { background: #FFFFFF; border-radius: 12px; padding: 48px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); margin-bottom: 28px; text-align: center; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
+.health-hero { background: #FFFFFF; border-radius: 12px; padding: 32px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); margin-bottom: 28px; text-align: center; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
 .health-hero-dial { position: relative; width: 200px; height: 200px; margin: 0 auto 28px; }
 .health-hero-score { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .health-hero-num { font-family: 'Fraunces', serif; font-size: 72px; color: #1A3D2E; line-height: 1; font-weight: 500; }
@@ -551,7 +559,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
 .csv-step.done { background: var(--emerald-dim); color: var(--green); }
 .csv-step-line { width: 24px; height: 2px; background: var(--bg-5); }
 .csv-step-line.done { background: var(--green); }
-.csv-dropzone { border: 2px dashed var(--border-green); border-radius: 8px; padding: 48px; text-align: center; cursor: pointer; transition: all 0.2s; }
+.csv-dropzone { border: 2px dashed var(--border-green); border-radius: 8px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s; }
 .csv-dropzone:hover { background: var(--green-glow); border-color: var(--green); }
 .csv-map-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .csv-map-row:last-child { border-bottom: none; }
@@ -610,7 +618,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         </div>
       </div>
     </div>
-    <div style="background:white;border-radius:16px;padding:36px;box-shadow:0 4px 40px rgba(0,0,0,0.08);border:1px solid #E8E4DE;">
+    <div style="background:white;border-radius:16px;padding:32px;box-shadow:0 4px 40px rgba(0,0,0,0.08);border:1px solid #E8E4DE;">
       <div style="text-align:center;margin-bottom:28px;">
         <svg viewBox="0 0 200 200" width="150" height="150">
           <circle cx="100" cy="100" r="84" fill="none" stroke="#E8E4DE" stroke-width="10"/>
@@ -638,19 +646,19 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <p style="font-size:14px;color:rgba(255,255,255,0.65);max-width:560px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Every practice we speak to is leaving significant revenue on the table. The same three problems, every time.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
-      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:24px;text-align:center;">
         <div style="font-family:'Fraunces',serif;font-size:36px;color:white;margin-bottom:10px;">4.9%</div>
         <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Annual UK dental market growth — one of the fastest growing healthcare sectors</div>
       </div>
-      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:24px;text-align:center;">
         <div style="font-family:'Fraunces',serif;font-size:36px;color:white;margin-bottom:10px;">60%</div>
         <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Of UK adults do not attend regular check-ups — patients practices are failing to retain</div>
       </div>
-      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:24px;text-align:center;">
         <div style="font-family:'Fraunces',serif;font-size:36px;color:white;margin-bottom:10px;">23%</div>
         <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Increase in treatment plans in 2024 — practices that follow up are converting far more</div>
       </div>
-      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:24px;text-align:center;">
         <div style="font-family:'Fraunces',serif;font-size:36px;color:white;margin-bottom:10px;">93%</div>
         <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Of patients check online reviews before choosing a dentist — most practices have too few</div>
       </div>
@@ -667,7 +675,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <p style="font-size:14px;color:#6B6B6B;max-width:520px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Every UK dental practice loses revenue through the same gaps. PEARLIQ closes all three automatically.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
-      <div style="border:1px solid #E8E4DE;border-radius:10px;padding:36px;background:#FAFAF8;">
+      <div style="border:1px solid #E8E4DE;border-radius:10px;padding:32px;background:#FAFAF8;">
         <div style="width:48px;height:48px;background:#E8F5EE;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </div>
@@ -678,7 +686,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
           23% more plans converted in 2024
         </div>
       </div>
-      <div style="border:1px solid #E8E4DE;border-radius:10px;padding:36px;background:#FAFAF8;">
+      <div style="border:1px solid #E8E4DE;border-radius:10px;padding:32px;background:#FAFAF8;">
         <div style="width:48px;height:48px;background:#E8F5EE;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </div>
@@ -689,7 +697,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
           More reviews means more new patients
         </div>
       </div>
-      <div style="border:1px solid #E8E4DE;border-radius:10px;padding:36px;background:#FAFAF8;">
+      <div style="border:1px solid #E8E4DE;border-radius:10px;padding:32px;background:#FAFAF8;">
         <div style="width:48px;height:48px;background:#E8F5EE;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         </div>
@@ -713,7 +721,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <p style="font-size:14px;color:#6B6B6B;max-width:500px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Enter your practice numbers and see exactly what PEARLIQ generates for you each month.</p>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
-      <div style="background:white;border-radius:10px;padding:36px;border:1px solid #E8E4DE;">
+      <div style="background:white;border-radius:10px;padding:32px;border:1px solid #E8E4DE;">
         <h3 style="font-family:'Fraunces',serif;font-size:18px;color:#1C1C1C;margin:0 0 24px;">Your practice numbers</h3>
         <div style="display:flex;flex-direction:column;gap:18px;">
           <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Treatment plans presented per month</label><input id="roi-plans" type="number" value="40" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:13px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
@@ -721,13 +729,13 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
           <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Current conversion rate (%)</label><input id="roi-rate" type="number" value="25" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:13px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
         </div>
       </div>
-      <div style="background:white;border-radius:10px;padding:36px;border:2px solid #1A3D2E;">
+      <div style="background:white;border-radius:10px;padding:32px;border:2px solid #1A3D2E;">
         <h3 style="font-family:'Fraunces',serif;font-size:18px;color:#1C1C1C;margin:0 0 24px;">Your projected results</h3>
         <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #E8E4DE;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:5px;font-family:'Figtree',sans-serif;">Currently converting</div><div id="roi-current" style="font-family:'Fraunces',serif;font-size:30px;color:#1C1C1C;">&pound;12,000/mo</div></div>
         <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #E8E4DE;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:5px;font-family:'Figtree',sans-serif;">With PEARLIQ automated follow-up</div><div id="roi-with" style="font-family:'Fraunces',serif;font-size:30px;color:#1A3D2E;">&pound;20,160/mo</div></div>
         <div style="margin-bottom:24px;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:5px;font-family:'Figtree',sans-serif;">Additional revenue per month</div><div id="roi-extra" style="font-family:'Fraunces',serif;font-size:44px;color:#1A3D2E;line-height:1;">&pound;8,160</div></div>
         <div style="background:#F0F7F4;border-radius:6px;padding:14px 16px;margin-bottom:22px;"><div style="font-size:12px;color:#1A3D2E;font-weight:600;margin-bottom:3px;font-family:'Figtree',sans-serif;">PEARLIQ costs &pound;1,497/month</div><div id="roi-profit" style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;">You keep &pound;6,663 in additional profit every month</div></div>
-        <button onclick="showSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:14px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:6px;">Start 14-Day Free Trial</button>
+        <button onclick="showSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:12px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:6px;">Start 14-Day Free Trial</button>
       </div>
     </div>
   </div>
@@ -739,7 +747,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
     <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">PRICING</div>
     <h2 style="font-family:'Fraunces',serif;font-size:36px;color:#1C1C1C;margin:0 0 16px;">One price. Everything included.</h2>
     <p style="font-size:14px;color:#6B6B6B;margin:0 0 44px;font-family:'Figtree',sans-serif;line-height:1.7;">No tiers, no add-ons, no surprises. Every feature included for every practice from day one.</p>
-    <div style="background:#F5F3EF;border:2px solid #1A3D2E;border-radius:14px;padding:28px;text-align:left;">
+    <div style="background:#F5F3EF;border:2px solid #1A3D2E;border-radius:14px;padding:24px;text-align:left;">
       <div style="text-align:center;margin-bottom:36px;">
         <div style="font-family:'Fraunces',serif;font-size:64px;color:#1C1C1C;line-height:1;margin-bottom:6px;">&pound;1,497</div>
         <div style="font-size:14px;color:#8A8A8A;font-family:'Figtree',sans-serif;margin-bottom:10px;">per practice per month</div>
@@ -789,7 +797,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <div id="signin-form">
         <div style="margin-bottom:16px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="login-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
         <div style="margin-bottom:20px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="login-pw" placeholder="Enter password" style="width:100%;"></div>
-        <button onclick="doLogin()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Sign In</button>
+        <button onclick="doLogin()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:12px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Sign In</button>
         <div style="text-align:center;font-size:12px;color:#8A8A8A;">Don't have an account? <span onclick="showSignUp()" style="color:#1A3D2E;cursor:pointer;font-weight:500;">Start free trial</span></div>
         <div style="text-align:center;margin-top:8px;"><span onclick="showForgotPassword()" style="font-size:12px;color:#1A3D2E;cursor:pointer;font-weight:500;">Forgot password?</span></div>
       </div>
@@ -797,14 +805,14 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <div style="margin-bottom:16px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Practice Name</label><input class="form-input" id="signup-practice" placeholder="Your Practice" style="width:100%;"></div>
         <div style="margin-bottom:16px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="signup-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
         <div style="margin-bottom:20px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="signup-pw" placeholder="Create a password (min 8 characters)" style="width:100%;"></div>
-        <button onclick="doSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Start Free Trial</button>
+        <button onclick="doSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:12px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Start Free Trial</button>
         <div style="text-align:center;font-size:12px;color:#8A8A8A;">Already have an account? <span onclick="showSignIn()" style="color:#1A3D2E;cursor:pointer;font-weight:500;">Sign in</span></div>
       </div>
       <div id="forgot-pw-form" style="display:none;">
         <div onclick="showSignIn()" style="font-size:12px;color:#1A3D2E;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Back to sign in</div>
         <div style="font-family:Fraunces,serif;font-size:18px;color:#1C1C1C;margin-bottom:16px;">Reset your password</div>
         <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" id="forgot-pw-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
-        <button onclick="sendPasswordReset()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;" id="reset-pw-btn">Send Reset Link</button>
+        <button onclick="sendPasswordReset()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:12px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;" id="reset-pw-btn">Send Reset Link</button>
         <div id="reset-pw-success" style="display:none;text-align:center;padding:20px 0;"><div style="width:48px;height:48px;background:#E8F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-family:Fraunces,serif;font-size:18px;color:#1C1C1C;margin-bottom:6px;">Reset link sent</div><div style="font-size:13px;color:#8A8A8A;">Check your inbox for instructions to reset your password</div></div>
       </div>
     </div>
@@ -988,12 +996,12 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
             <div class="table-header"><div class="table-title">Priority Follow-Ups Today</div><button class="btn btn-ghost btn-sm" onclick="navigateTo('follow-up')">View all</button></div>
             <table><thead><tr><th>Patient</th><th>Treatment</th><th>Value</th><th>Days Since</th><th></th></tr></thead>
             <tbody>
-              <tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No follow-ups due today</td></tr>
+              <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">No follow-ups due today</td></tr>
             </tbody></table>
           </div>
           <div class="activity-feed">
             <div class="activity-feed-header"><div class="chart-title">Live Activity</div></div>
-            <div style="padding:28px;text-align:center;color:var(--text-dim);font-size:13px;">No recent activity</div>
+            <div style="padding:24px;text-align:center;color:var(--text-dim);font-size:13px;">No recent activity</div>
           </div>
         </div>
       </div>
@@ -1018,7 +1026,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <!-- Treatment Sequence Timeline -->
         <div class="chart-card" style="margin-top:14px;">
           <div class="chart-header"><div class="chart-title">Active Patient Journeys</div></div>
-          <div style="padding:28px;text-align:center;color:var(--text-dim);font-size:13px;">No active patient journeys yet</div>
+          <div style="padding:24px;text-align:center;color:var(--text-dim);font-size:13px;">No active patient journeys yet</div>
         </div>
       </div>
 
@@ -1178,20 +1186,20 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
             <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:300px;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">Presented</span><span style="background:var(--rose-dim);color:var(--rose);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;">2</span></div>
               <div style="display:flex;flex-direction:column;gap:10px;">
-                <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel('James Thompson','Dental Implant','3200','Lapsed','42 days','Day 3 SMS sent','0% over 12 months')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">James Thompson</div><div style="font-size:11px;color:var(--text-dim);">Dental Implant</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;3,200</div></div>
-                <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel('Emma Davies','Invisalign Full','4800','Lapsed','38 days','Day 1 email sent','0% over 18 months')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">Emma Davies</div><div style="font-size:11px;color:var(--text-dim);">Invisalign Full</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;4,800</div></div>
+                <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;" onclick="openPatientPanel('James Thompson','Dental Implant','3200','Lapsed','42 days','Day 3 SMS sent','0% over 12 months')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">James Thompson</div><div style="font-size:11px;color:var(--text-dim);">Dental Implant</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;3,200</div></div>
+                <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;" onclick="openPatientPanel('Emma Davies','Invisalign Full','4800','Lapsed','38 days','Day 1 email sent','0% over 18 months')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">Emma Davies</div><div style="font-size:11px;color:var(--text-dim);">Invisalign Full</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;4,800</div></div>
               </div>
             </div>
             <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:300px;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">Warm</span><span style="background:var(--amber-dim);color:var(--amber);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;">1</span></div>
               <div style="display:flex;flex-direction:column;gap:10px;">
-                <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel('Robert Chen','Porcelain Veneers x6','5400','Warm','21 days','Day 7 finance email opened','0% over 24 months')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">Robert Chen</div><div style="font-size:11px;color:var(--text-dim);">Veneers x6</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;5,400</div></div>
+                <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;" onclick="openPatientPanel('Robert Chen','Porcelain Veneers x6','5400','Warm','21 days','Day 7 finance email opened','0% over 24 months')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">Robert Chen</div><div style="font-size:11px;color:var(--text-dim);">Veneers x6</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;5,400</div></div>
               </div>
             </div>
             <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:300px;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">Booked</span><span style="background:var(--green-glow);color:var(--green);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;">1</span></div>
               <div style="display:flex;flex-direction:column;gap:10px;">
-                <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel('Lisa Patel','Composite Bonding x4','1800','Active','11 days','Day 1 email sent — opened','Pay in full')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">Lisa Patel</div><div style="font-size:11px;color:var(--text-dim);">Composite Bonding</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;1,800</div></div>
+                <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;" onclick="openPatientPanel('Lisa Patel','Composite Bonding x4','1800','Active','11 days','Day 1 email sent — opened','Pay in full')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">Lisa Patel</div><div style="font-size:11px;color:var(--text-dim);">Composite Bonding</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;1,800</div></div>
               </div>
             </div>
             <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:300px;">
@@ -1219,13 +1227,13 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         </div>
 
         <div id="followup-sequences-list" style="margin-bottom:24px;">
-          <div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;">No active follow-up sequences — create a treatment plan to start one automatically.</div>
+          <div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No active follow-up sequences — create a treatment plan to start one automatically.</div>
         </div>
 
         <div class="data-table-wrap">
           <div class="table-header"><div class="table-title">Email Log</div></div>
           <table><thead><tr><th>Patient</th><th>Day</th><th>Email</th><th>Sent</th><th>Status</th></tr></thead>
-          <tbody id="followup-email-log"><tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No emails sent yet</td></tr></tbody></table>
+          <tbody id="followup-email-log"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">No emails sent yet</td></tr></tbody></table>
         </div>
       </div>
 
@@ -1302,7 +1310,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         </div>
 
         <div class="review-grid" id="reviews-cards">
-<div style="text-align:center;padding:40px;color:var(--text-dim);font-size:13px;grid-column:1/-1;">No reviews yet — reviews will appear here once patients submit them</div>
+<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;grid-column:1/-1;">No reviews yet — reviews will appear here once patients submit them</div>
         </div>
       </div>
 
@@ -1355,7 +1363,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
           <div class="table-header"><div class="table-title">Today's Review Triggers</div></div>
           <table><thead><tr><th>Patient</th><th>Treatment</th><th>Sent At</th><th>Platform</th><th>Status</th><th>Rating</th></tr></thead>
           <tbody id="review-triggers-tbody">
-<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No review triggers sent today</td></tr>
+<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">No review triggers sent today</td></tr>
           </tbody></table>
         </div>
       </div>
@@ -1371,7 +1379,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         </div>
 
         <div class="staff-grid" id="staff-cards-container" style="margin-bottom:24px;">
-<div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;grid-column:span 4;">No team members yet — click + Add Staff to get started.</div>
+<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;grid-column:span 4;">No team members yet — click + Add Staff to get started.</div>
         </div>
 
         <!-- Rota -->
@@ -1379,14 +1387,14 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
           <div class="chart-header"><div class="chart-title" id="staff-rota-title">Weekly Rota</div><button class="btn btn-secondary btn-sm" onclick="showToast('Exporting rota to payroll...','info')">Export to Payroll</button></div>
           <div class="rota-wrap">
             <table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;padding:8px 12px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Staff</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">MON</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">TUE</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">WED</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">THU</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">FRI</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">SAT</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">SUN</th></tr></thead>
-            <tbody id="staff-rota-tbody"><tr><td colspan="8" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">Add staff members to generate a rota</td></tr></tbody></table>
+            <tbody id="staff-rota-tbody"><tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">Add staff members to generate a rota</td></tr></tbody></table>
           </div>
         </div>
 
         <!-- Smart Rota Intelligence — Chair Utilisation Heatmap -->
         <div class="chart-card">
           <div class="chart-header"><div class="chart-title">Chair Utilisation Heatmap — This Week</div></div>
-<div style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No utilisation data yet</div>
+<div style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">No utilisation data yet</div>
           <div style="display:flex;gap:14px;margin-top:12px;font-size:11px;color:var(--text-dim);">
             <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(196,68,58,0.7);vertical-align:middle;margin-right:3px;"></span> Under-utilised (&lt;30%)</span>
             <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(26,61,46,0.3);vertical-align:middle;margin-right:3px;"></span> Low (30-60%)</span>
@@ -1412,7 +1420,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
           <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Payroll Status</div></div><div class="kpi-value">&mdash;</div><div class="kpi-delta neutral"></div></div>
         </div>
 
-        <div id="payroll-staff-list"><div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;">No staff added yet — add your team to calculate payroll.</div></div>
+        <div id="payroll-staff-list"><div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No staff added yet — add your team to calculate payroll.</div></div>
       </div>
 
       <!-- PRACTICE HEALTH -->
@@ -2238,7 +2246,7 @@ function renderFinancingOptions(options) {
   var container = document.getElementById('financing-options-list');
   if (!container) return;
   if (options.length === 0) {
-    container.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-dim);font-size:13px;">No financing options added yet. Click + Add Option to create your first one.</div>';
+    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);font-size:13px;">No financing options added yet. Click + Add Option to create your first one.</div>';
     return;
   }
   container.innerHTML = options.map(function(opt) {
@@ -2577,7 +2585,7 @@ function showMorningCard() {
   var overlay = document.createElement('div');
   overlay.className = 'morning-card-overlay';
   overlay.id = 'morning-card-overlay';
-  overlay.innerHTML = '<div class="morning-card"><div style="background:#1A3D2E;padding:24px 28px;"><div style="font-family:Fraunces,serif;font-size:24px;color:white;">' + greeting + '</div><div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px;">' + dateStr + '</div></div><div style="padding:24px 28px;"><div style="font-size:13px;color:var(--text-dim);margin-bottom:16px;">Today\'s priorities</div><div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;"><div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-3);border-radius:6px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--rose);flex-shrink:0;"></div><span style="font-size:13px;color:var(--cream);">3 follow-ups due today</span></div><div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-3);border-radius:6px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;"></div><span style="font-size:13px;color:var(--cream);">2 reviews pending</span></div><div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-3);border-radius:6px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></div><span style="font-size:13px;color:var(--cream);">Wednesday rota gap detected</span></div></div><button onclick="dismissMorningCard()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:Figtree,sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:6px;">Let\'s go</button></div></div>';
+  overlay.innerHTML = '<div class="morning-card"><div style="background:#1A3D2E;padding:24px 28px;"><div style="font-family:Fraunces,serif;font-size:24px;color:white;">' + greeting + '</div><div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px;">' + dateStr + '</div></div><div style="padding:24px 28px;"><div style="font-size:13px;color:var(--text-dim);margin-bottom:16px;">Today\'s priorities</div><div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;"><div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-3);border-radius:6px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--rose);flex-shrink:0;"></div><span style="font-size:13px;color:var(--cream);">3 follow-ups due today</span></div><div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-3);border-radius:6px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;"></div><span style="font-size:13px;color:var(--cream);">2 reviews pending</span></div><div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-3);border-radius:6px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></div><span style="font-size:13px;color:var(--cream);">Wednesday rota gap detected</span></div></div><button onclick="dismissMorningCard()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:12px;font-family:Figtree,sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:6px;">Let\'s go</button></div></div>';
   document.body.appendChild(overlay);
   setTimeout(function() { overlay.classList.add('visible'); }, 50);
   setTimeout(function() { dismissMorningCard(); }, 5000);
@@ -3155,7 +3163,7 @@ async function loadReviewsData() {
     var cardsContainer = document.getElementById('reviews-cards');
     if (cardsContainer) {
       if (allReviews.length === 0) {
-        cardsContainer.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);font-size:13px;">No reviews yet — they will appear here once patients submit them.</div>';
+        cardsContainer.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No reviews yet — they will appear here once patients submit them.</div>';
       } else {
         cardsContainer.innerHTML = allReviews.slice(0, 9).map(function(r) {
           var stars = '';
@@ -3199,7 +3207,7 @@ async function loadReputationData() {
     var tbody = document.getElementById('review-triggers-tbody');
     if (tbody) {
       if (todaySequences.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No review triggers sent today</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">No review triggers sent today</td></tr>';
       } else {
         tbody.innerHTML = todaySequences.map(function(s) {
           var time = s.created_at ? new Date(s.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '\u2014';
@@ -3238,7 +3246,7 @@ async function loadPayrollData() {
     var container = document.getElementById('payroll-staff-list');
     if (container) {
       if (staff.length === 0) {
-        container.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;">No staff added yet \u2014 add your team to calculate payroll.</div>';
+        container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No staff added yet \u2014 add your team to calculate payroll.</div>';
       } else {
         container.innerHTML = staff.map(function(s) {
           var hours = s.contract_type === 'Full Time' ? 168 : s.contract_type === 'Part Time' ? 80 : 0;
@@ -3276,7 +3284,7 @@ async function loadStaffData() {
     var cardsContainer = document.getElementById('staff-cards-container');
     if (cardsContainer) {
       if (staff.length === 0) {
-        cardsContainer.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;grid-column:span 4;">No team members yet \u2014 click + Add Staff to get started.</div>';
+        cardsContainer.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;grid-column:span 4;">No team members yet \u2014 click + Add Staff to get started.</div>';
       } else {
         var colors = ['#1A3D2E','#2D5A3D','#4A7C59','#C4922A','#8B6914','#5B4A8A'];
         cardsContainer.innerHTML = staff.map(function(s, idx) {
@@ -3305,7 +3313,7 @@ async function loadStaffData() {
     var rotaContainer = document.getElementById('staff-rota-tbody');
     if (rotaContainer) {
       if (staff.length === 0) {
-        rotaContainer.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">Add staff members to generate a rota</td></tr>';
+        rotaContainer.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">Add staff members to generate a rota</td></tr>';
       } else {
         rotaContainer.innerHTML = staff.map(function(s) {
           var cells = ['MON','TUE','WED','THU','FRI','SAT','SUN'].map(function(day, i) {
@@ -3345,7 +3353,7 @@ async function loadFollowUpData() {
     var container = document.getElementById('followup-sequences-list');
     if (container) {
       if (activePlans.length === 0) {
-        container.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;">No active follow-up sequences \u2014 create a treatment plan to start one automatically.</div>';
+        container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No active follow-up sequences \u2014 create a treatment plan to start one automatically.</div>';
       } else {
         container.innerHTML = activePlans.map(function(plan) {
           var planSequences = sequences.filter(function(s) { return s.treatment_plan_id === plan.id; });
@@ -3376,7 +3384,7 @@ async function loadFollowUpData() {
     var logContainer = document.getElementById('followup-email-log');
     if (logContainer) {
       if (sequences.length === 0) {
-        logContainer.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No emails sent yet</td></tr>';
+        logContainer.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-dim);font-size:13px;">No emails sent yet</td></tr>';
       } else {
         logContainer.innerHTML = sequences.slice(0, 20).map(function(s) {
           var date = s.sent_at ? new Date(s.sent_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '\u2014';
@@ -3403,7 +3411,7 @@ async function loadTreatmentPlans() {
     var boardView = document.getElementById('tp-board-view');
     if (listView) {
       if (plans.length === 0) {
-        listView.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-dim);font-size:13px;">No treatment plans yet \u2014 click + New Treatment Plan to create your first one.</div>';
+        listView.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No treatment plans yet \u2014 click + New Treatment Plan to create your first one.</div>';
       } else {
         listView.innerHTML = '<div class="tp-grid">' + plans.map(function(p) {
           var daysSince = Math.floor((new Date() - new Date(p.created_at)) / (1000*60*60*24));
@@ -3433,8 +3441,8 @@ async function loadTreatmentPlans() {
       var converted = plans.filter(function(p) { return p.status === 'converted'; });
       function boardCol(title, items, badgeClass) {
         var cards = items.length > 0 ? items.map(function(p) {
-          return '<div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel(\'' + (p.patient_name||'').replace(/'/g,"\\'") + '\',\'' + (p.treatment_type||'').replace(/'/g,"\\'") + '\',\'' + (p.value||0) + '\',\'' + (p.status||'') + '\',\'\',\'\',\'\')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">' + (p.patient_name||'\u2014') + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.treatment_type||'') + '</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">\u00A3' + parseInt(p.value||0).toLocaleString() + '</div></div>';
-        }).join('') : '<div style="text-align:center;padding:28px;color:var(--text-dim);font-size:11px;">None</div>';
+          return '<div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;" onclick="openPatientPanel(\'' + (p.patient_name||'').replace(/'/g,"\\'") + '\',\'' + (p.treatment_type||'').replace(/'/g,"\\'") + '\',\'' + (p.value||0) + '\',\'' + (p.status||'') + '\',\'\',\'\',\'\')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">' + (p.patient_name||'\u2014') + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.treatment_type||'') + '</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">\u00A3' + parseInt(p.value||0).toLocaleString() + '</div></div>';
+        }).join('') : '<div style="text-align:center;padding:24px;color:var(--text-dim);font-size:11px;">None</div>';
         return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:200px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">' + title + '</span><span class="badge ' + badgeClass + '">' + items.length + '</span></div><div style="display:flex;flex-direction:column;gap:10px;">' + cards + '</div></div>';
       }
       boardView.innerHTML = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">' +
@@ -3463,7 +3471,7 @@ async function loadTreatmentPlans() {
       <div id="legal-modal-title" style="font-family:'Fraunces',serif;font-size:18px;color:white;">Privacy Policy</div>
       <button onclick="document.getElementById('legal-modal').style.display='none'" style="background:transparent;border:none;color:white;font-size:18px;cursor:pointer;">&#10005;</button>
     </div>
-    <div id="legal-modal-body" style="padding:28px;overflow-y:auto;font-size:13px;color:#4A4A4A;line-height:1.8;"></div>
+    <div id="legal-modal-body" style="padding:24px;overflow-y:auto;font-size:13px;color:#4A4A4A;line-height:1.8;"></div>
   </div>
 </div>
 </body>
