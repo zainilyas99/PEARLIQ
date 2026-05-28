@@ -116,13 +116,13 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .app-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
 /* TOP NAV */
-.top-nav { height: 48px; background: #FFFFFF; border-bottom: 1px solid #E8E4DE; display: flex; align-items: center; padding: 0 32px; gap: 4px; flex-shrink: 0; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
+.top-nav { height: 60px; background: #FFFFFF; border-bottom: 1px solid #E8E4DE; display: flex; align-items: center; padding: 0 32px 14px; gap: 4px; flex-shrink: 0; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
 .top-nav-btn { width: 40px; height: 40px; border-radius: 8px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dim); transition: all 0.15s; position: relative; }
 .top-nav-btn:hover { background: #F5F3EF; color: var(--text-bright); }
-.top-nav-btn::after { content: attr(title); position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%); background: #1C1C1C; color: #FFFFFF; font-family: 'Figtree', sans-serif; font-size: 11px; padding: 4px 8px; border-radius: 4px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; z-index: 9999; }
-.top-nav-btn:hover::after { opacity: 1; }
+.top-nav-btn::after { content: attr(data-label); position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); font-size: 9px; font-family: 'Figtree', sans-serif; color: var(--text-dim); white-space: nowrap; letter-spacing: 0.04em; font-weight: 500; transition: color 0.18s ease; pointer-events: none; }
+.top-nav-btn:hover::after { color: var(--cream); }
 .top-nav-btn.active { background: #1A3D2E; color: white; }
-.top-nav-btn.active::before { content: attr(data-label); position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); font-size: 8px; font-family: Figtree, sans-serif; color: var(--green); white-space: nowrap; letter-spacing: 0.06em; font-weight: 600; }
+.top-nav-btn.active::after { color: var(--green); font-weight: 600; }
 .top-nav-btn svg { width: 18px; height: 18px; }
 .top-nav-divider { width: 1px; height: 24px; background: #E8E4DE; margin: 0 6px; flex-shrink: 0; }
 .header-stat-pill { display: flex; align-items: center; gap: 4px; padding: 3px 10px; background: var(--bg-3); border: 1px solid var(--border); border-radius: 20px; font-size: 11px; color: var(--text-dim); }
@@ -139,7 +139,8 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .morning-card-overlay { position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
 .morning-card-overlay.visible { opacity: 1; pointer-events: all; }
 .morning-card { background: white; border-radius: 12px; width: 420px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.12); transform: translateY(20px); transition: transform 0.4s ease; }
-.morning-card-overlay.visible .morning-card { transform: translateY(0); }
+@keyframes morningSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.morning-card-overlay.visible .morning-card { transform: translateY(0); animation: morningSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
 /* PAGE HEADER */
 .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; }
@@ -447,12 +448,12 @@ tbody tr:last-child td { border-bottom: none; }
 .notif-time { font-size: 11px; color: var(--text-dim); font-weight: 500; }
 
 /* TOAST */
-.toast-container { position: fixed; bottom: 22px; right: 22px; z-index: 9999; display: flex; flex-direction: column; gap: 7px; }
-.toast { background: var(--bg-2); border: 1px solid var(--border); padding: 11px 16px; min-width: 270px; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease; box-shadow: var(--shadow-lg); border-radius: var(--radius); }
-@keyframes slideIn { from{transform:translateX(90px);opacity:0} to{transform:translateX(0);opacity:1} }
-.toast-icon { font-size: 13px; }
-.toast-text { font-size: 12px; color: var(--text-bright); flex: 1; }
-.toast.error { border-color: rgba(196,68,58,0.3); }
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--bg-2); color: var(--cream); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border); border-left: 3px solid var(--green); font-size: 13px; font-weight: 500; box-shadow: 0 12px 32px rgba(0,0,0,0.12); z-index: 9999; opacity: 0; transform: translateX(20px); transition: opacity 0.25s ease, transform 0.25s ease; display: flex; align-items: center; gap: 10px; min-width: 280px; max-width: 420px; }
+.toast.show { opacity: 1; transform: translateX(0); }
+.toast.toast-success { border-left-color: var(--green); }
+.toast.toast-error { border-left-color: #C4443A; }
+.toast.toast-info { border-left-color: var(--amber); }
+.toast-icon { width: 18px; height: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 
 /* REVIEW STATS */
 .review-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 24px; }
@@ -512,7 +513,7 @@ body.dark-mode .app-header { background: #1C1C1C; border-bottom-color: rgba(255,
 body.dark-mode .top-nav { background: #1C1C1C; border-bottom-color: rgba(255,255,255,0.08); }
 body.dark-mode .top-nav-btn:hover { background: #2A2A2A; }
 body.dark-mode .top-nav-btn.active { background: #4A9B72; }
-body.dark-mode .top-nav-btn::after { background: #E8E6E1; color: #141414; }
+body.dark-mode .top-nav-btn::after { color: var(--text-dim); }
 body.dark-mode .main-content { background: #141414; }
 body.dark-mode .modal { background: #1C1C1C; border: 1px solid rgba(255,255,255,0.08); }
 body.dark-mode .modal-header { background: #222222; border-bottom-color: rgba(255,255,255,0.08); }
@@ -575,6 +576,9 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
 .csv-map-row:last-child { border-bottom: none; }
 .csv-map-label { flex: 1; font-size: 13px; color: var(--cream); font-weight: 500; }
 .csv-map-select { flex: 1; }
+.form-error { font-size: 11px; color: #C4443A; margin-top: 4px; display: none; }
+.form-error.visible { display: block; }
+.form-input.error { border-color: #C4443A !important; background: rgba(196,68,58,0.04); }
 </style>
 </head>
 <body>
@@ -1320,7 +1324,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         </div>
 
         <div class="review-grid" id="reviews-cards">
-<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;grid-column:1/-1;">No reviews yet — reviews will appear here once patients submit them</div>
+<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;grid-column:1/-1;"><div style="width:64px;height:64px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>No reviews yet — reviews will appear here once patients submit them</div>
         </div>
       </div>
 
@@ -1389,7 +1393,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         </div>
 
         <div class="staff-grid" id="staff-cards-container" style="margin-bottom:24px;">
-<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;grid-column:span 4;">No team members yet — click + Add Staff to get started.</div>
+<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;grid-column:span 4;"><div style="width:64px;height:64px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>No team members yet — click + Add Staff to get started.</div>
         </div>
 
         <!-- Rota -->
@@ -1430,7 +1434,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
           <div class="kpi-card"><div class="kpi-top"><div class="kpi-label">Payroll Status</div></div><div class="kpi-value">&mdash;</div><div class="kpi-delta neutral"></div></div>
         </div>
 
-        <div id="payroll-staff-list"><div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No staff added yet — add your team to calculate payroll.</div></div>
+        <div id="payroll-staff-list"><div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;"><div style="width:64px;height:64px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>No staff added yet — add your team to calculate payroll.</div></div>
       </div>
 
       <!-- PRACTICE HEALTH -->
@@ -1851,7 +1855,6 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
   </div>
 </div>
 
-<div class="toast-container" id="toast-container"></div>
 
 <script>
 // SUPABASE
@@ -1885,6 +1888,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('signup-practice').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSignUp(); });
   document.getElementById('signup-email').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSignUp(); });
   document.getElementById('signup-pw').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSignUp(); });
+  document.querySelectorAll('.form-input').forEach(function(input) { if (input.id) input.addEventListener('input', function() { clearFieldError(input.id); }); });
   const { data: { session } } = await pearliqDB.auth.getSession();
   if (session) {
     const roleMap = {
@@ -2072,11 +2076,12 @@ function togglePw() {
 }
 
 async function doLogin() {
+  clearAllFieldErrors('auth-modal');
   var loginBtn = document.querySelector('#signin-form button[onclick="doLogin()"]');
   if (loginBtn) { loginBtn.disabled = true; loginBtn.textContent = 'Signing in...'; }
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-pw').value;
-  if (!email || !password) { if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; } showToast('Please enter your email and password', 'error'); return; }
+  if (!email || !password) { if (!email) showFieldError('login-email', 'Email is required'); if (!password) showFieldError('login-pw', 'Password is required'); if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; } showToast('Please enter your email and password', 'error'); return; }
   const { data, error } = await pearliqDB.auth.signInWithPassword({ email, password });
   if (error) { if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; } showToast('Invalid email or password', 'error'); return; }
   const roleMap = {
@@ -2171,13 +2176,19 @@ async function logout() {
 }
 
 // TOAST
-function showToast(msg, type = 'info') {
-  const icons = { success: '&#10003;', error: '&#10007;', info: '&#9889;' };
-  const toast = document.createElement('div');
-  toast.className = 'toast ' + type;
-  toast.innerHTML = '<div class="toast-icon">' + icons[type] + '</div><div class="toast-text">' + msg + '</div>';
-  document.getElementById('toast-container').appendChild(toast);
-  setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateX(80px)'; toast.style.transition='all 0.3s'; setTimeout(()=>toast.remove(),300); }, 3500);
+function showToast(msg, type) {
+  type = type || 'success';
+  var toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+  var iconSvg = type === 'error'
+    ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C4443A" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+    : type === 'info'
+    ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+    : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  toast.innerHTML = '<div class="toast-icon">' + iconSvg + '</div><div>' + msg + '</div>';
+  document.body.appendChild(toast);
+  setTimeout(function() { toast.classList.add('show'); }, 10);
+  setTimeout(function() { toast.classList.remove('show'); setTimeout(function() { toast.remove(); }, 250); }, 3200);
 }
 
 // GLOBAL SEARCH
@@ -2303,15 +2314,17 @@ async function saveFinancingOption() {
 }
 
 async function deleteFinancingOption(id) {
-  if (!confirm('Delete this financing option?')) return;
-  var { error } = await pearliqDB.from('financing_options').delete().eq('id', id);
-  if (error) { showToast('Error deleting', 'error'); return; }
-  showToast('Deleted', 'success');
-  loadFinancingOptions();
+  showConfirm('Delete financing option?', 'This will permanently remove this option. This action cannot be undone.', 'Delete', async function() {
+    var { error } = await pearliqDB.from('financing_options').delete().eq('id', id);
+    if (error) { showToast('Error deleting', 'error'); return; }
+    showToast('Deleted', 'success');
+    loadFinancingOptions();
+  });
 }
 
 // SAVE FUNCTIONS
 async function savePatient() {
+  clearAllFieldErrors('new-patient-modal');
   var saveBtn = document.querySelector('#new-patient-modal .modal-footer .btn-primary');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
   const first = document.getElementById('pat-first').value.trim();
@@ -2319,9 +2332,9 @@ async function savePatient() {
   const email = document.getElementById('pat-email').value.trim();
   const phone = document.getElementById('pat-phone').value.trim();
   const dob = document.getElementById('pat-dob').value || null;
-  if (!first || !last) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter patient name', 'error'); return; }
-  if (!email) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter an email address', 'error'); return; }
-  if (!phone) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter a phone number', 'error'); return; }
+  if (!first || !last) { if (!first) showFieldError('pat-first', 'First name is required'); if (!last) showFieldError('pat-last', 'Last name is required'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter patient name', 'error'); return; }
+  if (!email) { showFieldError('pat-email', 'Email is required'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter an email address', 'error'); return; }
+  if (!phone) { showFieldError('pat-phone', 'Phone number is required'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter a phone number', 'error'); return; }
   const { error } = await pearliqDB.from('patients').insert([{
     name: first + ' ' + last,
     email: email,
@@ -3173,7 +3186,7 @@ async function loadReviewsData() {
     var cardsContainer = document.getElementById('reviews-cards');
     if (cardsContainer) {
       if (allReviews.length === 0) {
-        cardsContainer.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No reviews yet — they will appear here once patients submit them.</div>';
+        cardsContainer.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;"><div style="width:64px;height:64px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>No reviews yet — they will appear here once patients submit them.</div>';
       } else {
         cardsContainer.innerHTML = allReviews.slice(0, 9).map(function(r) {
           var stars = '';
@@ -3256,7 +3269,7 @@ async function loadPayrollData() {
     var container = document.getElementById('payroll-staff-list');
     if (container) {
       if (staff.length === 0) {
-        container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No staff added yet \u2014 add your team to calculate payroll.</div>';
+        container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;"><div style="width:64px;height:64px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>No staff added yet \u2014 add your team to calculate payroll.</div>';
       } else {
         container.innerHTML = staff.map(function(s) {
           var hours = s.contract_type === 'Full Time' ? 168 : s.contract_type === 'Part Time' ? 80 : 0;
@@ -3294,7 +3307,7 @@ async function loadStaffData() {
     var cardsContainer = document.getElementById('staff-cards-container');
     if (cardsContainer) {
       if (staff.length === 0) {
-        cardsContainer.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;grid-column:span 4;">No team members yet \u2014 click + Add Staff to get started.</div>';
+        cardsContainer.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;grid-column:span 4;"><div style="width:64px;height:64px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>No team members yet \u2014 click + Add Staff to get started.</div>';
       } else {
         var colors = ['#1A3D2E','#2D5A3D','#4A7C59','#C4922A','#8B6914','#5B4A8A'];
         cardsContainer.innerHTML = staff.map(function(s, idx) {
@@ -3363,7 +3376,7 @@ async function loadFollowUpData() {
     var container = document.getElementById('followup-sequences-list');
     if (container) {
       if (activePlans.length === 0) {
-        container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No active follow-up sequences \u2014 create a treatment plan to start one automatically.</div>';
+        container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;"><div style="width:64px;height:64px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>No active follow-up sequences \u2014 create a treatment plan to start one automatically.</div>';
       } else {
         container.innerHTML = activePlans.map(function(plan) {
           var planSequences = sequences.filter(function(s) { return s.treatment_plan_id === plan.id; });
@@ -3421,7 +3434,7 @@ async function loadTreatmentPlans() {
     var boardView = document.getElementById('tp-board-view');
     if (listView) {
       if (plans.length === 0) {
-        listView.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No treatment plans yet \u2014 click + New Treatment Plan to create your first one.</div>';
+        listView.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;"><div style="width:64px;height:64px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>No treatment plans yet \u2014 click + New Treatment Plan to create your first one.</div>';
       } else {
         listView.innerHTML = '<div class="tp-grid">' + plans.map(function(p) {
           var daysSince = Math.floor((new Date() - new Date(p.created_at)) / (1000*60*60*24));
@@ -3464,7 +3477,50 @@ async function loadTreatmentPlans() {
     showToast('Unable to load treatment plans', 'error');
   }
 }
+var pendingConfirmAction = null;
+function showConfirm(title, body, confirmText, onConfirm) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-body').textContent = body;
+  var btn = document.getElementById('confirm-action-btn');
+  btn.textContent = confirmText || 'Confirm';
+  pendingConfirmAction = onConfirm;
+  btn.onclick = function() { closeModal('confirm-modal'); if (pendingConfirmAction) pendingConfirmAction(); pendingConfirmAction = null; };
+  openModal('confirm-modal');
+}
+function showFieldError(inputId, message) {
+  var input = document.getElementById(inputId);
+  if (!input) return;
+  input.classList.add('error');
+  var errorEl = document.getElementById(inputId + '-error');
+  if (!errorEl) { errorEl = document.createElement('div'); errorEl.id = inputId + '-error'; errorEl.className = 'form-error'; input.parentNode.insertBefore(errorEl, input.nextSibling); }
+  errorEl.textContent = message;
+  errorEl.classList.add('visible');
+}
+function clearFieldError(inputId) {
+  var input = document.getElementById(inputId);
+  if (input) input.classList.remove('error');
+  var errorEl = document.getElementById(inputId + '-error');
+  if (errorEl) errorEl.classList.remove('visible');
+}
+function clearAllFieldErrors(modalId) {
+  var modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
+  modal.querySelectorAll('.form-error').forEach(function(el) { el.classList.remove('visible'); });
+}
 </script>
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal" style="width:400px;">
+    <div class="modal-header" style="border-bottom:none;padding-bottom:0;">
+      <div class="modal-title" id="confirm-title">Are you sure?</div>
+    </div>
+    <div class="modal-body" id="confirm-body" style="padding-top:8px;color:var(--text-dim);font-size:13px;line-height:1.6;">This action cannot be undone.</div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('confirm-modal')">Cancel</button>
+      <button class="btn btn-primary" id="confirm-action-btn" style="background:#C4443A;">Confirm</button>
+    </div>
+  </div>
+</div>
 <!-- DETAIL PANEL -->
 <div class="detail-panel-overlay" id="detail-overlay" onclick="closeDetailPanel()"></div>
 <div class="detail-panel" id="detail-panel">
