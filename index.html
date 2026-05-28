@@ -11,6 +11,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
+  --fs-label: 11px;
+  --fs-caption: 12px;
+  --fs-body: 13px;
+  --fs-emphasis: 14px;
+  --fs-card-title: 18px;
+  --fs-section: 24px;
+  --fs-page: 30px;
+  --fs-display: 36px;
+  --fs-hero: 56px;
   --bg: #F5F3EF;
   --bg-2: #FFFFFF;
   --bg-3: #FAF9F7;
@@ -45,7 +54,7 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Figtree', sans-serif; font-size: 14px; line-height: 1.6; overflow: hidden; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Figtree', sans-serif; font-size: 13px; line-height: 1.6; overflow: hidden; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--bg-5); border-radius: 2px; }
@@ -55,7 +64,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .role-btn { padding: 10px 6px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-family: 'Figtree', sans-serif; font-size: 11px; letter-spacing: 0.04em; cursor: pointer; transition: all 0.2s; text-align: center; border-radius: var(--radius); }
 .role-btn.active { border-color: var(--green); background: var(--green-dim); color: var(--green); }
 .form-group { margin-bottom: 18px; }
-.form-label { display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 7px; font-weight: 500; }
+.form-label { display: block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 7px; font-weight: 500; }
 .form-input { width: 100%; background: var(--bg-3); border: 1px solid var(--border); color: var(--text-bright); font-family: 'Figtree', sans-serif; font-size: 13px; padding: 11px 14px; outline: none; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; border-radius: var(--radius); }
 .form-input:focus { border-color: var(--green); }
 .form-input::placeholder { color: var(--text-dim); }
@@ -71,19 +80,19 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .header-logo { display: flex; align-items: center; gap: 10px; margin-right: auto; }
 .header-logo-mark { width: 28px; height: 28px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; }
 .header-logo-mark svg { width: 14px; height: 14px; }
-.header-logo-text { font-family: 'Fraunces', serif; font-size: 17px; color: var(--cream); letter-spacing: 0.08em; }
-.header-logo-sub { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+.header-logo-text { font-family: 'Fraunces', serif; font-size: 18px; color: var(--cream); letter-spacing: 0.08em; }
+.header-logo-sub { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
 .header-search { flex: 1; max-width: 340px; background: var(--bg-3); border: 1px solid var(--border); display: flex; align-items: center; gap: 9px; padding: 7px 13px; border-radius: var(--radius); position: relative; }
 .header-search input { background: transparent; border: none; outline: none; color: var(--text-bright); font-family: 'Figtree', sans-serif; font-size: 13px; flex: 1; }
 .header-search input::placeholder { color: var(--text-dim); }
 .header-actions { display: flex; align-items: center; gap: 10px; }
-.h-action { width: 34px; height: 34px; border: 1px solid var(--border); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dim); font-size: 14px; transition: all 0.2s; position: relative; border-radius: var(--radius); }
+.h-action { width: 34px; height: 34px; border: 1px solid var(--border); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dim); font-size: 13px; transition: all 0.2s; position: relative; border-radius: var(--radius); }
 .h-action:hover { border-color: var(--green); color: var(--green); }
 .h-action svg { width: 16px; height: 16px; }
 .notif-badge { position: absolute; top: -3px; right: -3px; width: 13px; height: 13px; background: var(--rose); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; color: white; font-weight: 700; }
 .secure-pill { display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: var(--green-glow); border: 1px solid var(--border-green); border-radius: 20px; }
 .secure-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-.secure-text { font-size: 9px; color: var(--green); letter-spacing: 0.1em; font-weight: 500; }
+.secure-text { font-size: 11px; color: var(--green); letter-spacing: 0.1em; font-weight: 500; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 .header-user { display: flex; align-items: center; gap: 9px; padding: 5px 11px 5px 5px; border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s; border-radius: var(--radius); position: relative; }
 .header-user:hover { border-color: var(--green); }
@@ -91,9 +100,9 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .user-menu.open { opacity: 1; pointer-events: all; transform: translateY(0); }
 .user-menu-item { display: flex; align-items: center; gap: 8px; padding: 10px 14px; font-size: 12px; color: var(--text-dim); cursor: pointer; transition: all 0.15s; }
 .user-menu-item:hover { background: var(--bg-3); color: var(--rose); }
-.user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: white; }
+.user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: white; }
 .user-name { font-size: 11px; font-weight: 500; color: var(--text-bright); }
-.user-role-label { font-size: 9px; color: var(--text-dim); }
+.user-role-label { font-size: 11px; color: var(--text-dim); }
 
 /* BODY */
 .app-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -108,7 +117,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .top-nav-btn.active::before { content: attr(data-label); position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); font-size: 8px; font-family: Figtree, sans-serif; color: var(--green); white-space: nowrap; letter-spacing: 0.06em; font-weight: 600; }
 .top-nav-btn svg { width: 18px; height: 18px; }
 .top-nav-divider { width: 1px; height: 24px; background: #E8E4DE; margin: 0 6px; flex-shrink: 0; }
-.header-stat-pill { display: flex; align-items: center; gap: 4px; padding: 3px 10px; background: var(--bg-3); border: 1px solid var(--border); border-radius: 20px; font-size: 10px; color: var(--text-dim); }
+.header-stat-pill { display: flex; align-items: center; gap: 4px; padding: 3px 10px; background: var(--bg-3); border: 1px solid var(--border); border-radius: 20px; font-size: 11px; color: var(--text-dim); }
 .header-stat-pill strong { color: var(--green); font-family: 'Fraunces', serif; font-size: 12px; }
 
 /* MAIN */
@@ -125,8 +134,8 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 
 /* PAGE HEADER */
 .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; }
-.page-eyebrow { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 5px; font-weight: 600; }
-.page-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 400; color: var(--cream); line-height: 1.2; }
+.page-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 5px; font-weight: 600; }
+.page-title { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 400; color: var(--cream); line-height: 1.2; }
 .page-subtitle { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
 .page-actions { display: flex; gap: 9px; align-items: center; flex-shrink: 0; }
 
@@ -150,8 +159,8 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .kpi-card::after { content:''; position:absolute; top:0; left:0; width:100%; height:2px; background:var(--green); opacity:0; transition:opacity 0.2s; border-radius: var(--radius) var(--radius) 0 0; }
 .kpi-card:hover::after { opacity:1; }
 .kpi-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-.kpi-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; }
-.kpi-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 15px; border-radius: var(--radius); }
+.kpi-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; }
+.kpi-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: var(--radius); }
 .kpi-value { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 400; color: var(--cream); line-height: 1; margin-bottom: 7px; }
 .kpi-delta { display: flex; align-items: center; gap: 5px; font-size: 11px; }
 .kpi-delta.up { color: var(--green); }
@@ -168,19 +177,19 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 /* TABLES */
 .data-table-wrap { background: var(--bg-2); border: 1px solid var(--border); margin-bottom: 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
 .table-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 1px solid var(--border); }
-.table-title { font-family: 'Fraunces', serif; font-size: 16px; color: var(--cream); }
+.table-title { font-family: 'Fraunces', serif; font-size: 14px; color: var(--cream); }
 .table-tools { display: flex; gap: 8px; }
 .search-input { background: var(--bg-3); border: 1px solid var(--border); color: var(--text-bright); font-family: 'Figtree', sans-serif; font-size: 12px; padding: 6px 11px; outline: none; width: 200px; transition: border-color 0.2s; border-radius: var(--radius); }
 .search-input:focus { border-color: var(--green); }
 .filter-select { background: var(--bg-3); border: 1px solid var(--border); color: var(--text-dim); font-family: 'Figtree', sans-serif; font-size: 12px; padding: 6px 11px; outline: none; cursor: pointer; border-radius: var(--radius); }
 table { width: 100%; border-collapse: collapse; }
-thead th { padding: 11px 22px; text-align: left; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; border-bottom: 1px solid var(--border); }
+thead th { padding: 11px 22px; text-align: left; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; border-bottom: 1px solid var(--border); }
 tbody td { padding: 13px 22px; font-size: 13px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.03); }
 tbody tr:hover td { background: rgba(26,61,46,0.02); }
 tbody tr:last-child td { border-bottom: none; }
 
 /* BADGES */
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; border-radius: 20px; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; border-radius: 20px; }
 .badge::before { content:''; width:4px; height:4px; border-radius:50%; flex-shrink:0; }
 .badge-hot { background: var(--rose-dim); color: var(--rose); }
 .badge-hot::before { background: var(--rose); }
@@ -202,13 +211,13 @@ tbody tr:last-child td { border-bottom: none; }
 .tp-card { background: var(--bg-2); border: 1px solid var(--border); overflow: hidden; transition: all 0.2s; cursor: pointer; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .tp-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
 .tp-card-header { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
-.tp-patient { font-size: 14px; font-weight: 500; color: var(--cream); margin-bottom: 3px; }
+.tp-patient { font-size: 13px; font-weight: 500; color: var(--cream); margin-bottom: 3px; }
 .tp-treatment { font-size: 11px; color: var(--text-dim); }
 .tp-card-body { padding: 14px 18px; }
 .tp-meta { display: flex; flex-direction: column; gap: 5px; }
 .tp-meta-row { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text-dim); }
 .tp-progress { margin-top: 10px; }
-.tp-progress-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 10px; color: var(--text-dim); }
+.tp-progress-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; color: var(--text-dim); }
 .progress-bar { height: 4px; background: var(--bg-5); border-radius: 2px; overflow: hidden; }
 .progress-fill { height: 100%; background: var(--green); border-radius: 2px; }
 .tp-card-footer { padding: 11px 18px; border-top: 1px solid var(--border); background: var(--bg-3); display: flex; gap: 7px; justify-content: space-between; align-items: center; }
@@ -224,17 +233,17 @@ tbody tr:last-child td { border-bottom: none; }
 .sequence-card { background: var(--bg-2); border: 1px solid var(--border); margin-bottom: 12px; overflow: hidden; transition: all 0.2s; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .sequence-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
 .sequence-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.sequence-name { font-size: 14px; font-weight: 500; color: var(--cream); }
+.sequence-name { font-size: 13px; font-weight: 500; color: var(--cream); }
 .sequence-body { padding: 16px 20px; }
 .sequence-steps { display: flex; align-items: center; gap: 0; overflow-x: auto; padding-bottom: 8px; }
 .sequence-step { display: flex; flex-direction: column; align-items: center; min-width: 120px; flex-shrink: 0; }
-.step-node { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; margin-bottom: 6px; border: 2px solid; }
+.step-node { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; margin-bottom: 6px; border: 2px solid; }
 .step-node svg { width: 16px; height: 16px; }
 .step-node.sent { border-color: var(--green); background: var(--emerald-dim); color: var(--green); }
 .step-node.pending { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
 .step-node.waiting { border-color: var(--border); background: var(--bg-4); color: var(--text-dim); }
-.step-label { font-size: 10px; color: var(--text-dim); text-align: center; }
-.step-day { font-size: 9px; color: var(--text-dim); margin-top: 2px; font-weight: 500; }
+.step-label { font-size: 11px; color: var(--text-dim); text-align: center; }
+.step-day { font-size: 11px; color: var(--text-dim); margin-top: 2px; font-weight: 500; }
 .step-connector { flex: 1; height: 2px; background: var(--border); margin-bottom: 28px; min-width: 20px; }
 .step-connector.done { background: var(--green); }
 .sequence-footer { padding: 12px 20px; border-top: 1px solid var(--border); background: var(--bg-3); display: flex; align-items: center; justify-content: space-between; }
@@ -247,43 +256,43 @@ tbody tr:last-child td { border-bottom: none; }
 .review-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
 .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
 .review-patient { font-size: 13px; font-weight: 500; color: var(--cream); }
-.review-treatment { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
-.review-stars { font-size: 14px; letter-spacing: 2px; color: var(--amber); }
+.review-treatment { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.review-stars { font-size: 13px; letter-spacing: 2px; color: var(--amber); }
 .review-text { font-size: 12px; color: var(--text); line-height: 1.6; margin-bottom: 12px; font-style: italic; }
 .review-meta { display: flex; justify-content: space-between; align-items: center; }
-.review-platform { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--text-dim); }
-.review-time { font-size: 9px; color: var(--text-dim); font-weight: 500; }
+.review-platform { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-dim); }
+.review-time { font-size: 11px; color: var(--text-dim); font-weight: 500; }
 
 /* STAFF */
 .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 14px; }
 .staff-card { background: var(--bg-2); border: 1px solid var(--border); overflow: hidden; transition: all 0.2s; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .staff-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
 .staff-card-header { padding: 18px; display: flex; align-items: flex-start; gap: 12px; border-bottom: 1px solid var(--border); }
-.staff-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 15px; color: white; flex-shrink: 0; }
+.staff-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 14px; color: white; flex-shrink: 0; }
 .staff-name { font-size: 13px; font-weight: 500; color: var(--cream); margin-bottom: 2px; }
-.staff-role-text { font-size: 10px; color: var(--text-dim); }
-.staff-online { font-size: 9px; color: var(--green); display: flex; align-items: center; gap: 4px; margin-top: 3px; }
+.staff-role-text { font-size: 11px; color: var(--text-dim); }
+.staff-online { font-size: 11px; color: var(--green); display: flex; align-items: center; gap: 4px; margin-top: 3px; }
 .staff-card-body { padding: 14px 18px; }
 .staff-stats { display: flex; justify-content: space-between; margin-bottom: 10px; }
 .staff-stat { text-align: center; }
-.staff-stat-val { font-family: 'Fraunces', serif; font-size: 20px; color: var(--green); }
+.staff-stat-val { font-family: 'Fraunces', serif; font-size: 18px; color: var(--green); }
 .staff-stat-label { font-size: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
 .staff-card-footer { padding: 10px 18px; border-top: 1px solid var(--border); background: var(--bg-3); display: flex; gap: 7px; }
 
 /* ROTA */
 .rota-wrap { overflow-x: auto; }
 .rota-grid { display: grid; grid-template-columns: 150px repeat(7,1fr); gap: 0; border: 1px solid var(--border); min-width: 900px; border-radius: var(--radius); overflow: hidden; }
-.rota-header { background: var(--bg-3); padding: 10px 14px; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+.rota-header { background: var(--bg-3); padding: 10px 14px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); font-weight: 600; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
 .rota-name-cell { padding: 10px 14px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 12px; color: var(--text-bright); display: flex; align-items: center; gap: 8px; background: var(--bg-2); }
 .rota-cell { padding: 8px; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); min-height: 52px; background: var(--bg-2); }
-.rota-shift { background: var(--green-glow); border: 1px solid var(--border-green); padding: 3px 6px; font-size: 9px; color: var(--green); margin-bottom: 3px; text-align: center; border-radius: 4px; font-weight: 500; }
+.rota-shift { background: var(--green-glow); border: 1px solid var(--border-green); padding: 3px 6px; font-size: 11px; color: var(--green); margin-bottom: 3px; text-align: center; border-radius: 4px; font-weight: 500; }
 .rota-shift.half { background: var(--violet-dim); border-color: rgba(91,74,138,0.2); color: var(--violet); }
 .rota-shift.off { background: transparent; border-color: var(--border); color: var(--text-dim); }
 .rota-shift.leave { background: var(--amber-dim); border-color: rgba(184,134,11,0.2); color: var(--amber); }
 
 /* HEATMAP */
 .heatmap-grid { display: grid; grid-template-columns: 80px repeat(10,1fr); gap: 2px; margin-top: 14px; }
-.heatmap-label { font-size: 9px; color: var(--text-dim); display: flex; align-items: center; padding: 4px 8px 4px 0; font-weight: 500; }
+.heatmap-label { font-size: 11px; color: var(--text-dim); display: flex; align-items: center; padding: 4px 8px 4px 0; font-weight: 500; }
 .heatmap-cell { height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 600; color: white; }
 .heatmap-cell.red { background: rgba(196,68,58,0.7); }
 .heatmap-cell.amber { background: rgba(184,134,11,0.6); }
@@ -294,11 +303,11 @@ tbody tr:last-child td { border-bottom: none; }
 /* PAYROLL */
 .payroll-card { background: var(--bg-2); border: 1px solid var(--border); margin-bottom: 14px; overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .payroll-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.payroll-name { font-size: 14px; font-weight: 500; color: var(--cream); }
+.payroll-name { font-size: 13px; font-weight: 500; color: var(--cream); }
 .payroll-body { padding: 18px 22px; display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; }
 .payroll-item { }
-.payroll-item-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 5px; font-weight: 500; }
-.payroll-item-val { font-family: 'Fraunces', serif; font-size: 20px; color: var(--cream); }
+.payroll-item-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 5px; font-weight: 500; }
+.payroll-item-val { font-family: 'Fraunces', serif; font-size: 18px; color: var(--cream); }
 .payroll-footer { padding: 12px 22px; border-top: 1px solid var(--border); background: var(--bg-3); display: flex; gap: 8px; justify-content: flex-end; }
 
 /* ACTIVITY */
@@ -310,7 +319,7 @@ tbody tr:last-child td { border-bottom: none; }
 .activity-dot svg { width: 14px; height: 14px; stroke: var(--text-dim); }
 .activity-text { flex: 1; font-size: 12px; color: var(--text); line-height: 1.5; }
 .activity-text strong { color: var(--text-bright); }
-.activity-time { font-size: 9px; color: var(--text-dim); white-space: nowrap; font-weight: 500; }
+.activity-time { font-size: 11px; color: var(--text-dim); white-space: nowrap; font-weight: 500; }
 
 /* PRACTICE HEALTH DIAL */
 .health-dial-wrap { display: flex; align-items: center; gap: 28px; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 24px 28px; margin-bottom: 24px; }
@@ -325,7 +334,7 @@ tbody tr:last-child td { border-bottom: none; }
 .health-hero-dial { position: relative; width: 200px; height: 200px; margin: 0 auto 28px; }
 .health-hero-score { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .health-hero-num { font-family: 'Fraunces', serif; font-size: 72px; color: #1A3D2E; line-height: 1; font-weight: 500; }
-.health-hero-label { font-family: 'Figtree', sans-serif; font-size: 14px; color: #6B7280; margin-top: 4px; }
+.health-hero-label { font-family: 'Figtree', sans-serif; font-size: 13px; color: #6B7280; margin-top: 4px; }
 .health-hero-metrics { display: flex; gap: 24px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap; }
 .health-hero-metric { display: flex; align-items: center; gap: 8px; min-width: 160px; }
 .health-hero-metric-name { font-size: 12px; color: var(--text-dim); min-width: 100px; text-align: right; }
@@ -342,7 +351,7 @@ tbody tr:last-child td { border-bottom: none; }
 .detail-panel.open { right: 0; }
 .detail-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid var(--border); }
 .detail-panel-title { font-family: 'Fraunces', serif; font-size: 18px; color: var(--cream); }
-.detail-panel-close { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dim); font-size: 14px; transition: all 0.2s; }
+.detail-panel-close { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius); background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-dim); font-size: 13px; transition: all 0.2s; }
 .detail-panel-close:hover { border-color: var(--rose); color: var(--rose); }
 .detail-panel-body { padding: 24px; }
 .detail-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.15); z-index: 9998; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
@@ -360,7 +369,7 @@ tbody tr:last-child td { border-bottom: none; }
 .sentiment-row { display: flex; align-items: center; gap: 12px; }
 .sentiment-label { font-size: 11px; color: var(--text-dim); min-width: 120px; text-align: right; }
 .sentiment-bar-wrap { flex: 1; height: 20px; background: var(--bg-5); border-radius: 3px; overflow: hidden; }
-.sentiment-bar-fill { height: 100%; border-radius: 3px; background: var(--green); display: flex; align-items: center; padding-left: 8px; font-size: 9px; color: white; font-weight: 600; }
+.sentiment-bar-fill { height: 100%; border-radius: 3px; background: var(--green); display: flex; align-items: center; padding-left: 8px; font-size: 11px; color: white; font-weight: 600; }
 
 /* PATIENT TIMELINE */
 .timeline-row { display: flex; align-items: center; gap: 0; padding: 12px 0; overflow-x: auto; }
@@ -373,7 +382,7 @@ tbody tr:last-child td { border-bottom: none; }
 .timeline-dot.future { border-color: var(--border); background: var(--bg-4); }
 .timeline-dot.future svg { stroke: var(--text-dim); }
 .timeline-dot svg { width: 12px; height: 12px; }
-.timeline-label { font-size: 9px; color: var(--text-dim); text-align: center; }
+.timeline-label { font-size: 11px; color: var(--text-dim); text-align: center; }
 .timeline-connector { flex: 1; height: 2px; margin-bottom: 18px; min-width: 12px; background: var(--border); }
 .timeline-connector.done { background: var(--green); }
 
@@ -390,11 +399,11 @@ tbody tr:last-child td { border-bottom: none; }
 .settings-panel { background: var(--bg-2); border: 1px solid var(--border); padding: 26px; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .settings-section { margin-bottom: 28px; }
 .settings-section:last-child { margin-bottom: 0; }
-.settings-section-title { font-family: 'Fraunces', serif; font-size: 15px; color: var(--cream); margin-bottom: 14px; padding-bottom: 9px; border-bottom: 1px solid var(--border); }
+.settings-section-title { font-family: 'Fraunces', serif; font-size: 14px; color: var(--cream); margin-bottom: 14px; padding-bottom: 9px; border-bottom: 1px solid var(--border); }
 .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid rgba(0,0,0,0.03); }
 .settings-row:last-child { border-bottom: none; }
 .settings-label { font-size: 13px; color: var(--text-bright); }
-.settings-sublabel { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+.settings-sublabel { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
 .toggle { width: 34px; height: 18px; background: var(--bg-5); border-radius: 9px; cursor: pointer; position: relative; transition: background 0.2s; flex-shrink: 0; }
 .toggle.on { background: var(--green); }
 .toggle::after { content:''; position:absolute; top:2px; left:2px; width:14px; height:14px; border-radius:50%; background:white; transition:transform 0.2s; }
@@ -406,8 +415,8 @@ tbody tr:last-child td { border-bottom: none; }
 .modal { background: var(--bg-2); border: 1px solid var(--border); width: 540px; max-height: 85vh; overflow-y: auto; transform: translateY(18px); transition: transform 0.2s, background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease; border-radius: var(--radius); box-shadow: var(--shadow-lg); }
 .modal-overlay.open .modal { transform: translateY(0); }
 .modal-header { padding: 22px 26px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.modal-title { font-family: 'Fraunces', serif; font-size: 20px; color: var(--cream); }
-.modal-close { background: transparent; border: 1px solid var(--border); color: var(--text-dim); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: all 0.2s; border-radius: var(--radius); }
+.modal-title { font-family: 'Fraunces', serif; font-size: 18px; color: var(--cream); }
+.modal-close { background: transparent; border: 1px solid var(--border); color: var(--text-dim); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; transition: all 0.2s; border-radius: var(--radius); }
 .modal-close:hover { border-color: var(--rose); color: var(--rose); }
 .modal-body { padding: 26px; }
 .modal-footer { padding: 18px 26px; border-top: 1px solid var(--border); display: flex; gap: 9px; justify-content: flex-end; }
@@ -416,20 +425,20 @@ tbody tr:last-child td { border-bottom: none; }
 .notif-panel { position: absolute; right: 0; top: calc(var(--header-h) + 6px); width: 320px; background: var(--bg-2); border: 1px solid var(--border); z-index: 200; box-shadow: var(--shadow-lg); transform: translateY(-8px); opacity: 0; pointer-events: none; transition: all 0.2s; border-radius: var(--radius); }
 .notif-panel.open { transform: translateY(0); opacity: 1; pointer-events: all; }
 .notif-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.notif-title { font-family: 'Fraunces', serif; font-size: 14px; color: var(--cream); }
+.notif-title { font-family: 'Fraunces', serif; font-size: 13px; color: var(--cream); }
 .notif-item { padding: 12px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; display: flex; gap: 10px; align-items: flex-start; }
 .notif-item:hover { background: rgba(0,0,0,0.02); }
 .notif-item.unread { background: var(--green-glow); }
-.notif-icon { font-size: 14px; flex-shrink: 0; }
+.notif-icon { font-size: 13px; flex-shrink: 0; }
 .notif-icon svg { width: 16px; height: 16px; stroke: var(--green); }
 .notif-text { font-size: 11px; color: var(--text-bright); margin-bottom: 2px; }
-.notif-time { font-size: 9px; color: var(--text-dim); font-weight: 500; }
+.notif-time { font-size: 11px; color: var(--text-dim); font-weight: 500; }
 
 /* TOAST */
 .toast-container { position: fixed; bottom: 22px; right: 22px; z-index: 9999; display: flex; flex-direction: column; gap: 7px; }
 .toast { background: var(--bg-2); border: 1px solid var(--border); padding: 11px 16px; min-width: 270px; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease; box-shadow: var(--shadow-lg); border-radius: var(--radius); }
 @keyframes slideIn { from{transform:translateX(90px);opacity:0} to{transform:translateX(0);opacity:1} }
-.toast-icon { font-size: 14px; }
+.toast-icon { font-size: 13px; }
 .toast-text { font-size: 12px; color: var(--text-bright); flex: 1; }
 .toast.error { border-color: rgba(196,68,58,0.3); }
 
@@ -437,13 +446,13 @@ tbody tr:last-child td { border-bottom: none; }
 .review-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 24px; }
 .review-stat-card { background: var(--bg-2); border: 1px solid var(--border); padding: 20px; text-align: center; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
 .review-stat-val { font-family: 'Fraunces', serif; font-size: 36px; color: var(--cream); line-height: 1; margin-bottom: 4px; }
-.review-stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
+.review-stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
 .review-stat-sub { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
 
 /* SECURITY */
 .security-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .security-card { background: var(--bg-2); border: 1px solid var(--border); padding: 22px; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
-.security-card-title { font-family: 'Fraunces', serif; font-size: 16px; color: var(--cream); margin-bottom: 4px; }
+.security-card-title { font-family: 'Fraunces', serif; font-size: 14px; color: var(--cream); margin-bottom: 4px; }
 .security-card-desc { font-size: 11px; color: var(--text-dim); margin-bottom: 18px; }
 .audit-list { display: flex; flex-direction: column; }
 .audit-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); }
@@ -454,8 +463,8 @@ tbody tr:last-child td { border-bottom: none; }
 .audit-icon.danger { background: var(--rose-dim); color: var(--rose); }
 .audit-icon.info { background: var(--green-glow); color: var(--green); }
 .audit-action { font-size: 12px; color: var(--text-bright); }
-.audit-meta { font-size: 10px; color: var(--text-dim); margin-top: 1px; }
-.audit-time { font-size: 9px; color: var(--text-dim); white-space: nowrap; font-weight: 500; }
+.audit-meta { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+.audit-time { font-size: 11px; color: var(--text-dim); white-space: nowrap; font-weight: 500; }
 .perm-table { width: 100%; }
 .perm-row { display: flex; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); }
 .perm-row:last-child { border-bottom: none; }
@@ -473,7 +482,7 @@ tbody tr:last-child td { border-bottom: none; }
 /* PATIENT LTV */
 .ltv-strip { display: flex; gap: 16px; align-items: center; margin-top: 10px; padding: 10px 0; border-top: 1px solid var(--border); }
 .ltv-item { text-align: center; }
-.ltv-val { font-family: 'Fraunces', serif; font-size: 16px; color: var(--green); }
+.ltv-val { font-family: 'Fraunces', serif; font-size: 14px; color: var(--green); }
 .ltv-label { font-size: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
 
 @media (max-width: 1280px) {
@@ -560,7 +569,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
     <div style="width:34px;height:34px;background:#1A3D2E;border-radius:8px;display:flex;align-items:center;justify-content:center;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
     </div>
-    <span style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;letter-spacing:0.04em;">PEARLIQ</span>
+    <span style="font-family:'Fraunces',serif;font-size:18px;color:#1C1C1C;letter-spacing:0.04em;">PEARLIQ</span>
   </div>
   <div style="display:flex;align-items:center;gap:32px;">
     <a href="#features" onclick="animateSectionHeading('features')" style="font-size:13px;color:#4A4A4A;text-decoration:none;font-family:'Figtree',sans-serif;">Features</a>
@@ -580,23 +589,23 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <div style="width:6px;height:6px;border-radius:50%;background:#1A3D2E;flex-shrink:0;"></div>
         <span style="font-size:11px;color:#1A3D2E;font-weight:600;letter-spacing:0.08em;font-family:'Figtree',sans-serif;">BUILT FOR UK DENTAL PRACTICES</span>
       </div>
-      <h1 style="font-family:'Fraunces',serif;font-size:54px;line-height:1.1;color:#1C1C1C;margin:0 0 22px;">Turn missed treatment plans into <em style="color:#1A3D2E;font-style:italic;">booked revenue</em></h1>
-      <p style="font-size:16px;color:#6B6B6B;line-height:1.8;margin:0 0 36px;font-family:'Figtree',sans-serif;">The UK dental market is worth &pound;10.6 billion and growing at 4.9% per year. Yet most practices lose thousands every month through missed follow-ups and no review strategy. PEARLIQ fixes both — automatically.</p>
+      <h1 style="font-family:'Fraunces',serif;font-size:56px;line-height:1.1;color:#1C1C1C;margin:0 0 22px;">Turn missed treatment plans into <em style="color:#1A3D2E;font-style:italic;">booked revenue</em></h1>
+      <p style="font-size:14px;color:#6B6B6B;line-height:1.8;margin:0 0 36px;font-family:'Figtree',sans-serif;">The UK dental market is worth &pound;10.6 billion and growing at 4.9% per year. Yet most practices lose thousands every month through missed follow-ups and no review strategy. PEARLIQ fixes both — automatically.</p>
       <div style="display:flex;gap:14px;align-items:center;margin-bottom:48px;">
-        <button onclick="showSignUp()" style="background:#1A3D2E;color:white;border:none;padding:15px 34px;font-family:'Figtree',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:6px;">Start 14-Day Free Trial</button>
+        <button onclick="showSignUp()" style="background:#1A3D2E;color:white;border:none;padding:15px 34px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:6px;">Start 14-Day Free Trial</button>
         <span style="font-size:12px;color:#8A8A8A;font-family:'Figtree',sans-serif;">No card required · Cancel anytime</span>
       </div>
       <div style="display:flex;gap:0;border:1px solid #E8E4DE;border-radius:8px;overflow:hidden;background:white;">
         <div style="flex:1;padding:20px 24px;border-right:1px solid #E8E4DE;text-align:center;">
-          <div style="font-family:'Fraunces',serif;font-size:26px;color:#1A3D2E;margin-bottom:3px;">&pound;10.6B</div>
+          <div style="font-family:'Fraunces',serif;font-size:24px;color:#1A3D2E;margin-bottom:3px;">&pound;10.6B</div>
           <div style="font-size:11px;color:#8A8A8A;font-family:'Figtree',sans-serif;">UK dental market 2024</div>
         </div>
         <div style="flex:1;padding:20px 24px;border-right:1px solid #E8E4DE;text-align:center;">
-          <div style="font-family:'Fraunces',serif;font-size:26px;color:#1A3D2E;margin-bottom:3px;">12,000+</div>
+          <div style="font-family:'Fraunces',serif;font-size:24px;color:#1A3D2E;margin-bottom:3px;">12,000+</div>
           <div style="font-size:11px;color:#8A8A8A;font-family:'Figtree',sans-serif;">Practices across the UK</div>
         </div>
         <div style="flex:1;padding:20px 24px;text-align:center;">
-          <div style="font-family:'Fraunces',serif;font-size:26px;color:#1A3D2E;margin-bottom:3px;">4.9%</div>
+          <div style="font-family:'Fraunces',serif;font-size:24px;color:#1A3D2E;margin-bottom:3px;">4.9%</div>
           <div style="font-size:11px;color:#8A8A8A;font-family:'Figtree',sans-serif;">Annual market growth</div>
         </div>
       </div>
@@ -624,25 +633,25 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
 <section id="opportunity" style="padding:80px 60px;background:#1A3D2E;box-sizing:border-box;width:100%;display:block;">
   <div style="max-width:1080px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:52px;">
-      <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:14px;font-family:'Figtree',sans-serif;">THE OPPORTUNITY</div>
-      <h2 style="font-family:'Fraunces',serif;font-size:38px;color:white;margin:0 0 16px;">The UK dental market is booming.<br>Most practices are not capturing it.</h2>
-      <p style="font-size:15px;color:rgba(255,255,255,0.65);max-width:560px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Every practice we speak to is leaving significant revenue on the table. The same three problems, every time.</p>
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:14px;font-family:'Figtree',sans-serif;">THE OPPORTUNITY</div>
+      <h2 style="font-family:'Fraunces',serif;font-size:36px;color:white;margin:0 0 16px;">The UK dental market is booming.<br>Most practices are not capturing it.</h2>
+      <p style="font-size:14px;color:rgba(255,255,255,0.65);max-width:560px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Every practice we speak to is leaving significant revenue on the table. The same three problems, every time.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
       <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
-        <div style="font-family:'Fraunces',serif;font-size:42px;color:white;margin-bottom:10px;">4.9%</div>
+        <div style="font-family:'Fraunces',serif;font-size:36px;color:white;margin-bottom:10px;">4.9%</div>
         <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Annual UK dental market growth — one of the fastest growing healthcare sectors</div>
       </div>
       <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
-        <div style="font-family:'Fraunces',serif;font-size:42px;color:white;margin-bottom:10px;">60%</div>
+        <div style="font-family:'Fraunces',serif;font-size:36px;color:white;margin-bottom:10px;">60%</div>
         <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Of UK adults do not attend regular check-ups — patients practices are failing to retain</div>
       </div>
       <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
-        <div style="font-family:'Fraunces',serif;font-size:42px;color:white;margin-bottom:10px;">23%</div>
+        <div style="font-family:'Fraunces',serif;font-size:36px;color:white;margin-bottom:10px;">23%</div>
         <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Increase in treatment plans in 2024 — practices that follow up are converting far more</div>
       </div>
       <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:28px;text-align:center;">
-        <div style="font-family:'Fraunces',serif;font-size:42px;color:white;margin-bottom:10px;">93%</div>
+        <div style="font-family:'Fraunces',serif;font-size:36px;color:white;margin-bottom:10px;">93%</div>
         <div style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;font-family:'Figtree',sans-serif;">Of patients check online reviews before choosing a dentist — most practices have too few</div>
       </div>
     </div>
@@ -653,16 +662,16 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
 <section id="features" style="padding:80px 60px;background:white;box-sizing:border-box;width:100%;display:block;">
   <div style="max-width:1080px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:52px;">
-      <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">WHAT PEARLIQ DOES</div>
-      <h2 style="font-family:'Fraunces',serif;font-size:38px;color:#1C1C1C;margin:0 0 16px;">Three problems. One platform. Zero manual work.</h2>
-      <p style="font-size:15px;color:#6B6B6B;max-width:520px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Every UK dental practice loses revenue through the same gaps. PEARLIQ closes all three automatically.</p>
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">WHAT PEARLIQ DOES</div>
+      <h2 style="font-family:'Fraunces',serif;font-size:36px;color:#1C1C1C;margin:0 0 16px;">Three problems. One platform. Zero manual work.</h2>
+      <p style="font-size:14px;color:#6B6B6B;max-width:520px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Every UK dental practice loses revenue through the same gaps. PEARLIQ closes all three automatically.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
       <div style="border:1px solid #E8E4DE;border-radius:10px;padding:36px;background:#FAFAF8;">
         <div style="width:48px;height:48px;background:#E8F5EE;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </div>
-        <h3 style="font-family:'Fraunces',serif;font-size:22px;color:#1C1C1C;margin:0 0 14px;">Treatment Plan Follow-Up</h3>
+        <h3 style="font-family:'Fraunces',serif;font-size:24px;color:#1C1C1C;margin:0 0 14px;">Treatment Plan Follow-Up</h3>
         <p style="font-size:13px;color:#6B6B6B;line-height:1.8;margin:0 0 20px;font-family:'Figtree',sans-serif;">Patients leave with a plan but never book. PEARLIQ sends automated email sequences on day 1, 3, 7, 14 and 30 — personalised by treatment type, with financing options included automatically.</p>
         <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -673,7 +682,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <div style="width:48px;height:48px;background:#E8F5EE;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </div>
-        <h3 style="font-family:'Fraunces',serif;font-size:22px;color:#1C1C1C;margin:0 0 14px;">Review Generation</h3>
+        <h3 style="font-family:'Fraunces',serif;font-size:24px;color:#1C1C1C;margin:0 0 14px;">Review Generation</h3>
         <p style="font-size:13px;color:#6B6B6B;line-height:1.8;margin:0 0 20px;font-family:'Figtree',sans-serif;">93% of patients check reviews before choosing a dentist. PEARLIQ sends personalised review requests 2 hours after every appointment — driving a steady stream of 5-star Google reviews on autopilot.</p>
         <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -684,7 +693,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <div style="width:48px;height:48px;background:#E8F5EE;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         </div>
-        <h3 style="font-family:'Fraunces',serif;font-size:22px;color:#1C1C1C;margin:0 0 14px;">Rota &amp; Payroll Intelligence</h3>
+        <h3 style="font-family:'Fraunces',serif;font-size:24px;color:#1C1C1C;margin:0 0 14px;">Rota &amp; Payroll Intelligence</h3>
         <p style="font-size:13px;color:#6B6B6B;line-height:1.8;margin:0 0 20px;font-family:'Figtree',sans-serif;">Staff costs are 40-50% of practice revenue. PEARLIQ detects rota gaps 72 hours in advance, contacts agency staff automatically, and calculates payroll from your rota at month end ready to export to Xero.</p>
         <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -699,26 +708,26 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
 <section id="roi" style="padding-top:0;background:#F5F3EF;box-sizing:border-box;width:100%;">
   <div style="max-width:1080px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:52px;">
-      <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">ROI CALCULATOR</div>
-      <h2 style="font-family:'Fraunces',serif;font-size:38px;color:#1C1C1C;margin:0 0 16px;">See your return before you commit</h2>
-      <p style="font-size:15px;color:#6B6B6B;max-width:500px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Enter your practice numbers and see exactly what PEARLIQ generates for you each month.</p>
+      <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">ROI CALCULATOR</div>
+      <h2 style="font-family:'Fraunces',serif;font-size:36px;color:#1C1C1C;margin:0 0 16px;">See your return before you commit</h2>
+      <p style="font-size:14px;color:#6B6B6B;max-width:500px;margin:0 auto;font-family:'Figtree',sans-serif;line-height:1.7;">Enter your practice numbers and see exactly what PEARLIQ generates for you each month.</p>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
       <div style="background:white;border-radius:10px;padding:36px;border:1px solid #E8E4DE;">
-        <h3 style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;margin:0 0 24px;">Your practice numbers</h3>
+        <h3 style="font-family:'Fraunces',serif;font-size:18px;color:#1C1C1C;margin:0 0 24px;">Your practice numbers</h3>
         <div style="display:flex;flex-direction:column;gap:18px;">
-          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Treatment plans presented per month</label><input id="roi-plans" type="number" value="40" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:14px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
-          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Average treatment value (&pound;)</label><input id="roi-value" type="number" value="1200" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:14px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
-          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Current conversion rate (%)</label><input id="roi-rate" type="number" value="25" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:14px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
+          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Treatment plans presented per month</label><input id="roi-plans" type="number" value="40" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:13px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
+          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Average treatment value (&pound;)</label><input id="roi-value" type="number" value="1200" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:13px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
+          <div><label style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:7px;font-family:'Figtree',sans-serif;">Current conversion rate (%)</label><input id="roi-rate" type="number" value="25" oninput="calculateROI()" style="width:100%;background:#F5F3EF;border:1px solid #E8E4DE;padding:11px 14px;font-family:'Figtree',sans-serif;font-size:13px;border-radius:6px;outline:none;box-sizing:border-box;color:#1C1C1C;"></div>
         </div>
       </div>
       <div style="background:white;border-radius:10px;padding:36px;border:2px solid #1A3D2E;">
-        <h3 style="font-family:'Fraunces',serif;font-size:20px;color:#1C1C1C;margin:0 0 24px;">Your projected results</h3>
+        <h3 style="font-family:'Fraunces',serif;font-size:18px;color:#1C1C1C;margin:0 0 24px;">Your projected results</h3>
         <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #E8E4DE;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:5px;font-family:'Figtree',sans-serif;">Currently converting</div><div id="roi-current" style="font-family:'Fraunces',serif;font-size:30px;color:#1C1C1C;">&pound;12,000/mo</div></div>
         <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #E8E4DE;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:5px;font-family:'Figtree',sans-serif;">With PEARLIQ automated follow-up</div><div id="roi-with" style="font-family:'Fraunces',serif;font-size:30px;color:#1A3D2E;">&pound;20,160/mo</div></div>
         <div style="margin-bottom:24px;"><div style="font-size:12px;color:#8A8A8A;margin-bottom:5px;font-family:'Figtree',sans-serif;">Additional revenue per month</div><div id="roi-extra" style="font-family:'Fraunces',serif;font-size:44px;color:#1A3D2E;line-height:1;">&pound;8,160</div></div>
         <div style="background:#F0F7F4;border-radius:6px;padding:14px 16px;margin-bottom:22px;"><div style="font-size:12px;color:#1A3D2E;font-weight:600;margin-bottom:3px;font-family:'Figtree',sans-serif;">PEARLIQ costs &pound;1,497/month</div><div id="roi-profit" style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;">You keep &pound;6,663 in additional profit every month</div></div>
-        <button onclick="showSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:14px;font-family:'Figtree',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:6px;">Start 14-Day Free Trial</button>
+        <button onclick="showSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:14px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:6px;">Start 14-Day Free Trial</button>
       </div>
     </div>
   </div>
@@ -727,13 +736,13 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
 <!-- PRICING -->
 <section id="pricing" style="padding:80px 60px;background:white;box-sizing:border-box;width:100%;display:block;">
   <div style="max-width:680px;margin:0 auto;text-align:center;">
-    <div style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">PRICING</div>
-    <h2 style="font-family:'Fraunces',serif;font-size:38px;color:#1C1C1C;margin:0 0 16px;">One price. Everything included.</h2>
-    <p style="font-size:15px;color:#6B6B6B;margin:0 0 44px;font-family:'Figtree',sans-serif;line-height:1.7;">No tiers, no add-ons, no surprises. Every feature included for every practice from day one.</p>
+    <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#1A3D2E;margin-bottom:14px;font-family:'Figtree',sans-serif;">PRICING</div>
+    <h2 style="font-family:'Fraunces',serif;font-size:36px;color:#1C1C1C;margin:0 0 16px;">One price. Everything included.</h2>
+    <p style="font-size:14px;color:#6B6B6B;margin:0 0 44px;font-family:'Figtree',sans-serif;line-height:1.7;">No tiers, no add-ons, no surprises. Every feature included for every practice from day one.</p>
     <div style="background:#F5F3EF;border:2px solid #1A3D2E;border-radius:14px;padding:28px;text-align:left;">
       <div style="text-align:center;margin-bottom:36px;">
         <div style="font-family:'Fraunces',serif;font-size:64px;color:#1C1C1C;line-height:1;margin-bottom:6px;">&pound;1,497</div>
-        <div style="font-size:15px;color:#8A8A8A;font-family:'Figtree',sans-serif;margin-bottom:10px;">per practice per month</div>
+        <div style="font-size:14px;color:#8A8A8A;font-family:'Figtree',sans-serif;margin-bottom:10px;">per practice per month</div>
         <div style="display:inline-block;background:#E8F5EE;border:1px solid #C8E6D4;padding:5px 16px;border-radius:20px;font-size:12px;color:#1A3D2E;font-weight:600;font-family:'Figtree',sans-serif;">Average ROI: &pound;6,000+ additional revenue per month</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px;">
@@ -746,7 +755,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;line-height:1.5;">Personal onboarding call included</span></div>
         <div style="display:flex;align-items:flex-start;gap:10px;"><div style="width:20px;height:20px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span style="font-size:13px;color:#4A4A4A;font-family:'Figtree',sans-serif;line-height:1.5;">Same-day email support</span></div>
       </div>
-      <button onclick="showSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:17px;font-family:'Figtree',sans-serif;font-size:15px;font-weight:600;cursor:pointer;border-radius:8px;margin-bottom:14px;">Start 14-Day Free Trial</button>
+      <button onclick="showSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:17px;font-family:'Figtree',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border-radius:8px;margin-bottom:14px;">Start 14-Day Free Trial</button>
       <div style="text-align:center;font-size:12px;color:#8A8A8A;font-family:'Figtree',sans-serif;">No credit card required · Cancel anytime · GDPR compliant</div>
     </div>
   </div>
@@ -756,7 +765,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
 <footer style="padding:48px 60px;background:#1C1C1C;box-sizing:border-box;width:100%;display:block;">
   <div style="max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
     <div>
-      <div style="font-family:'Fraunces',serif;font-size:20px;color:white;margin-bottom:6px;">PEARLIQ</div>
+      <div style="font-family:'Fraunces',serif;font-size:18px;color:white;margin-bottom:6px;">PEARLIQ</div>
       <div style="font-size:12px;color:#666;font-family:'Figtree',sans-serif;">Dental Practice Intelligence · Built for UK Practices</div>
     </div>
     <div style="display:flex;gap:28px;align-items:center;">
@@ -773,21 +782,21 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
 <div id="auth-modal" style="position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
   <div style="background:white;width:440px;border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2);">
     <div style="background:#1A3D2E;padding:24px 32px;">
-      <div style="font-family:'Fraunces',serif;font-size:20px;color:white;margin-bottom:4px;" id="auth-modal-title">Sign In to PEARLIQ</div>
+      <div style="font-family:'Fraunces',serif;font-size:18px;color:white;margin-bottom:4px;" id="auth-modal-title">Sign In to PEARLIQ</div>
       <div style="font-size:12px;color:rgba(255,255,255,0.6);" id="auth-modal-subtitle">Welcome back</div>
     </div>
     <div style="padding:28px 32px;">
       <div id="signin-form">
-        <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="login-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
-        <div style="margin-bottom:20px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="login-pw" placeholder="Enter password" style="width:100%;"></div>
+        <div style="margin-bottom:16px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="login-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
+        <div style="margin-bottom:20px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="login-pw" placeholder="Enter password" style="width:100%;"></div>
         <button onclick="doLogin()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Sign In</button>
         <div style="text-align:center;font-size:12px;color:#8A8A8A;">Don't have an account? <span onclick="showSignUp()" style="color:#1A3D2E;cursor:pointer;font-weight:500;">Start free trial</span></div>
         <div style="text-align:center;margin-top:8px;"><span onclick="showForgotPassword()" style="font-size:12px;color:#1A3D2E;cursor:pointer;font-weight:500;">Forgot password?</span></div>
       </div>
       <div id="signup-form" style="display:none;">
-        <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Practice Name</label><input class="form-input" id="signup-practice" placeholder="Your Practice" style="width:100%;"></div>
-        <div style="margin-bottom:16px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="signup-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
-        <div style="margin-bottom:20px;"><label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="signup-pw" placeholder="Create a password (min 8 characters)" style="width:100%;"></div>
+        <div style="margin-bottom:16px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Practice Name</label><input class="form-input" id="signup-practice" placeholder="Your Practice" style="width:100%;"></div>
+        <div style="margin-bottom:16px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="signup-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
+        <div style="margin-bottom:20px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="signup-pw" placeholder="Create a password (min 8 characters)" style="width:100%;"></div>
         <button onclick="doSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:13px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Start Free Trial</button>
         <div style="text-align:center;font-size:12px;color:#8A8A8A;">Already have an account? <span onclick="showSignIn()" style="color:#1A3D2E;cursor:pointer;font-weight:500;">Sign in</span></div>
       </div>
@@ -818,7 +827,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
     <div class="header-search">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input id="global-search" placeholder="Search patients, treatments, staff..." oninput="globalSearch(this.value)">
-      <span style="font-size:9px;color:var(--text-dim);font-weight:500;">&#8984;K</span>
+      <span style="font-size:11px;color:var(--text-dim);font-weight:500;">&#8984;K</span>
       <div id="search-results" style="position:absolute;top:100%;left:0;right:0;background:#FFFFFF;border:1px solid rgba(0,0,0,0.1);border-radius:0 0 8px 8px;box-shadow:0 8px 24px rgba(0,0,0,0.08);z-index:9999;max-height:320px;overflow-y:auto;display:none;"></div>
     </div>
     <div class="header-actions">
@@ -849,7 +858,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
     <div class="notif-panel" id="notif-panel" style="position:absolute;right:22px;">
       <div class="notif-header">
         <div class="notif-title">Notifications</div>
-        <span style="font-size:10px;color:var(--green);cursor:pointer;">Mark all read</span>
+        <span style="font-size:11px;color:var(--green);cursor:pointer;">Mark all read</span>
       </div>
       <div>
         <div class="notif-item unread"><div class="notif-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><div><div class="notif-text"><strong>Follow-up sent:</strong> James Thompson — Implant treatment plan Day 3 reminder</div><div class="notif-time">12 min ago</div></div></div>
@@ -1071,7 +1080,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
               </div>
             </div>
             <div class="tp-card-footer">
-              <span style="font-size:10px;color:var(--rose);font-weight:500;">42 days without booking</span>
+              <span style="font-size:11px;color:var(--rose);font-weight:500;">42 days without booking</span>
               <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();sendFollowUpAuto('James Thompson',7,'Dental Implant',3200)">Send Day 7</button>
             </div>
           </div>
@@ -1100,7 +1109,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
               </div>
             </div>
             <div class="tp-card-footer">
-              <span style="font-size:10px;color:var(--rose);font-weight:500;">38 days without booking</span>
+              <span style="font-size:11px;color:var(--rose);font-weight:500;">38 days without booking</span>
               <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();sendFollowUpAuto('Emma Davies',3,'Invisalign Full',4800)">Send Day 3</button>
             </div>
           </div>
@@ -1129,7 +1138,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
               </div>
             </div>
             <div class="tp-card-footer">
-              <span style="font-size:10px;color:var(--amber);font-weight:500;">21 days — opened finance email</span>
+              <span style="font-size:11px;color:var(--amber);font-weight:500;">21 days — opened finance email</span>
               <button class="btn btn-secondary btn-sm">Day 14 Scheduled</button>
             </div>
           </div>
@@ -1158,7 +1167,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
               </div>
             </div>
             <div class="tp-card-footer">
-              <span style="font-size:10px;color:var(--green);font-weight:500;">Appointment booked — 28 Apr</span>
+              <span style="font-size:11px;color:var(--green);font-weight:500;">Appointment booked — 28 Apr</span>
               <button class="btn btn-success btn-sm">Converted</button>
             </div>
           </div>
@@ -1167,26 +1176,26 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <div id="tp-board-view" style="display:none;">
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;overflow-x:auto;">
             <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:300px;">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:15px;color:var(--cream);">Presented</span><span style="background:var(--rose-dim);color:var(--rose);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;">2</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">Presented</span><span style="background:var(--rose-dim);color:var(--rose);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;">2</span></div>
               <div style="display:flex;flex-direction:column;gap:10px;">
                 <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel('James Thompson','Dental Implant','3200','Lapsed','42 days','Day 3 SMS sent','0% over 12 months')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">James Thompson</div><div style="font-size:11px;color:var(--text-dim);">Dental Implant</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;3,200</div></div>
                 <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel('Emma Davies','Invisalign Full','4800','Lapsed','38 days','Day 1 email sent','0% over 18 months')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">Emma Davies</div><div style="font-size:11px;color:var(--text-dim);">Invisalign Full</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;4,800</div></div>
               </div>
             </div>
             <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:300px;">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:15px;color:var(--cream);">Warm</span><span style="background:var(--amber-dim);color:var(--amber);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;">1</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">Warm</span><span style="background:var(--amber-dim);color:var(--amber);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;">1</span></div>
               <div style="display:flex;flex-direction:column;gap:10px;">
                 <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel('Robert Chen','Porcelain Veneers x6','5400','Warm','21 days','Day 7 finance email opened','0% over 24 months')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">Robert Chen</div><div style="font-size:11px;color:var(--text-dim);">Veneers x6</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;5,400</div></div>
               </div>
             </div>
             <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:300px;">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:15px;color:var(--cream);">Booked</span><span style="background:var(--green-glow);color:var(--green);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;">1</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">Booked</span><span style="background:var(--green-glow);color:var(--green);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;">1</span></div>
               <div style="display:flex;flex-direction:column;gap:10px;">
                 <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel('Lisa Patel','Composite Bonding x4','1800','Active','11 days','Day 1 email sent — opened','Pay in full')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">Lisa Patel</div><div style="font-size:11px;color:var(--text-dim);">Composite Bonding</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">&pound;1,800</div></div>
               </div>
             </div>
             <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:300px;">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:15px;color:var(--cream);">Converted</span><span style="background:var(--emerald-dim);color:var(--emerald);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;">0</span></div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">Converted</span><span style="background:var(--emerald-dim);color:var(--emerald);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;">0</span></div>
               <div style="display:flex;flex-direction:column;gap:10px;"><div style="text-align:center;padding:40px 20px;color:var(--text-dim);font-size:12px;">No converted plans yet</div></div>
             </div>
           </div>
@@ -1224,23 +1233,23 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <div class="page" id="page-financing">
         <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:26px;">
           <div>
-            <div style="font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:#1A3D2E;margin-bottom:4px;">Treatment · Finance</div>
-            <h1 style="font-family:'Fraunces',serif;font-size:26px;color:var(--cream);line-height:1.2;">Financing Options</h1>
+            <div style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#1A3D2E;margin-bottom:4px;">Treatment · Finance</div>
+            <h1 style="font-family:'Fraunces',serif;font-size:24px;color:var(--cream);line-height:1.2;">Financing Options</h1>
             <div style="font-size:12px;color:var(--text-dim);margin-top:3px;">Define your practice financing options — these are shown to patients in follow-up sequences</div>
           </div>
           <button onclick="openModal('financing-modal')" style="display:inline-flex;align-items:center;gap:7px;padding:8px 15px;background:#1A3D2E;color:white;border:none;border-radius:6px;font-family:'Figtree',sans-serif;font-size:12px;font-weight:500;cursor:pointer;">+ Add Option</button>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;">
           <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
-            <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Active Options</div>
+            <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Active Options</div>
             <div id="fin-count" style="font-family:'Fraunces',serif;font-size:30px;color:var(--cream);">0</div>
           </div>
           <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
-            <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Max Treatment Value</div>
+            <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Max Treatment Value</div>
             <div id="fin-max" style="font-family:'Fraunces',serif;font-size:30px;color:var(--cream);">&pound;0</div>
           </div>
           <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
-            <div style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Lowest Interest Rate</div>
+            <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Lowest Interest Rate</div>
             <div id="fin-rate" style="font-family:'Fraunces',serif;font-size:30px;color:var(--green);">0%</div>
           </div>
         </div>
@@ -1260,19 +1269,19 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <div class="review-stats">
           <div class="review-stat-card">
             <div class="review-stat-val" id="reviews-google-rating">0.0</div>
-            <div style="font-size:16px;margin-bottom:4px;color:var(--amber);">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div style="font-size:14px;margin-bottom:4px;color:var(--amber);">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
             <div class="review-stat-label">Google Rating</div>
             <div class="review-stat-sub" id="reviews-google-count">0 reviews</div>
           </div>
           <div class="review-stat-card">
             <div class="review-stat-val" id="reviews-trustpilot-rating">0.0</div>
-            <div style="font-size:16px;margin-bottom:4px;color:var(--amber);">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div style="font-size:14px;margin-bottom:4px;color:var(--amber);">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
             <div class="review-stat-label">Trustpilot Rating</div>
             <div class="review-stat-sub" id="reviews-trustpilot-count">0 reviews</div>
           </div>
           <div class="review-stat-card">
             <div class="review-stat-val" id="reviews-new-count">0</div>
-            <div style="font-size:16px;margin-bottom:4px;color:var(--green);">+</div>
+            <div style="font-size:14px;margin-bottom:4px;color:var(--green);">+</div>
             <div class="review-stat-label">New This Month</div>
             <div class="review-stat-sub">0% trigger response rate</div>
           </div>
@@ -1314,31 +1323,31 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
             <div style="text-align:center;min-width:140px;padding:16px;">
               <div style="width:48px;height:48px;border-radius:50%;background:var(--green-glow);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
               <div style="font-size:11px;color:var(--text-bright);font-weight:500;">Appointment Ends</div>
-              <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Auto-detected</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Auto-detected</div>
             </div>
             <div style="display:flex;align-items:center;padding-bottom:28px;"><div style="width:40px;height:2px;background:var(--green);"></div></div>
             <div style="text-align:center;min-width:140px;padding:16px;">
               <div style="width:48px;height:48px;border-radius:50%;background:var(--green-glow);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
               <div style="font-size:11px;color:var(--text-bright);font-weight:500;">AI Pre-Screen</div>
-              <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Predict satisfaction</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Predict satisfaction</div>
             </div>
             <div style="display:flex;align-items:center;padding-bottom:28px;"><div style="width:40px;height:2px;background:var(--green);"></div></div>
             <div style="text-align:center;min-width:140px;padding:16px;">
               <div style="width:48px;height:48px;border-radius:50%;background:var(--emerald-dim);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
               <div style="font-size:11px;color:var(--text-bright);font-weight:500;">Review Request</div>
-              <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">2hrs post-appt SMS</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">2hrs post-appt SMS</div>
             </div>
             <div style="display:flex;align-items:center;padding-bottom:28px;"><div style="width:40px;height:2px;background:var(--green);"></div></div>
             <div style="text-align:center;min-width:140px;padding:16px;">
               <div style="width:48px;height:48px;border-radius:50%;background:var(--green-glow);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg></div>
               <div style="font-size:11px;color:var(--text-bright);font-weight:500;">Google / Trustpilot</div>
-              <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Smart platform routing</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Smart platform routing</div>
             </div>
             <div style="display:flex;align-items:center;padding-bottom:28px;"><div style="width:40px;height:2px;background:var(--green);"></div></div>
             <div style="text-align:center;min-width:140px;padding:16px;">
               <div style="width:48px;height:48px;border-radius:50%;background:var(--emerald-dim);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
               <div style="font-size:11px;color:var(--text-bright);font-weight:500;">Dashboard Update</div>
-              <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Real-time tracking</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Real-time tracking</div>
             </div>
           </div>
         </div>
@@ -1369,7 +1378,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <div class="chart-card" style="margin-bottom:18px;">
           <div class="chart-header"><div class="chart-title" id="staff-rota-title">Weekly Rota</div><button class="btn btn-secondary btn-sm" onclick="showToast('Exporting rota to payroll...','info')">Export to Payroll</button></div>
           <div class="rota-wrap">
-            <table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;padding:8px 12px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Staff</th><th style="padding:8px;font-size:10px;color:var(--text-dim);">MON</th><th style="padding:8px;font-size:10px;color:var(--text-dim);">TUE</th><th style="padding:8px;font-size:10px;color:var(--text-dim);">WED</th><th style="padding:8px;font-size:10px;color:var(--text-dim);">THU</th><th style="padding:8px;font-size:10px;color:var(--text-dim);">FRI</th><th style="padding:8px;font-size:10px;color:var(--text-dim);">SAT</th><th style="padding:8px;font-size:10px;color:var(--text-dim);">SUN</th></tr></thead>
+            <table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;padding:8px 12px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Staff</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">MON</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">TUE</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">WED</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">THU</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">FRI</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">SAT</th><th style="padding:8px;font-size:11px;color:var(--text-dim);">SUN</th></tr></thead>
             <tbody id="staff-rota-tbody"><tr><td colspan="8" style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">Add staff members to generate a rota</td></tr></tbody></table>
           </div>
         </div>
@@ -1378,7 +1387,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <div class="chart-card">
           <div class="chart-header"><div class="chart-title">Chair Utilisation Heatmap — This Week</div></div>
 <div style="text-align:center;padding:28px;color:var(--text-dim);font-size:13px;">No utilisation data yet</div>
-          <div style="display:flex;gap:14px;margin-top:12px;font-size:9px;color:var(--text-dim);">
+          <div style="display:flex;gap:14px;margin-top:12px;font-size:11px;color:var(--text-dim);">
             <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(196,68,58,0.7);vertical-align:middle;margin-right:3px;"></span> Under-utilised (&lt;30%)</span>
             <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(26,61,46,0.3);vertical-align:middle;margin-right:3px;"></span> Low (30-60%)</span>
             <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(26,61,46,0.7);vertical-align:middle;margin-right:3px;"></span> Optimal (60-90%)</span>
@@ -1424,7 +1433,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
             </div>
           </div>
           <div style="flex:1;">
-            <div id="health-page-label" style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:4px;">Overall Practice Health: No Data Yet</div>
+            <div id="health-page-label" style="font-family:'Fraunces',serif;font-size:18px;color:var(--cream);margin-bottom:4px;">Overall Practice Health: No Data Yet</div>
             <div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;">Add patients and treatment plans to generate your health score.</div>
             <div class="health-breakdown">
               <div class="health-metric"><div class="health-metric-label">Occupancy Rate</div><div class="health-metric-bar"><div class="health-metric-fill" id="health-occupancy-bar" style="width:0%;"></div></div><div class="health-metric-val" id="health-occupancy">0%</div></div>
@@ -1506,11 +1515,11 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         </div>
         <div style="background:var(--bg-2);border:1px solid var(--border-green);padding:22px;margin-bottom:18px;display:flex;align-items:center;gap:28px;border-radius:var(--radius);box-shadow:var(--shadow-md);">
           <div style="text-align:center;flex-shrink:0;">
-            <div style="font-family:'Fraunces',serif;font-size:48px;color:var(--green);line-height:1;">&mdash;</div>
-            <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.14em;font-weight:600;">Security Score</div>
+            <div style="font-family:'Fraunces',serif;font-size:56px;color:var(--green);line-height:1;">&mdash;</div>
+            <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.14em;font-weight:600;">Security Score</div>
           </div>
           <div style="flex:1;">
-            <div style="font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin-bottom:5px;">Platform Status: Secure</div>
+            <div style="font-family:'Fraunces',serif;font-size:18px;color:var(--cream);margin-bottom:5px;">Platform Status: Secure</div>
             <div style="font-size:11px;color:var(--text-dim);margin-bottom:12px;">All systems operational. GDPR compliant.</div>
             <div style="display:flex;gap:18px;flex-wrap:wrap;">
               <span style="font-size:11px;color:var(--green);font-weight:500;">AES-256 Encryption</span>
@@ -1786,14 +1795,14 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <div id="csv-step-1">
         <div class="csv-dropzone" onclick="document.getElementById('csv-file-input').click()">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" style="margin-bottom:16px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <div style="font-family:'Fraunces',serif;font-size:16px;color:var(--cream);margin-bottom:8px;">Drop your CSV file here or click to browse</div>
+          <div style="font-family:'Fraunces',serif;font-size:14px;color:var(--cream);margin-bottom:8px;">Drop your CSV file here or click to browse</div>
           <div style="font-size:12px;color:var(--text-dim);">Accepts .csv files only</div>
         </div>
         <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCSVFile(this)">
         <div style="font-size:11px;color:var(--text-dim);margin-top:14px;line-height:1.6;">Export your patient list from your existing software as a CSV and upload it here. We support SOE Exact, Dentally, Carestream and any standard CSV format.</div>
       </div>
       <div id="csv-step-2" style="display:none;">
-        <div style="font-family:'Fraunces',serif;font-size:16px;color:var(--cream);margin-bottom:4px;">Map your columns</div>
+        <div style="font-family:'Fraunces',serif;font-size:14px;color:var(--cream);margin-bottom:4px;">Map your columns</div>
         <div style="font-size:12px;color:var(--text-dim);margin-bottom:16px;">Match your CSV columns to PEARLIQ fields</div>
         <div id="csv-mapping"></div>
         <div style="margin-top:16px;"><div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">Preview (first 3 rows)</div><div id="csv-preview" style="font-size:12px;background:var(--bg-3);border-radius:6px;padding:12px;overflow-x:auto;"></div></div>
@@ -1801,7 +1810,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <div id="csv-step-3" style="display:none;">
         <div style="text-align:center;margin-bottom:20px;">
           <div style="width:56px;height:56px;background:var(--green-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
-          <div style="font-family:'Fraunces',serif;font-size:20px;color:var(--cream);margin-bottom:4px;" id="csv-summary-title">Ready to import</div>
+          <div style="font-family:'Fraunces',serif;font-size:18px;color:var(--cream);margin-bottom:4px;" id="csv-summary-title">Ready to import</div>
           <div style="font-size:13px;color:var(--text-dim);" id="csv-summary-sub"></div>
         </div>
         <div id="csv-summary-names" style="margin-bottom:16px;"></div>
@@ -1921,12 +1930,12 @@ async function sendTreatmentFollowUp(patientName, patientEmail, treatmentType, v
   var subject = subjects[dayNumber] || 'Following up on your ' + treatmentType + ' treatment';
   var financeBlock = dayNumber === 7 ? '<div style="background:#F5F3EF;border-left:3px solid #1A3D2E;padding:16px 20px;margin-bottom:20px;"><p style="color:#1A3D2E;font-weight:600;margin:0 0 8px;">Flexible Payment Options Available</p><p style="color:#4A4A4A;font-size:13px;margin:0;">We offer 0% finance over 6-24 months, making your treatment more affordable. Ask us about our payment plans.</p></div>' : '';
   var html = '<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#F5F3EF;padding:40px 20px;">' +
-    '<div style="background:#1A3D2E;padding:24px 32px;margin-bottom:0;"><h1 style="color:white;font-size:22px;margin:0;letter-spacing:0.06em;">PEARLIQ</h1><p style="color:rgba(255,255,255,0.7);font-size:12px;margin:4px 0 0;">Dental Practice Intelligence</p></div>' +
+    '<div style="background:#1A3D2E;padding:24px 32px;margin-bottom:0;"><h1 style="color:white;font-size:24px;margin:0;letter-spacing:0.06em;">PEARLIQ</h1><p style="color:rgba(255,255,255,0.7);font-size:12px;margin:4px 0 0;">Dental Practice Intelligence</p></div>' +
     '<div style="background:white;padding:40px 32px;border-left:1px solid #E8E4DE;border-right:1px solid #E8E4DE;">' +
-    '<p style="color:#1C1C1C;font-size:16px;margin-bottom:16px;">Dear ' + patientName + ',</p>' +
-    '<p style="color:#4A4A4A;font-size:14px;line-height:1.8;margin-bottom:20px;">Thank you for visiting us. We wanted to follow up on the <strong>' + treatmentType + '</strong> treatment plan we discussed with you, valued at <strong>\u00A3' + parseInt(value).toLocaleString() + '</strong>.</p>' +
+    '<p style="color:#1C1C1C;font-size:14px;margin-bottom:16px;">Dear ' + patientName + ',</p>' +
+    '<p style="color:#4A4A4A;font-size:13px;line-height:1.8;margin-bottom:20px;">Thank you for visiting us. We wanted to follow up on the <strong>' + treatmentType + '</strong> treatment plan we discussed with you, valued at <strong>\u00A3' + parseInt(value).toLocaleString() + '</strong>.</p>' +
     financeBlock +
-    '<p style="color:#4A4A4A;font-size:14px;line-height:1.8;margin-bottom:28px;">We\'re here to answer any questions you may have. Please don\'t hesitate to get in touch or book a consultation.</p>' +
+    '<p style="color:#4A4A4A;font-size:13px;line-height:1.8;margin-bottom:28px;">We\'re here to answer any questions you may have. Please don\'t hesitate to get in touch or book a consultation.</p>' +
     '<a href="mailto:hello@pearliq.app" style="background:#1A3D2E;color:white;padding:14px 28px;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:0.08em;display:inline-block;">GET IN TOUCH</a></div>' +
     '<div style="background:#E8E4DE;padding:20px 32px;"><p style="color:#8A8A8A;font-size:11px;margin:0;">This email was sent by your dental practice via PEARLIQ. To unsubscribe, reply with STOP.</p></div></div>';
   await sendEmail(patientEmail, subject, html);
@@ -1996,7 +2005,7 @@ async function doSignUp() {
     successDiv = document.createElement('div');
     successDiv.id = 'signup-success-overlay';
     successDiv.style.cssText = 'position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
-    successDiv.innerHTML = '<div style="background:white;width:440px;border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2);text-align:center;padding:48px 32px;"><div style="width:56px;height:56px;background:#E8F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-family:Fraunces,serif;font-size:24px;color:#1C1C1C;margin-bottom:12px;">Check your email</div><div style="font-size:14px;color:#4A4A4A;line-height:1.8;margin-bottom:28px;">We have sent a confirmation link to your email address. Click the link to activate your account and start your 14-day free trial.</div><button onclick="this.closest(\'#signup-success-overlay\').remove()" style="background:#1A3D2E;color:white;border:none;padding:13px 32px;font-family:Figtree,sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;">Got it</button></div>';
+    successDiv.innerHTML = '<div style="background:white;width:440px;border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2);text-align:center;padding:48px 32px;"><div style="width:56px;height:56px;background:#E8F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-family:Fraunces,serif;font-size:24px;color:#1C1C1C;margin-bottom:12px;">Check your email</div><div style="font-size:13px;color:#4A4A4A;line-height:1.8;margin-bottom:28px;">We have sent a confirmation link to your email address. Click the link to activate your account and start your 14-day free trial.</div><button onclick="this.closest(\'#signup-success-overlay\').remove()" style="background:#1A3D2E;color:white;border:none;padding:13px 32px;font-family:Figtree,sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;">Got it</button></div>';
     document.body.appendChild(successDiv);
   } else {
     successDiv.style.display = 'flex';
@@ -2167,19 +2176,19 @@ async function globalSearch(query) {
     ]);
     var html = '';
     if (patientsRes.data && patientsRes.data.length > 0) {
-      html += '<div style="padding:8px 16px;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Patients</div>';
+      html += '<div style="padding:8px 16px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Patients</div>';
       patientsRes.data.forEach(function(p) {
-        html += '<div onclick="navigateTo(\'patients\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,0.04);" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="width:28px;height:28px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;flex-shrink:0;">' + p.name.split(' ').map(function(n){return n[0]}).join('').substring(0,2) + '</div><div><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + p.name + '</div><div style="font-size:11px;color:#8A8A8A;">Patient · ' + (p.email || 'No email') + '</div></div></div>';
+        html += '<div onclick="navigateTo(\'patients\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,0.04);" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="width:28px;height:28px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;flex-shrink:0;">' + p.name.split(' ').map(function(n){return n[0]}).join('').substring(0,2) + '</div><div><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + p.name + '</div><div style="font-size:11px;color:#8A8A8A;">Patient · ' + (p.email || 'No email') + '</div></div></div>';
       });
     }
     if (plansRes.data && plansRes.data.length > 0) {
-      html += '<div style="padding:8px 16px;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Treatment Plans</div>';
+      html += '<div style="padding:8px 16px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Treatment Plans</div>';
       plansRes.data.forEach(function(p) {
         html += '<div onclick="navigateTo(\'treatment-plans\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,0.04);" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + p.patient_name + '</div><div style="font-size:11px;color:#8A8A8A;margin-left:auto;">\u00A3' + (p.value || 0).toLocaleString() + ' \u00B7 ' + (p.treatment_type || '') + '</div></div>';
       });
     }
     if (staffRes.data && staffRes.data.length > 0) {
-      html += '<div style="padding:8px 16px;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Staff</div>';
+      html += '<div style="padding:8px 16px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Staff</div>';
       staffRes.data.forEach(function(s) {
         html += '<div onclick="navigateTo(\'staff\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + s.name + '</div><div style="font-size:11px;color:#8A8A8A;margin-left:auto;">' + (s.role || '') + '</div></div>';
       });
@@ -2444,7 +2453,7 @@ async function loadPatients() {
     if (error || !data) return;
     if (!tbody) return;
     if (data.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7"><div style="text-align:center;padding:60px 20px;"><div style="width:64px;height:64px;background:var(--green-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div style="font-family:Fraunces,serif;font-size:20px;color:var(--cream);margin-bottom:8px;">No patients yet</div><div style="font-size:13px;color:var(--text-dim);margin-bottom:20px;">Add your first patient to get started</div><button class="btn btn-primary btn-sm" onclick="openModal(\'new-patient-modal\')">+ Add Patient</button></div></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7"><div style="text-align:center;padding:60px 20px;"><div style="width:64px;height:64px;background:var(--green-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div style="font-family:Fraunces,serif;font-size:18px;color:var(--cream);margin-bottom:8px;">No patients yet</div><div style="font-size:13px;color:var(--text-dim);margin-bottom:20px;">Add your first patient to get started</div><button class="btn btn-primary btn-sm" onclick="openModal(\'new-patient-modal\')">+ Add Patient</button></div></td></tr>';
       return;
     }
     let rows = '';
@@ -2453,7 +2462,7 @@ async function loadPatients() {
       const statusClass = p.status === 'active' ? 'badge-good' : p.status === 'lapsed' ? 'badge-hot' : 'badge-neutral';
       const statusText = p.status ? p.status.charAt(0).toUpperCase() + p.status.slice(1) : 'Unknown';
       rows += '<tr>' +
-        '<td><div style="color:var(--cream);font-weight:500;">' + (p.name || '') + '</div><div style="font-size:10px;color:var(--text-dim);">' + (p.email || '') + '</div></td>' +
+        '<td><div style="color:var(--cream);font-weight:500;">' + (p.name || '') + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.email || '') + '</div></td>' +
         '<td>—</td>' +
         '<td>—</td>' +
         '<td style="font-size:11px;font-weight:500;">' + date + '</td>' +
@@ -2780,7 +2789,7 @@ async function initHealthChart() {
       if (recs.length === 0) recs.push({ icon: '\u2713', text: 'Practice performing well', sub: 'All key metrics are on track. Keep it up.' });
       recsEl.innerHTML = recs.map(function(r) {
         return '<div style="display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border);">' +
-          '<div style="width:20px;height:20px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green);flex-shrink:0;">' + r.icon + '</div>' +
+          '<div style="width:20px;height:20px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--green);flex-shrink:0;">' + r.icon + '</div>' +
           '<div><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:3px;">' + r.text + '</div>' +
           '<div style="font-size:12px;color:var(--text-dim);">' + r.sub + '</div></div></div>';
       }).join('');
@@ -3081,7 +3090,7 @@ function csvPreviewImport() {
 
   var namesHtml = '';
   csvMappedData.slice(0, 5).forEach(function(p) {
-    namesHtml += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);"><div style="width:28px;height:28px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;flex-shrink:0;">' + p.name.split(' ').map(function(n){return n[0]}).join('').substring(0,2).toUpperCase() + '</div><div><div style="font-size:13px;color:var(--cream);font-weight:500;">' + p.name + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.email || 'No email') + '</div></div></div>';
+    namesHtml += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);"><div style="width:28px;height:28px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;flex-shrink:0;">' + p.name.split(' ').map(function(n){return n[0]}).join('').substring(0,2).toUpperCase() + '</div><div><div style="font-size:13px;color:var(--cream);font-weight:500;">' + p.name + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.email || 'No email') + '</div></div></div>';
   });
   if (total > 5) namesHtml += '<div style="padding:8px 0;font-size:12px;color:var(--text-dim);">+ ' + (total - 5) + ' more patients</div>';
   document.getElementById('csv-summary-names').innerHTML = namesHtml;
@@ -3158,7 +3167,7 @@ async function loadReviewsData() {
             '<div style="font-size:11px;color:var(--text-dim);">' + date + '</div></div>' +
             '<div style="margin-bottom:8px;">' + stars + '</div>' +
             '<div style="font-size:12px;color:var(--text-dim);line-height:1.7;">' + (r.review_text || '') + '</div>' +
-            '<div style="margin-top:10px;font-size:10px;color:var(--green);letter-spacing:0.08em;text-transform:uppercase;">' + (r.platform || '') + '</div></div>';
+            '<div style="margin-top:10px;font-size:11px;color:var(--green);letter-spacing:0.08em;text-transform:uppercase;">' + (r.platform || '') + '</div></div>';
         }).join('');
       }
     }
@@ -3238,13 +3247,13 @@ async function loadPayrollData() {
           var pension = Math.round(gross * 0.05);
           var netPay = Math.round(gross - pension);
           return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:20px 28px;margin-bottom:12px;">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><div><div style="font-family:Fraunces,serif;font-size:17px;color:var(--cream);">' + (s.name || '') + ' \u2014 ' + (s.role || '') + '</div></div><span class="badge badge-good">CONFIRMED</span></div>' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><div><div style="font-family:Fraunces,serif;font-size:18px;color:var(--cream);">' + (s.name || '') + ' \u2014 ' + (s.role || '') + '</div></div><span class="badge badge-good">CONFIRMED</span></div>' +
             '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;">' +
-            '<div><div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Basic Salary</div><div style="font-size:18px;font-weight:600;color:var(--cream);">\u00A3' + Math.round(gross).toLocaleString() + '</div></div>' +
-            '<div><div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Hours Worked</div><div style="font-size:18px;font-weight:600;color:var(--cream);">' + hours + 'h</div></div>' +
-            '<div><div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Overtime</div><div style="font-size:18px;font-weight:600;color:var(--cream);">\u00A30</div></div>' +
-            '<div><div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Pension (5%)</div><div style="font-size:18px;font-weight:600;color:var(--cream);">\u00A3' + pension.toLocaleString() + '</div></div>' +
-            '<div><div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Net Pay</div><div style="font-size:18px;font-weight:600;color:var(--green);">\u00A3' + netPay.toLocaleString() + '</div></div>' +
+            '<div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Basic Salary</div><div style="font-size:18px;font-weight:600;color:var(--cream);">\u00A3' + Math.round(gross).toLocaleString() + '</div></div>' +
+            '<div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Hours Worked</div><div style="font-size:18px;font-weight:600;color:var(--cream);">' + hours + 'h</div></div>' +
+            '<div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Overtime</div><div style="font-size:18px;font-weight:600;color:var(--cream);">\u00A30</div></div>' +
+            '<div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Pension (5%)</div><div style="font-size:18px;font-weight:600;color:var(--cream);">\u00A3' + pension.toLocaleString() + '</div></div>' +
+            '<div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Net Pay</div><div style="font-size:18px;font-weight:600;color:var(--green);">\u00A3' + netPay.toLocaleString() + '</div></div>' +
             '</div><div style="margin-top:16px;display:flex;justify-content:flex-end;"><button class="btn btn-secondary btn-sm">View Payslip</button></div></div>';
         }).join('');
       }
@@ -3277,19 +3286,19 @@ async function loadStaffData() {
           var gdcText = s.gdc_number ? 'GDC: ' + s.gdc_number + ' \u00B7 Valid' : 'No GDC number';
           return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:24px;box-shadow:var(--shadow-sm);">' +
             '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">' +
-            '<div style="width:44px;height:44px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:white;flex-shrink:0;">' + initials + '</div>' +
-            '<div><div style="font-family:Fraunces,serif;font-size:15px;color:var(--cream);">' + (s.name || '') + '</div>' +
+            '<div style="width:44px;height:44px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:white;flex-shrink:0;">' + initials + '</div>' +
+            '<div><div style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">' + (s.name || '') + '</div>' +
             '<div style="font-size:11px;color:var(--text-dim);">' + (s.role || '') + ' \u00B7 ' + (s.contract_type || '') + '</div>' +
-            '<div style="display:flex;align-items:center;gap:4px;margin-top:2px;"><div style="width:6px;height:6px;border-radius:50%;background:#2D9B4E;"></div><div style="font-size:10px;color:var(--text-dim);">On duty</div></div></div></div>' +
+            '<div style="display:flex;align-items:center;gap:4px;margin-top:2px;"><div style="width:6px;height:6px;border-radius:50%;background:#2D9B4E;"></div><div style="font-size:11px;color:var(--text-dim);">On duty</div></div></div></div>' +
             '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;">' +
-            '<div><div style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Hourly Rate</div><div style="font-size:16px;font-weight:600;color:var(--cream);">\u00A3' + (s.hourly_rate || 0).toFixed(2) + '</div></div>' +
-            '<div><div style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Schedule</div><div style="font-size:16px;font-weight:600;color:var(--cream);">Mon-Fri</div></div>' +
-            '<div><div style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Annual</div><div style="font-size:16px;font-weight:600;color:var(--cream);">\u00A3' + (annualSalary/1000).toFixed(0) + 'K</div></div></div>' +
+            '<div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Hourly Rate</div><div style="font-size:14px;font-weight:600;color:var(--cream);">\u00A3' + (s.hourly_rate || 0).toFixed(2) + '</div></div>' +
+            '<div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Schedule</div><div style="font-size:14px;font-weight:600;color:var(--cream);">Mon-Fri</div></div>' +
+            '<div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Annual</div><div style="font-size:14px;font-weight:600;color:var(--cream);">\u00A3' + (annualSalary/1000).toFixed(0) + 'K</div></div></div>' +
             '<div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;">' + gdcText + '</div>' +
             '<div style="display:flex;gap:8px;"><button class="btn btn-secondary btn-sm" style="flex:1;">Message</button><button class="btn btn-ghost btn-sm">\u2699</button></div></div>';
         }).join('');
         cardsContainer.innerHTML += '<div onclick="openModal(\'invite-staff-modal\')" style="background:var(--bg-3);border:2px dashed var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;min-height:200px;transition:border-color 0.2s;" onmouseover="this.style.borderColor=\'var(--green)\'" onmouseout="this.style.borderColor=\'var(--border)\'">' +
-          '<div style="width:40px;height:40px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--green);margin-bottom:10px;">+</div>' +
+          '<div style="width:40px;height:40px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--green);margin-bottom:10px;">+</div>' +
           '<div style="font-size:13px;color:var(--text-dim);">Add Team Member</div></div>';
       }
     }
@@ -3300,7 +3309,7 @@ async function loadStaffData() {
       } else {
         rotaContainer.innerHTML = staff.map(function(s) {
           var cells = ['MON','TUE','WED','THU','FRI','SAT','SUN'].map(function(day, i) {
-            var content = i >= 5 ? '<span style="color:var(--text-dim);font-size:11px;">OFF</span>' : '<div style="background:var(--green-glow);border:1px solid var(--border-green);border-radius:4px;padding:4px 8px;font-size:10px;text-align:center;color:var(--green);">09:00-17:30</div>';
+            var content = i >= 5 ? '<span style="color:var(--text-dim);font-size:11px;">OFF</span>' : '<div style="background:var(--green-glow);border:1px solid var(--border-green);border-radius:4px;padding:4px 8px;font-size:11px;text-align:center;color:var(--green);">09:00-17:30</div>';
             return '<td style="padding:8px;">' + content + '</td>';
           }).join('');
           return '<tr><td style="padding:8px 12px;font-size:13px;font-weight:500;color:var(--cream);white-space:nowrap;">' + (s.name || '') + '</td>' + cells + '</tr>';
@@ -3350,10 +3359,10 @@ async function loadFollowUpData() {
           var progressDots = steps.map(function(day) {
             var sent = planSequences.find(function(s) { return s.day_number === day; });
             var dotColor = sent ? 'var(--green)' : 'var(--bg-5)';
-            return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:28px;height:28px;border-radius:50%;background:' + dotColor + ';display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-size:9px;color:var(--text-dim);">Day ' + day + '</div></div>';
+            return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:28px;height:28px;border-radius:50%;background:' + dotColor + ';display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-size:11px;color:var(--text-dim);">Day ' + day + '</div></div>';
           }).join('<div style="flex:1;height:1px;background:var(--border);margin-top:14px;"></div>');
           return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:12px;">' +
-            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;"><div><div style="font-family:Fraunces,serif;font-size:16px;color:var(--cream);margin-bottom:2px;">' + (plan.patient_name || '\u2014') + '</div>' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;"><div><div style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);margin-bottom:2px;">' + (plan.patient_name || '\u2014') + '</div>' +
             '<div style="font-size:12px;color:var(--text-dim);">' + (plan.treatment_type || '\u2014') + ' \u00B7 \u00A3' + parseInt(plan.value || 0).toLocaleString() + '</div></div>' +
             '<span class="badge ' + statusClass + '">' + statusText + '</span></div>' +
             '<div style="display:flex;align-items:center;gap:0;margin-bottom:14px;">' + progressDots + '</div>' +
@@ -3412,7 +3421,7 @@ async function loadTreatmentPlans() {
             '<div class="tp-meta-row">Plan value: <strong style="color:var(--cream);">\u00A3' + parseInt(p.value||0).toLocaleString() + '</strong></div>' +
             '<div class="tp-meta-row">Created: ' + new Date(p.created_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) + '</div>' +
             '<div class="tp-meta-row">Status: ' + statusText + '</div></div></div>' +
-            '<div class="tp-card-footer"><span style="font-size:10px;color:var(--text-dim);font-weight:500;">' + daysSince + ' days since plan</span>' +
+            '<div class="tp-card-footer"><span style="font-size:11px;color:var(--text-dim);font-weight:500;">' + daysSince + ' days since plan</span>' +
             '<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();sendFollowUpAuto(\'' + (p.patient_name||'').replace(/'/g,"\\'") + '\',7,\'' + (p.treatment_type||'').replace(/'/g,"\\'") + '\',' + (p.value||0) + ')">Send Follow-Up</button></div></div>';
         }).join('') + '</div>';
       }
@@ -3426,7 +3435,7 @@ async function loadTreatmentPlans() {
         var cards = items.length > 0 ? items.map(function(p) {
           return '<div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;" onclick="openPatientPanel(\'' + (p.patient_name||'').replace(/'/g,"\\'") + '\',\'' + (p.treatment_type||'').replace(/'/g,"\\'") + '\',\'' + (p.value||0) + '\',\'' + (p.status||'') + '\',\'\',\'\',\'\')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">' + (p.patient_name||'\u2014') + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.treatment_type||'') + '</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">\u00A3' + parseInt(p.value||0).toLocaleString() + '</div></div>';
         }).join('') : '<div style="text-align:center;padding:28px;color:var(--text-dim);font-size:11px;">None</div>';
-        return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:200px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:15px;color:var(--cream);">' + title + '</span><span class="badge ' + badgeClass + '">' + items.length + '</span></div><div style="display:flex;flex-direction:column;gap:10px;">' + cards + '</div></div>';
+        return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:200px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">' + title + '</span><span class="badge ' + badgeClass + '">' + items.length + '</span></div><div style="display:flex;flex-direction:column;gap:10px;">' + cards + '</div></div>';
       }
       boardView.innerHTML = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">' +
         boardCol('Presented', presented, 'badge-amber') + boardCol('Warm', warm, 'badge-warm') + boardCol('Booked', booked, 'badge-good') + boardCol('Converted', converted, 'badge-good') + '</div>';
