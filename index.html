@@ -1863,6 +1863,10 @@ const pearliqDB = window.supabase.createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpneGV6cHpmZHp2YmVmcWlpbG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3NTY0OTUsImV4cCI6MjA5MjMzMjQ5NX0.b1BAV3geIw0Uv6PrDIPpcJY5RTNLo71LM2YHQS6H54U'
 );
 
+window.currentPracticeId = null;
+window.currentUserId = null;
+window.onboardingCompleted = false;
+
 // BROWSER HISTORY NAVIGATION
 window.addEventListener('popstate', function(event) {
   if (event.state && event.state.page) {
@@ -1891,6 +1895,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.querySelectorAll('.form-input').forEach(function(input) { if (input.id) input.addEventListener('input', function() { clearFieldError(input.id); }); });
   const { data: { session } } = await pearliqDB.auth.getSession();
   if (session) {
+    const { data: practiceData } = await pearliqDB.from('practices').select('id, onboarding_completed').eq('owner_id', session.user.id).maybeSingle();
+    if (practiceData) {
+      window.currentPracticeId = practiceData.id;
+      window.currentUserId = session.user.id;
+      window.onboardingCompleted = practiceData.onboarding_completed;
+    }
     const roleMap = {
       default: { name: session.user.email.split('@')[0], role: 'Practice User', initials: session.user.email.substring(0,2).toUpperCase() }
     };
@@ -2021,6 +2031,15 @@ async function doSignUp() {
   if (password.length < 8) { if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = 'Start Free Trial'; } showToast('Password must be at least 8 characters', 'error'); return; }
   var { data, error } = await pearliqDB.auth.signUp({ email: email, password: password, options: { data: { practice_name: practice } } });
   if (error) { if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = 'Start Free Trial'; } showToast(error.message, 'error'); return; }
+  const { data: { user: signedUpUser } } = await pearliqDB.auth.getUser();
+  if (signedUpUser) {
+    const { data: practiceData } = await pearliqDB.from('practices').select('id, onboarding_completed').eq('owner_id', signedUpUser.id).maybeSingle();
+    if (practiceData) {
+      window.currentPracticeId = practiceData.id;
+      window.currentUserId = signedUpUser.id;
+      window.onboardingCompleted = practiceData.onboarding_completed;
+    }
+  }
   closeAuthModal();
   var successDiv = document.getElementById('signup-success-overlay');
   if (!successDiv) {
@@ -2084,6 +2103,15 @@ async function doLogin() {
   if (!email || !password) { if (!email) showFieldError('login-email', 'Email is required'); if (!password) showFieldError('login-pw', 'Password is required'); if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; } showToast('Please enter your email and password', 'error'); return; }
   const { data, error } = await pearliqDB.auth.signInWithPassword({ email, password });
   if (error) { if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; } showToast('Invalid email or password', 'error'); return; }
+  const { data: { user: authUser } } = await pearliqDB.auth.getUser();
+  if (authUser) {
+    const { data: practiceData } = await pearliqDB.from('practices').select('id, onboarding_completed').eq('owner_id', authUser.id).maybeSingle();
+    if (practiceData) {
+      window.currentPracticeId = practiceData.id;
+      window.currentUserId = authUser.id;
+      window.onboardingCompleted = practiceData.onboarding_completed;
+    }
+  }
   const roleMap = {
     admin: { name: 'Dr. Sarah Clarke', role: 'Practice Manager', initials: 'SC' },
     dentist: { name: 'Dr. Raj Patel', role: 'Associate Dentist', initials: 'RP' },
@@ -2167,6 +2195,9 @@ document.addEventListener('click', e => { if (!e.target.closest('.header-user'))
 async function logout() {
   closeUserMenu();
   await pearliqDB.auth.signOut();
+  window.currentPracticeId = null;
+  window.currentUserId = null;
+  window.onboardingCompleted = false;
   document.getElementById('app').classList.remove('visible');
   document.getElementById('landing-page').style.display = 'block';
   document.body.style.overflowY = 'auto';
@@ -2287,6 +2318,7 @@ function renderFinancingOptions(options) {
 }
 
 async function saveFinancingOption() {
+  if (!window.currentPracticeId) { showToast('Please complete practice setup first', 'error'); return; }
   var saveBtn = document.querySelector('#financing-modal .modal-footer .btn-primary');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
   var name = document.getElementById('fin-name').value.trim();
@@ -2298,7 +2330,7 @@ async function saveFinancingOption() {
   var treatment_types = document.getElementById('fin-treatment-types').value.trim();
   if (!name) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; } showToast('Please enter a name for this financing option', 'error'); return; }
   if (!max_amount) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; } showToast('Please enter a maximum treatment amount', 'error'); return; }
-  var { error } = await pearliqDB.from('financing_options').insert([{ name: name, description: description, max_amount: max_amount, interest_rate: interest_rate, min_term: min_term, max_term: max_term, treatment_types: treatment_types }]);
+  var { error } = await pearliqDB.from('financing_options').insert([{ name: name, description: description, max_amount: max_amount, interest_rate: interest_rate, min_term: min_term, max_term: max_term, treatment_types: treatment_types, practice_id: window.currentPracticeId }]);
   if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; } showToast('Error saving: ' + error.message, 'error'); return; }
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; }
   closeModal('financing-modal');
@@ -2324,6 +2356,7 @@ async function deleteFinancingOption(id) {
 
 // SAVE FUNCTIONS
 async function savePatient() {
+  if (!window.currentPracticeId) { showToast('Please complete practice setup first', 'error'); return; }
   clearAllFieldErrors('new-patient-modal');
   var saveBtn = document.querySelector('#new-patient-modal .modal-footer .btn-primary');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
@@ -2340,7 +2373,8 @@ async function savePatient() {
     email: email,
     phone: phone,
     date_of_birth: dob,
-    status: 'active'
+    status: 'active',
+    practice_id: window.currentPracticeId
   }]);
   if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Error: ' + error.message, 'error'); return; }
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; }
@@ -2358,6 +2392,7 @@ async function savePatient() {
 }
 
 async function saveTreatmentPlan() {
+  if (!window.currentPracticeId) { showToast('Please complete practice setup first', 'error'); return; }
   var saveBtn = document.querySelector('#new-plan-modal .modal-footer .btn-primary');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Creating...'; }
   const patientName = document.getElementById('plan-patient').value.trim();
@@ -2384,7 +2419,8 @@ async function saveTreatmentPlan() {
     status: 'presented',
     sequence_active: true,
     notes: notes,
-    confidence_score: confidenceScore
+    confidence_score: confidenceScore,
+    practice_id: window.currentPracticeId
   }]);
   if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Create Plan & Start Sequence'; } showToast('Error: ' + error.message, 'error'); return; }
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Create Plan & Start Sequence'; }
@@ -2406,6 +2442,7 @@ async function saveTreatmentPlan() {
 }
 
 async function saveStaff() {
+  if (!window.currentPracticeId) { showToast('Please complete practice setup first', 'error'); return; }
   var saveBtn = document.querySelector('#invite-staff-modal .modal-footer .btn-primary');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
   const first = document.getElementById('staff-first').value.trim();
@@ -2425,7 +2462,8 @@ async function saveStaff() {
     hourly_rate: hourlyRate,
     contract_type: contractType,
     gdc_number: gdcNumber,
-    status: 'active'
+    status: 'active',
+    practice_id: window.currentPracticeId
   }]);
   if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Team Member'; } showToast('Error: ' + error.message, 'error'); return; }
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Team Member'; }
@@ -3138,6 +3176,7 @@ function csvPreviewImport() {
 }
 
 async function executeImport(mappedData) {
+  if (!window.currentPracticeId) { showToast('Please complete practice setup first', 'error'); return; }
   var btn = document.getElementById('confirm-import-btn');
   btn.textContent = 'Importing...';
   btn.disabled = true;
@@ -3151,7 +3190,8 @@ async function executeImport(mappedData) {
       email: patient.email || null,
       phone: patient.phone || null,
       date_of_birth: patient.dob || null,
-      status: 'active'
+      status: 'active',
+      practice_id: window.currentPracticeId
     }]);
     if (res.error) { failed++; } else { imported++; }
   }
