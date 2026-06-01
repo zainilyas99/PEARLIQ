@@ -1901,6 +1901,10 @@ window.addEventListener('DOMContentLoaded', async () => {
       window.currentUserId = session.user.id;
       window.onboardingCompleted = practiceData.onboarding_completed;
     }
+    if (!window.onboardingCompleted) {
+      showOnboarding();
+      return;
+    }
     const roleMap = {
       default: { name: session.user.email.split('@')[0], role: 'Practice User', initials: session.user.email.substring(0,2).toUpperCase() }
     };
@@ -2040,6 +2044,11 @@ async function doSignUp() {
       window.onboardingCompleted = practiceData.onboarding_completed;
     }
   }
+  if (!window.onboardingCompleted) {
+    closeAuthModal();
+    showOnboarding();
+    return;
+  }
   closeAuthModal();
   var successDiv = document.getElementById('signup-success-overlay');
   if (!successDiv) {
@@ -2122,6 +2131,11 @@ async function doLogin() {
   document.getElementById('user-role-display').textContent = user.role;
   document.getElementById('user-avatar').textContent = user.initials;
   if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; }
+  if (!window.onboardingCompleted) {
+    closeAuthModal();
+    showOnboarding();
+    return;
+  }
   closeAuthModal();
   setTimeout(() => {
     document.body.style.overflow = 'hidden';
@@ -3548,6 +3562,73 @@ function clearAllFieldErrors(modalId) {
   modal.querySelectorAll('.error').forEach(function(el) { el.classList.remove('error'); });
   modal.querySelectorAll('.form-error').forEach(function(el) { el.classList.remove('visible'); });
 }
+
+function showOnboarding() {
+  document.getElementById('onboarding-overlay').style.display = 'block';
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('landing-page').style.display = 'none';
+  document.body.style.overflow = 'hidden';
+}
+
+function hideOnboarding() {
+  document.getElementById('onboarding-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function onboardingNext(currentStep) {
+  if (currentStep === 1) {
+    var name = document.getElementById('ob-practice-name').value.trim();
+    var gdc = document.getElementById('ob-gdc-number').value.trim();
+    var chairs = document.getElementById('ob-chair-count').value.trim();
+    if (!name) { showToast('Practice name is required', 'error'); return; }
+    if (!gdc) { showToast('GDC number is required', 'error'); return; }
+    if (!chairs) { showToast('Chair count is required', 'error'); return; }
+  }
+  document.getElementById('ob-step-' + currentStep).style.display = 'none';
+  document.getElementById('ob-step-' + (currentStep + 1)).style.display = 'block';
+  document.getElementById('ob-step-' + currentStep + '-dot').style.background = 'var(--green)';
+  document.getElementById('ob-step-' + (currentStep + 1) + '-dot').style.background = 'var(--green)';
+  document.getElementById('ob-step-' + (currentStep + 1) + '-dot').style.color = 'white';
+}
+
+function onboardingBack(currentStep) {
+  document.getElementById('ob-step-' + currentStep).style.display = 'none';
+  document.getElementById('ob-step-' + (currentStep - 1)).style.display = 'block';
+  document.getElementById('ob-step-' + currentStep + '-dot').style.background = 'var(--bg-3)';
+  document.getElementById('ob-step-' + currentStep + '-dot').style.color = 'var(--text-dim)';
+}
+
+async function completeOnboarding() {
+  var btn = document.getElementById('ob-finish-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  if (!window.currentPracticeId) { showToast('Practice context missing', 'error'); btn.disabled = false; btn.textContent = 'Enter Dashboard'; return; }
+  var practiceUpdate = {
+    practice_name: document.getElementById('ob-practice-name').value.trim(),
+    gdc_number: document.getElementById('ob-gdc-number').value.trim(),
+    chair_count: parseInt(document.getElementById('ob-chair-count').value) || null,
+    contact_phone: document.getElementById('ob-contact-phone').value.trim() || null,
+    address_line_1: document.getElementById('ob-address-1').value.trim() || null,
+    city: document.getElementById('ob-city').value.trim() || null,
+    postcode: document.getElementById('ob-postcode').value.trim() || null,
+    onboarding_completed: true
+  };
+  var { error: pErr } = await pearliqDB.from('practices').update(practiceUpdate).eq('id', window.currentPracticeId);
+  if (pErr) { showToast('Error: ' + pErr.message, 'error'); btn.disabled = false; btn.textContent = 'Enter Dashboard'; return; }
+  var aiUpdate = {
+    ai_name: document.getElementById('ob-ai-name').value.trim() || 'Pearl',
+    ai_personality: document.getElementById('ob-ai-personality').value.trim(),
+    ai_can_book_appointments: document.getElementById('ob-can-book').checked,
+    ai_can_send_reviews: document.getElementById('ob-can-review').checked,
+    ai_can_quote_prices: document.getElementById('ob-can-quote').checked
+  };
+  await pearliqDB.from('ai_config').update(aiUpdate).eq('practice_id', window.currentPracticeId);
+  window.onboardingCompleted = true;
+  hideOnboarding();
+  document.getElementById('app').classList.add('visible');
+  showToast('Welcome to PEARLIQ', 'success');
+  if (typeof loadDashboardData === 'function') loadDashboardData();
+}
 </script>
 <div class="modal-overlay" id="confirm-modal">
   <div class="modal" style="width:400px;">
@@ -3578,6 +3659,83 @@ function clearAllFieldErrors(modalId) {
       <button onclick="document.getElementById('legal-modal').style.display='none'" style="background:transparent;border:none;color:white;font-size:18px;cursor:pointer;">&#10005;</button>
     </div>
     <div id="legal-modal-body" style="padding:24px;overflow-y:auto;font-size:13px;color:#4A4A4A;line-height:1.8;"></div>
+  </div>
+</div>
+<div id="onboarding-overlay" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:10000;overflow-y:auto;">
+  <div style="max-width:640px;margin:0 auto;padding:64px 32px;">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;">
+        <div style="width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-family:Fraunces,serif;font-weight:700;">P</div>
+        <div style="font-family:Fraunces,serif;font-size:24px;color:var(--cream);">PEARLIQ</div>
+      </div>
+      <div style="font-size:13px;color:var(--text-dim);">Let's set up your practice</div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:40px;justify-content:center;">
+      <div id="ob-step-1-dot" style="width:32px;height:32px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">1</div>
+      <div style="width:40px;height:2px;background:var(--border);"></div>
+      <div id="ob-step-2-dot" style="width:32px;height:32px;border-radius:50%;background:var(--bg-3);color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">2</div>
+      <div style="width:40px;height:2px;background:var(--border);"></div>
+      <div id="ob-step-3-dot" style="width:32px;height:32px;border-radius:50%;background:var(--bg-3);color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">3</div>
+    </div>
+
+    <div id="ob-step-1" class="ob-step" style="display:block;">
+      <div style="font-family:Fraunces,serif;font-size:24px;color:var(--cream);margin-bottom:8px;">Practice details</div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:32px;">Tell us about your practice. We'll use this to personalise your AI assistant.</div>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">Practice name *</label><input id="ob-practice-name" class="form-input" placeholder="e.g. Smile Dental Clinic" style="width:100%;"></div>
+        <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">GDC practice number *</label><input id="ob-gdc-number" class="form-input" placeholder="e.g. 123456" style="width:100%;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">Chair count *</label><input id="ob-chair-count" class="form-input" type="number" placeholder="e.g. 4" style="width:100%;"></div>
+          <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">Contact phone</label><input id="ob-contact-phone" class="form-input" placeholder="e.g. 020 7123 4567" style="width:100%;"></div>
+        </div>
+        <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">Address line 1</label><input id="ob-address-1" class="form-input" placeholder="e.g. 123 High Street" style="width:100%;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">City</label><input id="ob-city" class="form-input" placeholder="e.g. London" style="width:100%;"></div>
+          <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">Postcode</label><input id="ob-postcode" class="form-input" placeholder="e.g. SW1A 1AA" style="width:100%;"></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:32px;">
+        <button class="btn btn-primary" onclick="onboardingNext(1)">Continue</button>
+      </div>
+    </div>
+
+    <div id="ob-step-2" class="ob-step" style="display:none;">
+      <div style="font-family:Fraunces,serif;font-size:24px;color:var(--cream);margin-bottom:8px;">Your AI assistant</div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:32px;">Customise how your AI receptionist speaks to patients on WhatsApp.</div>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">AI name</label><input id="ob-ai-name" class="form-input" value="Pearl" placeholder="e.g. Pearl, Lucy, Alex" style="width:100%;"><div style="font-size:11px;color:var(--text-dim);margin-top:4px;">This is the name patients will see in WhatsApp.</div></div>
+        <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">Personality & tone</label><textarea id="ob-ai-personality" class="form-textarea" rows="3" placeholder="e.g. Warm, professional, helpful. Speaks in a friendly British tone." style="width:100%;">Warm, professional, and helpful. Speaks in a friendly British tone.</textarea></div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">AI capabilities</label>
+          <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="ob-can-book" checked> Book appointments automatically</label>
+          <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="ob-can-review" checked> Send review requests after visits</label>
+          <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="ob-can-quote"> Quote treatment prices to patients</label>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:32px;">
+        <button class="btn btn-secondary" onclick="onboardingBack(2)">Back</button>
+        <button class="btn btn-primary" onclick="onboardingNext(2)">Continue</button>
+      </div>
+    </div>
+
+    <div id="ob-step-3" class="ob-step" style="display:none;">
+      <div style="font-family:Fraunces,serif;font-size:24px;color:var(--cream);margin-bottom:8px;">You're all set</div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:32px;">Your 14-day free trial starts now. You can connect WhatsApp and customise your AI further from the dashboard.</div>
+      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:32px;">
+        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">What's next</div>
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:13px;color:var(--cream);">
+          <div style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--green);">&#10003;</span> Add your team members from the Team page</div>
+          <div style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--green);">&#10003;</span> Import your existing patient list via CSV</div>
+          <div style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--green);">&#10003;</span> Connect WhatsApp Business in Settings (requires Twilio approval)</div>
+          <div style="display:flex;gap:10px;align-items:flex-start;"><span style="color:var(--green);">&#10003;</span> Customise your follow-up email templates</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;">
+        <button class="btn btn-secondary" onclick="onboardingBack(3)">Back</button>
+        <button class="btn btn-primary" id="ob-finish-btn" onclick="completeOnboarding()">Enter Dashboard</button>
+      </div>
+    </div>
   </div>
 </div>
 </body>
