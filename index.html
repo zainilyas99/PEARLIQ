@@ -1696,7 +1696,7 @@ manager</textarea>
 <!-- MODALS -->
 <div class="modal-overlay" id="new-patient-modal">
   <div class="modal">
-    <div class="modal-header"><div class="modal-title">Add New Patient</div><button class="modal-close" onclick="closeModal('new-patient-modal')">&#10005;</button></div>
+    <div class="modal-header"><div class="modal-title" id="patient-modal-title">Add New Patient</div><button class="modal-close" onclick="closeModal('new-patient-modal')">&#10005;</button></div>
     <div class="modal-body">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
         <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="pat-first" placeholder="James"></div>
@@ -1711,7 +1711,7 @@ manager</textarea>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('new-patient-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="savePatient()">Add Patient</button>
+      <button class="btn btn-primary" id="patient-save-btn" onclick="savePatient()">Add Patient</button>
     </div>
   </div>
 </div>
@@ -1743,7 +1743,7 @@ manager</textarea>
     <div class="modal-header"><div class="modal-title">Book Appointment</div><button class="modal-close" onclick="closeModal('new-appointment-modal')">&#10005;</button></div>
     <div class="modal-body">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
-        <div class="form-group"><label class="form-label">Patient Name *</label><input class="form-input" id="appt-patient-name" placeholder="Patient name"></div>
+        <div class="form-group"><label class="form-label">Patient Name *</label><div style="position:relative;"><input class="form-input" id="appt-patient-name" placeholder="Search or type name..." autocomplete="off"><input type="hidden" id="appt-patient-id"><div id="appt-patient-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);max-height:200px;overflow-y:auto;z-index:10;box-shadow:var(--shadow-md);"></div></div></div>
         <div class="form-group"><label class="form-label">Patient Phone</label><input class="form-input" id="appt-patient-phone" placeholder="e.g. 07700 900000"></div>
         <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="appt-date" type="date"></div>
         <div class="form-group"><label class="form-label">Time *</label><input class="form-input" id="appt-time" type="time"></div>
@@ -2428,19 +2428,23 @@ async function savePatient() {
   const dob = document.getElementById('pat-dob').value || null;
   if (!first || !last) { if (!first) showFieldError('pat-first', 'First name is required'); if (!last) showFieldError('pat-last', 'Last name is required'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter patient name', 'error'); return; }
   if (!email) { showFieldError('pat-email', 'Email is required'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter an email address', 'error'); return; }
-  if (!phone) { showFieldError('pat-phone', 'Phone number is required'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter a phone number', 'error'); return; }
-  const { error } = await pearliqDB.from('patients').insert([{
-    name: first + ' ' + last,
-    email: email,
-    phone: phone,
-    date_of_birth: dob,
-    status: 'active',
-    practice_id: window.currentPracticeId
-  }]);
-  if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Error: ' + error.message, 'error'); return; }
+  if (!phone) { showFieldError('pat-phone', 'Phone number is required'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = window.editingPatientId ? 'Save Changes' : 'Add Patient'; } showToast('Please enter a phone number', 'error'); return; }
+  var patientData = { name: first + ' ' + last, email: email, phone: phone, date_of_birth: dob };
+  var error;
+  if (window.editingPatientId) {
+    var res = await pearliqDB.from('patients').update(patientData).eq('id', window.editingPatientId);
+    error = res.error;
+  } else {
+    patientData.status = 'active';
+    patientData.practice_id = window.currentPracticeId;
+    var res = await pearliqDB.from('patients').insert([patientData]);
+    error = res.error;
+  }
+  if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = window.editingPatientId ? 'Save Changes' : 'Add Patient'; } showToast('Error: ' + error.message, 'error'); return; }
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; }
+  var editId = window.editingPatientId;
   closeModal('new-patient-modal');
-  showToast(first + ' ' + last + ' added successfully', 'success');
+  showToast(first + ' ' + last + (editId ? ' updated' : ' added') + ' successfully', 'success');
   document.getElementById('pat-first').value = '';
   document.getElementById('pat-last').value = '';
   document.getElementById('pat-email').value = '';
@@ -2448,8 +2452,12 @@ async function savePatient() {
   document.getElementById('pat-dob').value = '';
   document.getElementById('pat-type').selectedIndex = 0;
   document.getElementById('pat-dentist').selectedIndex = 0;
+  document.getElementById('patient-modal-title').textContent = 'Add New Patient';
+  document.getElementById('patient-save-btn').textContent = 'Add Patient';
+  window.editingPatientId = null;
   loadPatients();
   loadDashboardData();
+  if (editId) openPatientDetail(editId);
 }
 
 async function saveTreatmentPlan() {
@@ -2591,14 +2599,14 @@ async function loadPatients() {
       const date = p.created_at ? new Date(p.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
       const statusClass = p.status === 'active' ? 'badge-good' : p.status === 'lapsed' ? 'badge-hot' : 'badge-neutral';
       const statusText = p.status ? p.status.charAt(0).toUpperCase() + p.status.slice(1) : 'Unknown';
-      rows += '<tr>' +
+      rows += '<tr onclick="openPatientDetail(\'' + p.id + '\')" style="cursor:pointer;transition:background 0.15s;" onmouseenter="this.style.background=\'var(--bg-3)\'" onmouseleave="this.style.background=\'\'">' +
         '<td><div style="color:var(--cream);font-weight:500;">' + (p.name || '') + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.email || '') + '</div></td>' +
-        '<td>—</td>' +
+        '<td>' + (p.phone || '—') + '</td>' +
         '<td>—</td>' +
         '<td style="font-size:11px;font-weight:500;">' + date + '</td>' +
         '<td><span class="badge ' + statusClass + '">' + statusText + '</span></td>' +
         '<td>—</td>' +
-        '<td><button class="btn btn-secondary btn-sm">View</button></td>' +
+        '<td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();openPatientDetail(\'' + p.id + '\')">View</button></td>' +
         '</tr>';
     });
     tbody.innerHTML = rows;
@@ -2635,6 +2643,7 @@ function closeDetailPanel() {
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeDetailPanel();
+    closePatientDetail();
     document.querySelectorAll('.modal-overlay.open').forEach(function(m) { m.classList.remove('open'); });
     document.getElementById('auth-modal').style.display = 'none';
     document.getElementById('legal-modal').style.display = 'none';
@@ -3984,8 +3993,10 @@ async function saveAppointment() {
   if (!name) { showToast('Patient name is required', 'error'); return; }
   if (!date) { showToast('Date is required', 'error'); return; }
   if (!time) { showToast('Time is required', 'error'); return; }
+  var patientId = document.getElementById('appt-patient-id').value || null;
   var { error } = await pearliqDB.from('appointments').insert([{
     practice_id: window.currentPracticeId,
+    patient_id: patientId,
     patient_name: name,
     patient_phone: phone || null,
     appointment_date: date,
@@ -4001,6 +4012,7 @@ async function saveAppointment() {
   closeModal('new-appointment-modal');
   showToast('Appointment booked', 'success');
   document.getElementById('appt-patient-name').value = '';
+  document.getElementById('appt-patient-id').value = '';
   document.getElementById('appt-patient-phone').value = '';
   document.getElementById('appt-date').value = '';
   document.getElementById('appt-time').value = '';
@@ -4010,6 +4022,227 @@ async function saveAppointment() {
   document.getElementById('appt-status').selectedIndex = 0;
   document.getElementById('appt-notes').value = '';
   loadAppointments();
+}
+
+// PATIENT DETAIL
+window.currentPatientDetailId = null;
+window.editingPatientId = null;
+
+async function openPatientDetail(patientId) {
+  window.currentPatientDetailId = patientId;
+  var modal = document.getElementById('patient-detail-modal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  document.getElementById('pd-content').innerHTML = '<div style="padding:60px;text-align:center;color:var(--text-dim);">Loading...</div>';
+
+  try {
+    var [patRes, apptRes, planRes] = await Promise.all([
+      pearliqDB.from('patients').select('*').eq('id', patientId).single(),
+      pearliqDB.from('appointments').select('*').eq('practice_id', window.currentPracticeId).or('patient_id.eq.' + patientId).order('appointment_date', { ascending: false }).order('appointment_time', { ascending: false }),
+      pearliqDB.from('treatment_plans').select('*').eq('practice_id', window.currentPracticeId).order('created_at', { ascending: false })
+    ]);
+    var pat = patRes.data;
+    if (!pat) { showToast('Patient not found', 'error'); modal.style.display = 'none'; return; }
+
+    // Also fetch appointments/plans by name/phone for legacy data
+    var appts = apptRes.data || [];
+    if (pat.name) {
+      var nameAppts = await pearliqDB.from('appointments').select('*').eq('practice_id', window.currentPracticeId).ilike('patient_name', pat.name).order('appointment_date', { ascending: false });
+      if (nameAppts.data) {
+        var existingIds = new Set(appts.map(function(a) { return a.id; }));
+        nameAppts.data.forEach(function(a) { if (!existingIds.has(a.id)) appts.push(a); });
+      }
+    }
+    var plans = (planRes.data || []).filter(function(p) {
+      return p.patient_id === patientId || (pat.name && p.patient_name && p.patient_name.toLowerCase() === pat.name.toLowerCase());
+    });
+
+    // Stats
+    var lifetimeValue = appts.reduce(function(sum, a) { return sum + (parseFloat(a.treatment_value) || 0); }, 0);
+    var totalAppts = appts.length;
+    var activePlans = plans.filter(function(p) { return p.status !== 'completed' && p.status !== 'cancelled'; }).length;
+    var completedAppts = appts.filter(function(a) { return a.status === 'completed'; });
+    var lastVisit = completedAppts.length > 0 ? new Date(completedAppts[0].appointment_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Never';
+
+    var dob = pat.date_of_birth ? new Date(pat.date_of_birth + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—';
+
+    var html = '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;">' +
+      '<div><div style="font-family:Fraunces,serif;font-size:28px;color:var(--cream);margin-bottom:8px;">' + (pat.name || 'Unknown') + '</div>' +
+      '<div style="display:flex;gap:24px;font-size:12px;color:var(--text-dim);">' +
+      '<div><div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Phone</div>' + (pat.phone || '—') + '</div>' +
+      '<div><div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Email</div>' + (pat.email || '—') + '</div>' +
+      '<div><div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">DOB</div>' + dob + '</div>' +
+      '</div></div>' +
+      '<div style="display:flex;gap:8px;">' +
+      '<button class="btn btn-secondary btn-sm" onclick="editPatientFromDetail(\'' + patientId + '\')">Edit Patient</button>' +
+      '<button class="btn btn-secondary btn-sm" style="color:var(--rose);" onclick="deletePatientFromDetail(\'' + patientId + '\',\'' + (pat.name || '').replace(/'/g, "\\'") + '\')">Delete</button>' +
+      '</div></div>';
+
+    // KPIs
+    html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">' +
+      '<div class="card" style="padding:var(--space-card-sm);"><div style="font-size:var(--fs-caption);color:var(--text-dim);margin-bottom:4px;">Lifetime Value</div><div style="font-family:Fraunces,serif;font-size:var(--fs-section);color:var(--cream);">\u00A3' + Math.round(lifetimeValue).toLocaleString() + '</div></div>' +
+      '<div class="card" style="padding:var(--space-card-sm);"><div style="font-size:var(--fs-caption);color:var(--text-dim);margin-bottom:4px;">Total Appointments</div><div style="font-family:Fraunces,serif;font-size:var(--fs-section);color:var(--cream);">' + totalAppts + '</div></div>' +
+      '<div class="card" style="padding:var(--space-card-sm);"><div style="font-size:var(--fs-caption);color:var(--text-dim);margin-bottom:4px;">Active Plans</div><div style="font-family:Fraunces,serif;font-size:var(--fs-section);color:var(--cream);">' + activePlans + '</div></div>' +
+      '<div class="card" style="padding:var(--space-card-sm);"><div style="font-size:var(--fs-caption);color:var(--text-dim);margin-bottom:4px;">Last Visit</div><div style="font-family:Fraunces,serif;font-size:16px;color:var(--cream);">' + lastVisit + '</div></div>' +
+      '</div>';
+
+    // Tabs
+    html += '<div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;">' +
+      '<button class="pd-tab active" onclick="patientTabSwitch(\'appointments\')" style="padding:10px 20px;font-size:13px;font-weight:600;color:var(--green);background:transparent;border:none;border-bottom:2px solid var(--green);cursor:pointer;font-family:Figtree,sans-serif;">Appointments</button>' +
+      '<button class="pd-tab" onclick="patientTabSwitch(\'plans\')" style="padding:10px 20px;font-size:13px;font-weight:500;color:var(--text-dim);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:Figtree,sans-serif;">Treatment Plans</button>' +
+      '<button class="pd-tab" onclick="patientTabSwitch(\'notes\')" style="padding:10px 20px;font-size:13px;font-weight:500;color:var(--text-dim);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:Figtree,sans-serif;">Notes</button>' +
+      '</div>';
+
+    // Appointments tab
+    html += '<div id="pd-tab-appointments" class="pd-tab-panel">';
+    if (appts.length === 0) {
+      html += '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No appointments found</div>';
+    } else {
+      html += '<table><thead><tr><th>Date</th><th>Time</th><th>Treatment</th><th>Duration</th><th>Status</th><th>Booked Via</th></tr></thead><tbody>';
+      appts.forEach(function(a) {
+        html += '<tr><td style="font-size:12px;">' + (a.appointment_date ? new Date(a.appointment_date + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—') + '</td>' +
+          '<td style="font-size:12px;color:var(--green);font-weight:600;">' + formatApptTime(a.appointment_time) + '</td>' +
+          '<td>' + (a.treatment_type || '—') + '</td>' +
+          '<td>' + (a.duration_minutes || 30) + ' min</td>' +
+          '<td>' + apptStatusBadge(a.status) + '</td>' +
+          '<td>' + apptBookedBadge(a.booked_via) + '</td></tr>';
+      });
+      html += '</tbody></table>';
+    }
+    html += '</div>';
+
+    // Treatment Plans tab
+    html += '<div id="pd-tab-plans" class="pd-tab-panel" style="display:none;">';
+    if (plans.length === 0) {
+      html += '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:13px;">No treatment plans found</div>';
+    } else {
+      plans.forEach(function(p) {
+        var planStatus = p.status || 'unknown';
+        var planBadge = planStatus === 'accepted' ? 'badge-good' : planStatus === 'presented' ? 'badge-blue' : planStatus === 'completed' ? 'badge-good' : planStatus === 'cancelled' ? '' : 'badge-neutral';
+        var planBadgeStyle = planStatus === 'cancelled' ? ' style="background:var(--rose-dim);color:var(--rose);"' : '';
+        var planDate = p.created_at ? new Date(p.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+        html += '<div style="background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:10px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+          '<div style="font-weight:600;color:var(--cream);">' + (p.treatment_type || p.patient_name || 'Plan') + '</div>' +
+          '<span class="badge ' + planBadge + '"' + planBadgeStyle + '>' + planStatus.charAt(0).toUpperCase() + planStatus.slice(1) + '</span>' +
+          '</div>' +
+          '<div style="display:flex;gap:16px;font-size:12px;color:var(--text-dim);">' +
+          '<span>\u00A3' + (parseFloat(p.value) || 0).toLocaleString() + '</span>' +
+          '<span>' + planDate + '</span>' +
+          '</div>' +
+          (p.notes ? '<div style="font-size:12px;color:var(--text-dim);margin-top:6px;line-height:1.5;">' + p.notes.substring(0, 120) + (p.notes.length > 120 ? '...' : '') + '</div>' : '') +
+          '</div>';
+      });
+    }
+    html += '</div>';
+
+    // Notes tab
+    html += '<div id="pd-tab-notes" class="pd-tab-panel" style="display:none;">' +
+      '<textarea class="form-input" id="pd-notes-textarea" rows="8" style="width:100%;resize:vertical;font-size:13px;line-height:1.6;" placeholder="Add notes about this patient...">' + (pat.notes || '') + '</textarea>' +
+      '<div style="margin-top:12px;"><button class="btn btn-primary btn-sm" onclick="savePatientNotes()">Save Notes</button></div>' +
+      '</div>';
+
+    document.getElementById('pd-content').innerHTML = html;
+  } catch(e) {
+    document.getElementById('pd-content').innerHTML = '<div style="padding:60px;text-align:center;color:var(--rose);">Error loading patient: ' + (e.message || 'unknown') + '</div>';
+  }
+}
+
+function closePatientDetail() {
+  document.getElementById('patient-detail-modal').style.display = 'none';
+  window.currentPatientDetailId = null;
+}
+
+function patientTabSwitch(tabName) {
+  document.querySelectorAll('.pd-tab-panel').forEach(function(p) { p.style.display = 'none'; });
+  var target = document.getElementById('pd-tab-' + tabName);
+  if (target) target.style.display = 'block';
+  document.querySelectorAll('.pd-tab').forEach(function(b) {
+    b.classList.remove('active');
+    b.style.color = 'var(--text-dim)';
+    b.style.fontWeight = '500';
+    b.style.borderBottomColor = 'transparent';
+  });
+  event.currentTarget.classList.add('active');
+  event.currentTarget.style.color = 'var(--green)';
+  event.currentTarget.style.fontWeight = '600';
+  event.currentTarget.style.borderBottomColor = 'var(--green)';
+}
+
+async function savePatientNotes() {
+  if (!window.currentPatientDetailId) return;
+  var notes = document.getElementById('pd-notes-textarea').value;
+  var { error } = await pearliqDB.from('patients').update({ notes: notes }).eq('id', window.currentPatientDetailId);
+  if (error) { showToast('Error saving notes: ' + error.message, 'error'); return; }
+  showToast('Notes saved', 'success');
+}
+
+function editPatientFromDetail(patientId) {
+  pearliqDB.from('patients').select('*').eq('id', patientId).single().then(function(res) {
+    if (!res.data) { showToast('Patient not found', 'error'); return; }
+    var p = res.data;
+    var nameParts = (p.name || '').split(' ');
+    document.getElementById('pat-first').value = nameParts[0] || '';
+    document.getElementById('pat-last').value = nameParts.slice(1).join(' ') || '';
+    document.getElementById('pat-email').value = p.email || '';
+    document.getElementById('pat-phone').value = p.phone || '';
+    document.getElementById('pat-dob').value = p.date_of_birth || '';
+    document.getElementById('patient-modal-title').textContent = 'Edit Patient';
+    document.getElementById('patient-save-btn').textContent = 'Save Changes';
+    window.editingPatientId = patientId;
+    closePatientDetail();
+    openModal('new-patient-modal');
+  });
+}
+
+function deletePatientFromDetail(patientId, patientName) {
+  showConfirm('Delete patient ' + patientName + '?', 'This action cannot be undone.', 'Delete', async function() {
+    var { error } = await pearliqDB.from('patients').delete().eq('id', patientId);
+    if (error) { showToast('Error: ' + error.message, 'error'); return; }
+    closePatientDetail();
+    showToast(patientName + ' deleted', 'success');
+    loadPatients();
+    loadDashboardData();
+  });
+}
+
+// APPOINTMENT PATIENT AUTOCOMPLETE
+var apptAutoTimeout = null;
+document.addEventListener('DOMContentLoaded', function() {
+  var nameInput = document.getElementById('appt-patient-name');
+  if (!nameInput) return;
+  nameInput.addEventListener('input', function() {
+    document.getElementById('appt-patient-id').value = '';
+    var query = this.value.trim();
+    if (query.length < 2) { document.getElementById('appt-patient-suggestions').style.display = 'none'; return; }
+    clearTimeout(apptAutoTimeout);
+    apptAutoTimeout = setTimeout(async function() {
+      try {
+        var { data } = await pearliqDB.from('patients').select('id, name, phone').eq('practice_id', window.currentPracticeId).or('name.ilike.%' + query + '%,phone.ilike.%' + query + '%').limit(8);
+        var dd = document.getElementById('appt-patient-suggestions');
+        if (!data || data.length === 0) { dd.style.display = 'none'; return; }
+        dd.innerHTML = data.map(function(p) {
+          return '<div style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);transition:background 0.1s;" onmouseenter="this.style.background=\'var(--bg-3)\'" onmouseleave="this.style.background=\'\'" onclick="selectApptPatient(\'' + p.id + '\',\'' + (p.name || '').replace(/'/g, "\\'") + '\',\'' + (p.phone || '').replace(/'/g, "\\'") + '\')">' +
+            '<div style="color:var(--cream);font-weight:500;">' + (p.name || '') + '</div>' +
+            (p.phone ? '<div style="font-size:11px;color:var(--text-dim);">' + p.phone + '</div>' : '') +
+            '</div>';
+        }).join('');
+        dd.style.display = 'block';
+      } catch(e) {}
+    }, 200);
+  });
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#appt-patient-suggestions') && !e.target.closest('#appt-patient-name')) {
+      document.getElementById('appt-patient-suggestions').style.display = 'none';
+    }
+  });
+});
+
+function selectApptPatient(id, name, phone) {
+  document.getElementById('appt-patient-name').value = name;
+  document.getElementById('appt-patient-id').value = id;
+  document.getElementById('appt-patient-phone').value = phone;
+  document.getElementById('appt-patient-suggestions').style.display = 'none';
 }
 </script>
 <div class="modal-overlay" id="confirm-modal">
@@ -4041,6 +4274,14 @@ async function saveAppointment() {
       <button onclick="document.getElementById('legal-modal').style.display='none'" style="background:transparent;border:none;color:white;font-size:18px;cursor:pointer;">&#10005;</button>
     </div>
     <div id="legal-modal-body" style="padding:24px;overflow-y:auto;font-size:13px;color:#4A4A4A;line-height:1.8;"></div>
+  </div>
+</div>
+<div id="patient-detail-modal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="if(event.target===this)closePatientDetail()">
+  <div style="background:var(--bg-2);width:90vw;max-width:1100px;max-height:85vh;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);">
+    <div style="display:flex;justify-content:flex-end;padding:16px 20px 0;">
+      <button onclick="closePatientDetail()" style="background:transparent;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;padding:4px 8px;">&times;</button>
+    </div>
+    <div id="pd-content" style="padding:0 32px 32px;overflow-y:auto;flex:1;"></div>
   </div>
 </div>
 <div id="onboarding-overlay" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:10000;overflow-y:auto;">
