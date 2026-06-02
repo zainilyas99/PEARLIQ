@@ -3602,32 +3602,80 @@ async function completeOnboarding() {
   var btn = document.getElementById('ob-finish-btn');
   btn.disabled = true;
   btn.textContent = 'Saving...';
-  if (!window.currentPracticeId) { showToast('Practice context missing', 'error'); btn.disabled = false; btn.textContent = 'Enter Dashboard'; return; }
-  var practiceUpdate = {
-    practice_name: document.getElementById('ob-practice-name').value.trim(),
-    gdc_number: document.getElementById('ob-gdc-number').value.trim(),
-    chair_count: parseInt(document.getElementById('ob-chair-count').value) || null,
-    contact_phone: document.getElementById('ob-contact-phone').value.trim() || null,
-    address_line_1: document.getElementById('ob-address-1').value.trim() || null,
-    city: document.getElementById('ob-city').value.trim() || null,
-    postcode: document.getElementById('ob-postcode').value.trim() || null,
-    onboarding_completed: true
-  };
-  var { error: pErr } = await pearliqDB.from('practices').update(practiceUpdate).eq('id', window.currentPracticeId);
-  if (pErr) { showToast('Error: ' + pErr.message, 'error'); btn.disabled = false; btn.textContent = 'Enter Dashboard'; return; }
-  var aiUpdate = {
-    ai_name: document.getElementById('ob-ai-name').value.trim() || 'Pearl',
-    ai_personality: document.getElementById('ob-ai-personality').value.trim(),
-    ai_can_book_appointments: document.getElementById('ob-can-book').checked,
-    ai_can_send_reviews: document.getElementById('ob-can-review').checked,
-    ai_can_quote_prices: document.getElementById('ob-can-quote').checked
-  };
-  await pearliqDB.from('ai_config').update(aiUpdate).eq('practice_id', window.currentPracticeId);
-  window.onboardingCompleted = true;
-  hideOnboarding();
-  document.getElementById('app').classList.add('visible');
-  showToast('Welcome to PEARLIQ', 'success');
-  if (typeof loadDashboardData === 'function') loadDashboardData();
+
+  try {
+    // Ensure we have a logged-in user
+    const { data: { user } } = await pearliqDB.auth.getUser();
+    if (!user) {
+      showToast('Session expired — please log in again', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Enter Dashboard';
+      hideOnboarding();
+      document.getElementById('landing-page').style.display = 'block';
+      return;
+    }
+
+    // If practiceId missing from memory, fetch it
+    if (!window.currentPracticeId) {
+      const { data: existingPractice } = await pearliqDB.from('practices').select('id').eq('owner_id', user.id).maybeSingle();
+      if (existingPractice) {
+        window.currentPracticeId = existingPractice.id;
+      } else {
+        // Practice row never got created — create it now
+        const { data: newPractice, error: createErr } = await pearliqDB.from('practices').insert([{ owner_id: user.id, contact_email: user.email }]).select('id').single();
+        if (createErr) {
+          showToast('Setup error: ' + createErr.message, 'error');
+          btn.disabled = false;
+          btn.textContent = 'Enter Dashboard';
+          return;
+        }
+        window.currentPracticeId = newPractice.id;
+        window.currentUserId = user.id;
+        // Also ensure ai_config exists
+        await pearliqDB.from('ai_config').insert([{ practice_id: newPractice.id }]).select();
+      }
+    }
+
+    // Now update practice details
+    var practiceUpdate = {
+      practice_name: document.getElementById('ob-practice-name').value.trim(),
+      gdc_number: document.getElementById('ob-gdc-number').value.trim(),
+      chair_count: parseInt(document.getElementById('ob-chair-count').value) || null,
+      contact_phone: document.getElementById('ob-contact-phone').value.trim() || null,
+      address_line_1: document.getElementById('ob-address-1').value.trim() || null,
+      city: document.getElementById('ob-city').value.trim() || null,
+      postcode: document.getElementById('ob-postcode').value.trim() || null,
+      onboarding_completed: true
+    };
+    var { error: pErr } = await pearliqDB.from('practices').update(practiceUpdate).eq('id', window.currentPracticeId);
+    if (pErr) {
+      showToast('Error saving practice: ' + pErr.message, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Enter Dashboard';
+      return;
+    }
+
+    // Update AI config (upsert to handle case where ai_config row is missing)
+    var aiUpdate = {
+      practice_id: window.currentPracticeId,
+      ai_name: document.getElementById('ob-ai-name').value.trim() || 'Pearl',
+      ai_personality: document.getElementById('ob-ai-personality').value.trim(),
+      ai_can_book_appointments: document.getElementById('ob-can-book').checked,
+      ai_can_send_reviews: document.getElementById('ob-can-review').checked,
+      ai_can_quote_prices: document.getElementById('ob-can-quote').checked
+    };
+    await pearliqDB.from('ai_config').upsert(aiUpdate, { onConflict: 'practice_id' });
+
+    window.onboardingCompleted = true;
+    hideOnboarding();
+    document.getElementById('app').classList.add('visible');
+    showToast('Welcome to PEARLIQ', 'success');
+    if (typeof loadDashboardData === 'function') loadDashboardData();
+  } catch (e) {
+    showToast('Unexpected error: ' + (e.message || 'unknown'), 'error');
+    btn.disabled = false;
+    btn.textContent = 'Enter Dashboard';
+  }
 }
 </script>
 <div class="modal-overlay" id="confirm-modal">
