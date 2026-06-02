@@ -818,8 +818,15 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <div id="signup-form" style="display:none;">
         <div style="margin-bottom:16px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Practice Name</label><input class="form-input" id="signup-practice" placeholder="Your Practice" style="width:100%;"></div>
         <div style="margin-bottom:16px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Email Address</label><input class="form-input" type="email" id="signup-email" placeholder="hello@pearliq.app" style="width:100%;"></div>
-        <div style="margin-bottom:20px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="signup-pw" placeholder="Create a password (min 8 characters)" style="width:100%;"></div>
-        <button onclick="doSignUp()" style="width:100%;background:#1A3D2E;color:white;border:none;padding:12px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;margin-bottom:12px;">Start Free Trial</button>
+        <div style="margin-bottom:12px;"><label style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;display:block;margin-bottom:6px;">Password</label><input class="form-input" type="password" id="signup-pw" placeholder="Create a password" style="width:100%;"></div>
+        <div id="pw-requirements" style="margin-bottom:16px;display:flex;flex-direction:column;gap:var(--space-xs);">
+          <div class="pw-req" data-req="length" style="font-size:var(--fs-caption);color:var(--text-dim);display:flex;align-items:center;gap:6px;"><span class="pw-req-icon">○</span> At least 8 characters</div>
+          <div class="pw-req" data-req="upper" style="font-size:var(--fs-caption);color:var(--text-dim);display:flex;align-items:center;gap:6px;"><span class="pw-req-icon">○</span> Contains uppercase letter (A–Z)</div>
+          <div class="pw-req" data-req="lower" style="font-size:var(--fs-caption);color:var(--text-dim);display:flex;align-items:center;gap:6px;"><span class="pw-req-icon">○</span> Contains lowercase letter (a–z)</div>
+          <div class="pw-req" data-req="number" style="font-size:var(--fs-caption);color:var(--text-dim);display:flex;align-items:center;gap:6px;"><span class="pw-req-icon">○</span> Contains a number (0–9)</div>
+          <div class="pw-req" data-req="special" style="font-size:var(--fs-caption);color:var(--text-dim);display:flex;align-items:center;gap:6px;"><span class="pw-req-icon">○</span> Contains a special character (!@#$%^&*?)</div>
+        </div>
+        <button id="signup-submit-btn" onclick="doSignUp()" disabled style="width:100%;background:#8A8A8A;color:white;border:none;padding:12px;font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;cursor:not-allowed;border-radius:4px;margin-bottom:12px;transition:background 0.2s,cursor 0.2s;">Start Free Trial</button>
         <div style="text-align:center;font-size:12px;color:#8A8A8A;">Already have an account? <span onclick="showSignIn()" style="color:#1A3D2E;cursor:pointer;font-weight:500;">Sign in</span></div>
       </div>
       <div id="forgot-pw-form" style="display:none;">
@@ -862,10 +869,10 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <div class="header-stat-pill"><strong>0.0</strong> Rating</div>
       <div class="header-stat-pill"><strong>0%</strong> Conv.</div>
       <div class="header-user" onclick="toggleUserMenu(event)">
-        <div class="user-avatar" id="user-avatar">PM</div>
+        <div class="user-avatar" id="user-avatar">...</div>
         <div>
-          <div class="user-name" id="user-name-display">Dr. Sarah Clarke</div>
-          <div class="user-role-label" id="user-role-display">Practice Manager</div>
+          <div class="user-name" id="user-name-display">Loading...</div>
+          <div class="user-role-label" id="user-role-display">Loading...</div>
         </div>
         <div class="user-menu" id="user-menu">
           <div class="user-menu-item" onclick="event.stopPropagation();logout()">
@@ -1581,7 +1588,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <div class="page" id="page-settings">
         <div class="page-header">
           <div><div class="page-eyebrow">Platform · Configuration</div><h1 class="page-title">Settings</h1><div class="page-subtitle">Practice configuration and automation preferences</div></div>
-          <div class="page-actions"><button class="btn btn-primary btn-sm" onclick="showToast('Settings saved','success')">Save Changes</button></div>
+          <div class="page-actions"><button class="btn btn-primary btn-sm" onclick="saveSettings()">Save Changes</button></div>
         </div>
         <div class="settings-layout">
           <div class="settings-nav">
@@ -1596,10 +1603,15 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
             <div class="settings-section" id="settings-profile">
               <div class="settings-section-title">Practice Profile</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-                <div class="form-group"><label class="form-label">Practice Name</label><input class="form-input" value="Clarke Dental"></div>
-                <div class="form-group"><label class="form-label">GDC Registration</label><input class="form-input" value="123456"></div>
-                <div class="form-group"><label class="form-label">CQC Registration</label><input class="form-input" value="1-234567890"></div>
-                <div class="form-group"><label class="form-label">Practice Software</label><select class="form-input filter-select"><option>Dentally</option><option>SOE Exact</option><option>Carestream R4</option><option>Other</option></select></div>
+                <div class="form-group"><label class="form-label">Practice Name</label><input class="form-input" id="settings-practice-name" value=""></div>
+                <div class="form-group"><label class="form-label">GDC Registration</label><input class="form-input" id="settings-gdc-number" value=""></div>
+                <div class="form-group"><label class="form-label">CQC Registration</label><input class="form-input" id="settings-cqc-number" value=""></div>
+                <div class="form-group"><label class="form-label">Practice Software</label><select class="form-input filter-select" id="settings-practice-software"><option value="">Select...</option><option>Dentally</option><option>SOE Exact</option><option>Carestream R4</option><option>Other</option></select></div>
+                <div class="form-group"><label class="form-label">Contact Phone</label><input class="form-input" id="settings-contact-phone" value=""></div>
+                <div class="form-group"><label class="form-label">Chair Count</label><input class="form-input" id="settings-chair-count" type="number" value=""></div>
+                <div class="form-group"><label class="form-label">Address</label><input class="form-input" id="settings-address" value=""></div>
+                <div class="form-group"><label class="form-label">City</label><input class="form-input" id="settings-city" value=""></div>
+                <div class="form-group"><label class="form-label">Postcode</label><input class="form-input" id="settings-postcode" value=""></div>
               </div>
             </div>
             <div class="settings-section" id="settings-followup" style="display:none;">
@@ -1905,12 +1917,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       showOnboarding();
       return;
     }
-    const roleMap = {
-      default: { name: session.user.email.split('@')[0], role: 'Practice User', initials: session.user.email.substring(0,2).toUpperCase() }
-    };
-    document.getElementById('user-name-display').textContent = roleMap.default.name;
-    document.getElementById('user-role-display').textContent = roleMap.default.role;
-    document.getElementById('user-avatar').textContent = roleMap.default.initials;
+    await updateUserPill();
     document.body.style.overflowY = 'hidden';
     document.body.style.overflow = 'hidden';
     document.getElementById('landing-page').style.display = 'none';
@@ -2026,13 +2033,13 @@ async function sendPasswordReset() {
 }
 
 async function doSignUp() {
-  var signupBtn = document.querySelector('#signup-form button[onclick="doSignUp()"]');
-  if (signupBtn) { signupBtn.disabled = true; signupBtn.textContent = 'Creating account...'; }
+  var signupBtn = document.getElementById('signup-submit-btn');
   var practice = document.getElementById('signup-practice').value.trim();
   var email = document.getElementById('signup-email').value.trim();
   var password = document.getElementById('signup-pw').value;
-  if (!practice || !email || !password) { if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = 'Start Free Trial'; } showToast('Please fill in all fields', 'error'); return; }
-  if (password.length < 8) { if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = 'Start Free Trial'; } showToast('Password must be at least 8 characters', 'error'); return; }
+  if (!practice || !email || !password) { showToast('Please fill in all fields', 'error'); return; }
+  if (!updatePasswordUI()) { showToast("Password doesn't meet requirements", 'error'); return; }
+  if (signupBtn) { signupBtn.disabled = true; signupBtn.textContent = 'Creating account...'; }
   var { data, error } = await pearliqDB.auth.signUp({ email: email, password: password, options: { data: { practice_name: practice } } });
   if (error) { if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = 'Start Free Trial'; } showToast(error.message, 'error'); return; }
   const { data: { user: signedUpUser } } = await pearliqDB.auth.getUser();
@@ -2121,15 +2128,7 @@ async function doLogin() {
       window.onboardingCompleted = practiceData.onboarding_completed;
     }
   }
-  const roleMap = {
-    admin: { name: 'Dr. Sarah Clarke', role: 'Practice Manager', initials: 'SC' },
-    dentist: { name: 'Dr. Raj Patel', role: 'Associate Dentist', initials: 'RP' },
-    receptionist: { name: 'Jenny Walsh', role: 'Receptionist', initials: 'JW' }
-  };
-  const user = roleMap[currentRole];
-  document.getElementById('user-name-display').textContent = user.name;
-  document.getElementById('user-role-display').textContent = user.role;
-  document.getElementById('user-avatar').textContent = user.initials;
+  await updateUserPill();
   if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; }
   if (!window.onboardingCompleted) {
     closeAuthModal();
@@ -2147,7 +2146,7 @@ async function doLogin() {
     initCharts();
     animateDashboard();
     loadDashboardData();
-    showToast('Welcome back, ' + user.name.split(' ').pop() + '!', 'success');
+    showToast('Welcome back!', 'success');
     setTimeout(() => { document.getElementById('main-content').scrollTop = 0; }, 50);
     showMorningCard();
   }, 300);
@@ -2177,6 +2176,7 @@ function navigateTo(page) {
   if (page === 'follow-up') loadFollowUpData();
   if (page === 'treatment-plans') loadTreatmentPlans();
   if (page === 'financing') loadFinancingOptions();
+  if (page === 'settings') loadSettings();
   document.getElementById('main-content').scrollTop = 0;
   closeNotif();
   window.history.pushState({ page: page }, '', '#' + page);
@@ -2284,6 +2284,7 @@ function settingsNav(el, section) {
   document.querySelectorAll('.settings-panel .settings-section').forEach(function(s) { s.style.display = 'none'; });
   var target = document.getElementById('settings-' + section);
   if (target) target.style.display = 'block';
+  if (section === 'profile') loadSettings();
 }
 
 // REQUIRED SQL: create table if not exists financing_options (id uuid default gen_random_uuid() primary key, name text not null, description text, max_amount numeric, interest_rate numeric default 0, min_term integer default 6, max_term integer default 24, treatment_types text, created_at timestamp default now());
@@ -3667,6 +3668,7 @@ async function completeOnboarding() {
     await pearliqDB.from('ai_config').upsert(aiUpdate, { onConflict: 'practice_id' });
 
     window.onboardingCompleted = true;
+    await updateUserPill();
     hideOnboarding();
     document.getElementById('app').classList.add('visible');
     showToast('Welcome to PEARLIQ', 'success');
@@ -3677,6 +3679,94 @@ async function completeOnboarding() {
     btn.textContent = 'Enter Dashboard';
   }
 }
+
+// USER PILL
+async function updateUserPill() {
+  try {
+    const { data: { user } } = await pearliqDB.auth.getUser();
+    if (!user) return;
+    var raw = user.email.split('@')[0];
+    var displayName = raw.charAt(0).toUpperCase() + raw.slice(1);
+    var initials = displayName.substring(0, 2).toUpperCase();
+    document.getElementById('user-name-display').textContent = displayName;
+    document.getElementById('user-role-display').textContent = 'Practice Owner';
+    document.getElementById('user-avatar').textContent = initials;
+  } catch(e) {}
+}
+
+// SETTINGS: LOAD & SAVE
+async function loadSettings() {
+  if (!window.currentPracticeId) return;
+  try {
+    var { data, error } = await pearliqDB.from('practices').select('*').eq('id', window.currentPracticeId).maybeSingle();
+    if (error || !data) return;
+    document.getElementById('settings-practice-name').value = data.practice_name || '';
+    document.getElementById('settings-gdc-number').value = data.gdc_number || '';
+    document.getElementById('settings-cqc-number').value = data.cqc_number || '';
+    document.getElementById('settings-contact-phone').value = data.contact_phone || '';
+    document.getElementById('settings-address').value = data.address_line_1 || '';
+    document.getElementById('settings-city').value = data.city || '';
+    document.getElementById('settings-postcode').value = data.postcode || '';
+    document.getElementById('settings-chair-count').value = data.chair_count || '';
+  } catch(e) {}
+}
+
+async function saveSettings() {
+  if (!window.currentPracticeId) { showToast('Practice context missing', 'error'); return; }
+  var updates = {
+    practice_name: document.getElementById('settings-practice-name').value.trim() || null,
+    gdc_number: document.getElementById('settings-gdc-number').value.trim() || null,
+    cqc_number: document.getElementById('settings-cqc-number').value.trim() || null,
+    contact_phone: document.getElementById('settings-contact-phone').value.trim() || null,
+    address_line_1: document.getElementById('settings-address').value.trim() || null,
+    city: document.getElementById('settings-city').value.trim() || null,
+    postcode: document.getElementById('settings-postcode').value.trim() || null,
+    chair_count: parseInt(document.getElementById('settings-chair-count').value) || null
+  };
+  var { error } = await pearliqDB.from('practices').update(updates).eq('id', window.currentPracticeId);
+  if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  showToast('Practice settings saved', 'success');
+}
+
+// PASSWORD STRENGTH
+function checkPasswordStrength(pw) {
+  return {
+    length: pw.length >= 8,
+    upper: /[A-Z]/.test(pw),
+    lower: /[a-z]/.test(pw),
+    number: /[0-9]/.test(pw),
+    special: /[!@#$%^&*?]/.test(pw)
+  };
+}
+
+function updatePasswordUI() {
+  var pw = document.getElementById('signup-pw').value;
+  var checks = checkPasswordStrength(pw);
+  var allMet = true;
+  document.querySelectorAll('.pw-req').forEach(function(el) {
+    var req = el.getAttribute('data-req');
+    var met = checks[req];
+    if (!met) allMet = false;
+    el.style.color = met ? '#4A9B72' : 'var(--text-dim)';
+    el.querySelector('.pw-req-icon').textContent = met ? '\u2713' : '\u25CB';
+  });
+  var btn = document.getElementById('signup-submit-btn');
+  if (allMet) {
+    btn.disabled = false;
+    btn.style.background = '#1A3D2E';
+    btn.style.cursor = 'pointer';
+  } else {
+    btn.disabled = true;
+    btn.style.background = '#8A8A8A';
+    btn.style.cursor = 'not-allowed';
+  }
+  return allMet;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var pwInput = document.getElementById('signup-pw');
+  if (pwInput) pwInput.addEventListener('input', updatePasswordUI);
+});
 </script>
 <div class="modal-overlay" id="confirm-modal">
   <div class="modal" style="width:400px;">
