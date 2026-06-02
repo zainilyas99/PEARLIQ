@@ -4196,10 +4196,10 @@ function editPatientFromDetail(patientId) {
 }
 
 function deletePatientFromDetail(patientId, patientName) {
+  closePatientDetail();
   showConfirm('Delete patient ' + patientName + '?', 'This action cannot be undone.', 'Delete', async function() {
     var { error } = await pearliqDB.from('patients').delete().eq('id', patientId);
     if (error) { showToast('Error: ' + error.message, 'error'); return; }
-    closePatientDetail();
     showToast(patientName + ' deleted', 'success');
     loadPatients();
     loadDashboardData();
