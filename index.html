@@ -1536,46 +1536,33 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
       <!-- SECURITY -->
       <div class="page" id="page-security">
         <div class="page-header">
-          <div><div class="page-eyebrow">Platform · Security</div><h1 class="page-title">Security Centre</h1><div class="page-subtitle">GDPR compliant · AES-256 encrypted</div></div>
+          <div><div class="page-eyebrow">Security · Audit Trail</div><h1 class="page-title">Security & Activity</h1><div class="page-subtitle" id="audit-subtitle">Loading...</div></div>
+          <div class="page-actions"><button class="btn btn-secondary btn-sm" onclick="exportAuditLog()">Export Audit Log (CSV)</button></div>
         </div>
-        <div style="background:var(--bg-2);border:1px solid var(--border-green);padding:22px;margin-bottom:18px;display:flex;align-items:center;gap:28px;border-radius:var(--radius);box-shadow:var(--shadow-md);">
-          <div style="text-align:center;flex-shrink:0;">
-            <div style="font-family:'Fraunces',serif;font-size:56px;color:var(--green);line-height:1;">&mdash;</div>
-            <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.14em;font-weight:600;">Security Score</div>
-          </div>
-          <div style="flex:1;">
-            <div style="font-family:'Fraunces',serif;font-size:18px;color:var(--cream);margin-bottom:5px;">Platform Status: Secure</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-bottom:12px;">All systems operational. GDPR compliant.</div>
-            <div style="display:flex;gap:18px;flex-wrap:wrap;">
-              <span style="font-size:11px;color:var(--green);font-weight:500;">AES-256 Encryption</span>
-              <span style="font-size:11px;color:var(--green);font-weight:500;">GDPR Compliant</span>
-            </div>
-          </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
+          <div class="card" style="padding:var(--space-card-sm);"><div style="font-size:var(--fs-caption);color:var(--text-dim);margin-bottom:4px;">Events Today</div><div id="audit-kpi-today" style="font-family:Fraunces,serif;font-size:var(--fs-section);color:var(--cream);">0</div></div>
+          <div class="card" style="padding:var(--space-card-sm);"><div style="font-size:var(--fs-caption);color:var(--text-dim);margin-bottom:4px;">Events This Week</div><div id="audit-kpi-week" style="font-family:Fraunces,serif;font-size:var(--fs-section);color:var(--cream);">0</div></div>
+          <div class="card" style="padding:var(--space-card-sm);"><div style="font-size:var(--fs-caption);color:var(--text-dim);margin-bottom:4px;">Active Sessions</div><div style="font-family:Fraunces,serif;font-size:var(--fs-section);color:var(--cream);">1</div></div>
+          <div class="card" style="padding:var(--space-card-sm);"><div style="font-size:var(--fs-caption);color:var(--text-dim);margin-bottom:4px;">Total Logins</div><div id="audit-kpi-logins" style="font-family:Fraunces,serif;font-size:var(--fs-section);color:var(--cream);">0</div></div>
         </div>
-        <div class="security-grid">
-          <div class="security-card">
-            <div class="security-card-title">Audit Log</div>
-            <div class="security-card-desc">All user actions — last 24 hours</div>
-            <div class="audit-list">
-              <div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px;">No activity logged yet</div>
-            </div>
+        <div style="display:flex;gap:14px;margin-bottom:18px;align-items:center;">
+          <select id="audit-filter" class="form-input filter-select" style="width:220px;" onchange="filterAuditLog()">
+            <option value="all">All Events</option>
+            <option value="logins">Logins</option>
+            <option value="patients">Patient Activity</option>
+            <option value="appointments">Appointments</option>
+            <option value="plans">Treatment Plans</option>
+            <option value="settings">Settings Changes</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:18px;">
+          <div>
+            <div style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);margin-bottom:12px;">Activity Feed</div>
+            <div id="audit-feed" style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;"></div>
           </div>
-          <div class="security-card">
-            <div class="security-card-title">Role Permissions</div>
-            <div class="security-card-desc">Access by role across platform features</div>
-            <div class="perm-role-header" style="padding-left:160px;">
-              <div class="perm-role-label">Manager</div>
-              <div class="perm-role-label">Dentist</div>
-              <div class="perm-role-label">Recept.</div>
-            </div>
-            <div class="perm-table">
-              <div class="perm-row"><div class="perm-feature">Revenue & payroll</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-no">&#10007;</span></div><div class="perm-check"><span class="check-no">&#10007;</span></div></div></div>
-              <div class="perm-row"><div class="perm-feature">Treatment plans</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-no">&#10007;</span></div></div></div>
-              <div class="perm-row"><div class="perm-feature">Patient journeys</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div></div></div>
-              <div class="perm-row"><div class="perm-feature">Staff management</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-no">&#10007;</span></div><div class="perm-check"><span class="check-no">&#10007;</span></div></div></div>
-              <div class="perm-row"><div class="perm-feature">Review management</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div></div></div>
-              <div class="perm-row"><div class="perm-feature">Patient records</div><div class="perm-checks"><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div><div class="perm-check"><span class="check-yes">&#10003;</span></div></div></div>
-            </div>
+          <div>
+            <div style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);margin-bottom:12px;">Login History</div>
+            <div id="audit-logins" style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;"></div>
           </div>
         </div>
       </div>
@@ -1917,6 +1904,23 @@ window.currentPracticeId = null;
 window.currentUserId = null;
 window.onboardingCompleted = false;
 
+async function logAuditEvent(eventType, entityType, entityId, entityLabel, metadata) {
+  if (!window.currentPracticeId || !window.currentUserId) return;
+  try {
+    const { data: { user } } = await pearliqDB.auth.getUser();
+    await pearliqDB.from('audit_log').insert([{
+      practice_id: window.currentPracticeId,
+      user_id: window.currentUserId,
+      user_email: user ? user.email : null,
+      event_type: eventType,
+      entity_type: entityType || null,
+      entity_id: entityId || null,
+      entity_label: entityLabel || null,
+      metadata: metadata || null
+    }]);
+  } catch(e) { console.warn('Audit log failed:', e); }
+}
+
 // BROWSER HISTORY NAVIGATION
 window.addEventListener('popstate', function(event) {
   if (event.state && event.state.page) {
@@ -2089,6 +2093,7 @@ async function doSignUp() {
       window.onboardingCompleted = practiceData.onboarding_completed;
     }
   }
+  logAuditEvent('signup', 'auth', null, null, null);
   if (!window.onboardingCompleted) {
     closeAuthModal();
     showOnboarding();
@@ -2167,6 +2172,7 @@ async function doLogin() {
     }
   }
   await updateUserPill();
+  logAuditEvent('login', 'auth', null, null, null);
   if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'Sign In'; }
   if (!window.onboardingCompleted) {
     closeAuthModal();
@@ -2215,6 +2221,7 @@ function navigateTo(page) {
   if (page === 'treatment-plans') loadTreatmentPlans();
   if (page === 'financing') loadFinancingOptions();
   if (page === 'appointments') loadAppointments();
+  if (page === 'security') loadAuditLog();
   if (page === 'settings') loadSettings();
   document.getElementById('main-content').scrollTop = 0;
   closeNotif();
@@ -2253,6 +2260,7 @@ document.addEventListener('click', e => { if (!e.target.closest('.header-user'))
 // LOGOUT
 async function logout() {
   closeUserMenu();
+  await logAuditEvent('logout', 'auth', null, null, null);
   await pearliqDB.auth.signOut();
   window.currentPracticeId = null;
   window.currentUserId = null;
@@ -2430,21 +2438,25 @@ async function savePatient() {
   if (!email) { showFieldError('pat-email', 'Email is required'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; } showToast('Please enter an email address', 'error'); return; }
   if (!phone) { showFieldError('pat-phone', 'Phone number is required'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = window.editingPatientId ? 'Save Changes' : 'Add Patient'; } showToast('Please enter a phone number', 'error'); return; }
   var patientData = { name: first + ' ' + last, email: email, phone: phone, date_of_birth: dob };
-  var error;
+  var error, newPatientId = null;
   if (window.editingPatientId) {
     var res = await pearliqDB.from('patients').update(patientData).eq('id', window.editingPatientId);
     error = res.error;
   } else {
     patientData.status = 'active';
     patientData.practice_id = window.currentPracticeId;
-    var res = await pearliqDB.from('patients').insert([patientData]);
+    var res = await pearliqDB.from('patients').insert([patientData]).select('id').single();
     error = res.error;
+    if (res.data) newPatientId = res.data.id;
   }
   if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = window.editingPatientId ? 'Save Changes' : 'Add Patient'; } showToast('Error: ' + error.message, 'error'); return; }
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Patient'; }
   var editId = window.editingPatientId;
+  var patientName = first + ' ' + last;
+  if (editId) { logAuditEvent('patient_updated', 'patient', editId, patientName, null); }
+  else { logAuditEvent('patient_created', 'patient', newPatientId, patientName, null); }
   closeModal('new-patient-modal');
-  showToast(first + ' ' + last + (editId ? ' updated' : ' added') + ' successfully', 'success');
+  showToast(patientName + (editId ? ' updated' : ' added') + ' successfully', 'success');
   document.getElementById('pat-first').value = '';
   document.getElementById('pat-last').value = '';
   document.getElementById('pat-email').value = '';
@@ -2479,7 +2491,7 @@ async function saveTreatmentPlan() {
     var patRes = await pearliqDB.from('patients').select('email, phone').eq('name', patientName).limit(1).maybeSingle();
     if (patRes.data) { patEmail = patRes.data.email || null; patPhone = patRes.data.phone || null; }
   } catch(e) {}
-  const { error } = await pearliqDB.from('treatment_plans').insert([{
+  const { data: planData, error } = await pearliqDB.from('treatment_plans').insert([{
     patient_name: patientName,
     patient_email: patEmail,
     patient_phone: patPhone,
@@ -2490,9 +2502,10 @@ async function saveTreatmentPlan() {
     notes: notes,
     confidence_score: confidenceScore,
     practice_id: window.currentPracticeId
-  }]);
+  }]).select('id').single();
   if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Create Plan & Start Sequence'; } showToast('Error: ' + error.message, 'error'); return; }
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Create Plan & Start Sequence'; }
+  logAuditEvent('treatment_plan_created', 'treatment_plan', planData ? planData.id : null, patientName + ' - ' + treatment, { value: value });
   closeModal('new-plan-modal');
   showToast('Treatment plan created. Follow-up sequence started.', 'success');
   // Send Day 1 welcome email if patient has email on file
@@ -3722,6 +3735,7 @@ async function completeOnboarding() {
 
     window.onboardingCompleted = true;
     await updateUserPill();
+    logAuditEvent('onboarding_completed', 'practice', window.currentPracticeId, 'Practice onboarded', null);
     hideOnboarding();
     document.getElementById('app').classList.add('visible');
     showToast('Welcome to PEARLIQ', 'success');
@@ -3778,6 +3792,7 @@ async function saveSettings() {
   };
   var { error } = await pearliqDB.from('practices').update(updates).eq('id', window.currentPracticeId);
   if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  logAuditEvent('settings_changed', 'practice', window.currentPracticeId, 'Practice settings', null);
   await savePearlSettings();
   showToast('Settings saved', 'success');
 }
@@ -3830,6 +3845,7 @@ async function savePearlSettings() {
     escalation_keywords: JSON.stringify(keywords)
   };
   await pearliqDB.from('ai_config').update(aiUpdate).eq('practice_id', window.currentPracticeId);
+  logAuditEvent('pearl_settings_changed', 'ai_config', window.currentPracticeId, 'Pearl AI settings', null);
 }
 
 // PASSWORD STRENGTH
@@ -3993,10 +4009,10 @@ async function saveAppointment() {
   if (!name) { showToast('Patient name is required', 'error'); return; }
   if (!date) { showToast('Date is required', 'error'); return; }
   if (!time) { showToast('Time is required', 'error'); return; }
-  var patientId = document.getElementById('appt-patient-id').value || null;
-  var { error } = await pearliqDB.from('appointments').insert([{
+  var apptPatientId = document.getElementById('appt-patient-id').value || null;
+  var { data: apptData, error } = await pearliqDB.from('appointments').insert([{
     practice_id: window.currentPracticeId,
-    patient_id: patientId,
+    patient_id: apptPatientId,
     patient_name: name,
     patient_phone: phone || null,
     appointment_date: date,
@@ -4007,8 +4023,9 @@ async function saveAppointment() {
     status: status,
     booked_via: 'manual',
     notes: notes || null
-  }]);
+  }]).select('id').single();
   if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  logAuditEvent('appointment_created', 'appointment', apptData ? apptData.id : null, name + ' - ' + date, { date: date, time: time, treatment_type: treatment });
   closeModal('new-appointment-modal');
   showToast('Appointment booked', 'success');
   document.getElementById('appt-patient-name').value = '';
@@ -4200,6 +4217,7 @@ function deletePatientFromDetail(patientId, patientName) {
   showConfirm('Delete patient ' + patientName + '?', 'This action cannot be undone.', 'Delete', async function() {
     var { error } = await pearliqDB.from('patients').delete().eq('id', patientId);
     if (error) { showToast('Error: ' + error.message, 'error'); return; }
+    logAuditEvent('patient_deleted', 'patient', patientId, patientName, null);
     showToast(patientName + ' deleted', 'success');
     loadPatients();
     loadDashboardData();
@@ -4243,6 +4261,173 @@ function selectApptPatient(id, name, phone) {
   document.getElementById('appt-patient-id').value = id;
   document.getElementById('appt-patient-phone').value = phone;
   document.getElementById('appt-patient-suggestions').style.display = 'none';
+}
+
+// AUDIT LOG
+var auditLogCache = [];
+
+function auditEventIcon(eventType) {
+  if (eventType === 'login' || eventType === 'logout' || eventType === 'signup') return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>';
+  if (eventType.startsWith('patient_')) return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+  if (eventType.startsWith('appointment_')) return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+  if (eventType.startsWith('treatment_plan_')) return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+  return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>';
+}
+
+function humanizeAuditEvent(evt) {
+  var map = {
+    'login': 'Logged in',
+    'logout': 'Logged out',
+    'signup': 'Account created',
+    'patient_created': 'Patient created',
+    'patient_updated': 'Patient updated',
+    'patient_deleted': 'Patient deleted',
+    'appointment_created': 'Appointment booked',
+    'treatment_plan_created': 'Treatment plan created',
+    'settings_changed': 'Practice settings updated',
+    'pearl_settings_changed': 'Pearl AI settings updated',
+    'onboarding_completed': 'Onboarding completed',
+    'audit_log_exported': 'Audit log exported'
+  };
+  var desc = map[evt.event_type] || evt.event_type.replace(/_/g, ' ');
+  if (evt.entity_label) desc += ': ' + evt.entity_label;
+  return desc;
+}
+
+function relativeTime(dateStr) {
+  var now = new Date();
+  var d = new Date(dateStr);
+  var diff = Math.floor((now - d) / 1000);
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return Math.floor(diff / 60) + ' min ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + ' hr ago';
+  var yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1);
+  if (d.toDateString() === yesterday.toDateString()) return 'Yesterday at ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function renderAuditFeed(events) {
+  var feed = document.getElementById('audit-feed');
+  if (!events || events.length === 0) {
+    feed.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);font-size:13px;">No activity recorded yet</div>';
+    return;
+  }
+  var html = '';
+  var lastDate = '';
+  events.forEach(function(evt) {
+    var evtDate = new Date(evt.created_at).toDateString();
+    var today = new Date().toDateString();
+    if (evtDate !== lastDate && evtDate !== today) {
+      var label = new Date(evt.created_at).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+      html += '<div style="padding:8px 16px;background:var(--bg-3);font-size:11px;color:var(--text-dim);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">' + label + '</div>';
+      lastDate = evtDate;
+    }
+    html += '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);">' +
+      '<div style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;color:var(--green);">' + auditEventIcon(evt.event_type) + '</div>' +
+      '<div style="flex:1;min-width:0;">' +
+      '<div style="font-size:13px;color:var(--cream);font-weight:500;">' + humanizeAuditEvent(evt) + '</div>' +
+      '<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">' + (evt.user_email || '') + ' &middot; ' + relativeTime(evt.created_at) + '</div>' +
+      '</div></div>';
+  });
+  feed.innerHTML = html;
+}
+
+async function loadAuditLog() {
+  var feed = document.getElementById('audit-feed');
+  if (feed) feed.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);font-size:13px;">Loading...</div>';
+  try {
+    var { data: events, error } = await pearliqDB.from('audit_log').select('*').eq('practice_id', window.currentPracticeId).order('created_at', { ascending: false }).limit(100);
+    if (error) throw error;
+    events = events || [];
+    auditLogCache = events;
+
+    // KPIs
+    var todayStr = new Date().toISOString().split('T')[0];
+    var weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+    var weekAgoStr = weekAgo.toISOString();
+    var todayCount = 0, weekCount = 0, totalLogins = 0;
+    events.forEach(function(e) {
+      if (e.created_at && e.created_at.startsWith(todayStr)) todayCount++;
+      if (e.created_at >= weekAgoStr) weekCount++;
+      if (e.event_type === 'login') totalLogins++;
+    });
+    document.getElementById('audit-kpi-today').textContent = todayCount;
+    document.getElementById('audit-kpi-week').textContent = weekCount;
+    document.getElementById('audit-kpi-logins').textContent = totalLogins;
+
+    var lastActivity = events.length > 0 ? relativeTime(events[0].created_at) : 'Never';
+    document.getElementById('audit-subtitle').textContent = events.length + ' events recorded \u00B7 Last activity: ' + lastActivity;
+
+    // Render feed
+    renderAuditFeed(events);
+
+    // Login history
+    var loginEvents = events.filter(function(e) { return e.event_type === 'login' || e.event_type === 'logout'; }).slice(0, 10);
+    var loginsEl = document.getElementById('audit-logins');
+    if (loginEvents.length === 0) {
+      loginsEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px;">No login history</div>';
+    } else {
+      var lhtml = '';
+      loginEvents.forEach(function(e) {
+        var icon = e.event_type === 'login' ? '<span style="color:var(--green);">&#8594;</span>' : '<span style="color:var(--text-dim);">&#8592;</span>';
+        lhtml += '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:12px;">' +
+          icon +
+          '<div style="flex:1;min-width:0;"><div style="color:var(--cream);font-weight:500;">' + (e.user_email || 'Unknown') + '</div>' +
+          '<div style="color:var(--text-dim);font-size:11px;">' + relativeTime(e.created_at) + '</div></div></div>';
+      });
+      loginsEl.innerHTML = lhtml;
+    }
+
+    // Reset filter
+    document.getElementById('audit-filter').value = 'all';
+  } catch(e) {
+    if (feed) feed.innerHTML = '<div style="padding:32px;text-align:center;color:var(--rose);font-size:13px;">Error: ' + (e.message || 'unknown') + '</div>';
+  }
+}
+
+function filterAuditLog() {
+  var filter = document.getElementById('audit-filter').value;
+  var filtered = auditLogCache;
+  if (filter === 'logins') {
+    filtered = auditLogCache.filter(function(e) { return e.event_type === 'login' || e.event_type === 'logout' || e.event_type === 'signup'; });
+  } else if (filter === 'patients') {
+    filtered = auditLogCache.filter(function(e) { return e.event_type.startsWith('patient_'); });
+  } else if (filter === 'appointments') {
+    filtered = auditLogCache.filter(function(e) { return e.event_type.startsWith('appointment_'); });
+  } else if (filter === 'plans') {
+    filtered = auditLogCache.filter(function(e) { return e.event_type.startsWith('treatment_plan_'); });
+  } else if (filter === 'settings') {
+    filtered = auditLogCache.filter(function(e) { return e.event_type === 'settings_changed' || e.event_type === 'pearl_settings_changed' || e.event_type === 'onboarding_completed'; });
+  }
+  renderAuditFeed(filtered);
+}
+
+async function exportAuditLog() {
+  try {
+    showToast('Exporting audit log...', 'info');
+    var { data: events, error } = await pearliqDB.from('audit_log').select('*').eq('practice_id', window.currentPracticeId).order('created_at', { ascending: false });
+    if (error) throw error;
+    events = events || [];
+    var csv = 'Timestamp,Event Type,Entity Type,Entity,User Email,Metadata\n';
+    events.forEach(function(e) {
+      var ts = e.created_at ? new Date(e.created_at).toISOString() : '';
+      var meta = e.metadata ? JSON.stringify(e.metadata).replace(/"/g, '""') : '';
+      csv += '"' + ts + '","' + (e.event_type || '') + '","' + (e.entity_type || '') + '","' + (e.entity_label || '').replace(/"/g, '""') + '","' + (e.user_email || '') + '","' + meta + '"\n';
+    });
+    var blob = new Blob([csv], { type: 'text/csv' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'pearliq-audit-log-' + new Date().toISOString().split('T')[0] + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Audit log exported (' + events.length + ' events)', 'success');
+    logAuditEvent('audit_log_exported', 'audit', null, 'Audit log exported', { row_count: events.length });
+  } catch(e) {
+    showToast('Export failed: ' + (e.message || 'unknown'), 'error');
+  }
 }
 </script>
 <div class="modal-overlay" id="confirm-modal">
