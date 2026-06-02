@@ -1589,6 +1589,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
         <div class="settings-layout">
           <div class="settings-nav">
             <div class="settings-nav-item active" onclick="settingsNav(this,'profile')">Practice Profile</div>
+            <div class="settings-nav-item" onclick="settingsNav(this,'pearl')">Pearl (AI Receptionist)</div>
             <div class="settings-nav-item" onclick="settingsNav(this,'followup')">Follow-Up Settings</div>
             <div class="settings-nav-item" onclick="settingsNav(this,'reviews')">Review Settings</div>
             <div class="settings-nav-item" onclick="settingsNav(this,'payroll')">Payroll Settings</div>
@@ -1608,6 +1609,45 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
                 <div class="form-group"><label class="form-label">Address</label><input class="form-input" id="settings-address" value=""></div>
                 <div class="form-group"><label class="form-label">City</label><input class="form-input" id="settings-city" value=""></div>
                 <div class="form-group"><label class="form-label">Postcode</label><input class="form-input" id="settings-postcode" value=""></div>
+              </div>
+            </div>
+            <div class="settings-section" id="settings-pearl" style="display:none;">
+              <div class="settings-section-title">Pearl (AI Receptionist)</div>
+              <div style="margin-bottom:24px;">
+                <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">Personality Preset</div>
+                <div style="display:flex;flex-direction:column;gap:10px;" id="pearl-personality-group">
+                  <label style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all 0.15s;" onclick="selectPearlPersonality(this)">
+                    <input type="radio" name="pearl-personality" value="warm" checked style="margin-top:2px;">
+                    <div><div style="font-size:13px;font-weight:600;color:var(--cream);margin-bottom:2px;">Warm & friendly</div><div style="font-size:12px;color:var(--text-dim);line-height:1.5;">Approachable, conversational British tone. Best for family practices.</div></div>
+                  </label>
+                  <label style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all 0.15s;" onclick="selectPearlPersonality(this)">
+                    <input type="radio" name="pearl-personality" value="professional" style="margin-top:2px;">
+                    <div><div style="font-size:13px;font-weight:600;color:var(--cream);margin-bottom:2px;">Professional & clinical</div><div style="font-size:12px;color:var(--text-dim);line-height:1.5;">Formal, precise language. Best for cosmetic and premium practices.</div></div>
+                  </label>
+                  <label style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all 0.15s;" onclick="selectPearlPersonality(this)">
+                    <input type="radio" name="pearl-personality" value="concise" style="margin-top:2px;">
+                    <div><div style="font-size:13px;font-weight:600;color:var(--cream);margin-bottom:2px;">Concise & efficient</div><div style="font-size:12px;color:var(--text-dim);line-height:1.5;">Short, to-the-point replies. Best for busy NHS practices.</div></div>
+                  </label>
+                </div>
+              </div>
+              <div style="margin-bottom:24px;">
+                <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">Capabilities</div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="pearl-can-book" checked> Book appointments automatically</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="pearl-can-review" checked> Send review requests after visits</label>
+                  <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="pearl-can-quote"> Quote treatment prices to patients</label>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Escalation Keywords</div>
+                <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">Words that trigger handover to a human (one per line)</div>
+                <textarea class="form-input" id="pearl-escalation" rows="5" style="resize:vertical;font-size:12px;line-height:1.6;">complaint
+emergency
+urgent
+pain
+bleeding
+swelling
+manager</textarea>
               </div>
             </div>
             <div class="settings-section" id="settings-followup" style="display:none;">
@@ -2290,6 +2330,7 @@ function settingsNav(el, section) {
   var target = document.getElementById('settings-' + section);
   if (target) target.style.display = 'block';
   if (section === 'profile') loadSettings();
+  if (section === 'pearl') loadPearlSettings();
 }
 
 // REQUIRED SQL: create table if not exists financing_options (id uuid default gen_random_uuid() primary key, name text not null, description text, max_amount numeric, interest_rate numeric default 0, min_term integer default 6, max_term integer default 24, treatment_types text, created_at timestamp default now());
@@ -3664,8 +3705,6 @@ async function completeOnboarding() {
     // Update AI config (upsert to handle case where ai_config row is missing)
     var aiUpdate = {
       practice_id: window.currentPracticeId,
-      ai_name: document.getElementById('ob-ai-name').value.trim() || 'Pearl',
-      ai_personality: document.getElementById('ob-ai-personality').value.trim(),
       ai_can_book_appointments: document.getElementById('ob-can-book').checked,
       ai_can_send_reviews: document.getElementById('ob-can-review').checked,
       ai_can_quote_prices: document.getElementById('ob-can-quote').checked
@@ -3730,7 +3769,58 @@ async function saveSettings() {
   };
   var { error } = await pearliqDB.from('practices').update(updates).eq('id', window.currentPracticeId);
   if (error) { showToast('Error: ' + error.message, 'error'); return; }
-  showToast('Practice settings saved', 'success');
+  await savePearlSettings();
+  showToast('Settings saved', 'success');
+}
+
+// PEARL SETTINGS
+function selectPearlPersonality(label) {
+  document.querySelectorAll('#pearl-personality-group > label').forEach(function(l) {
+    l.style.borderColor = 'var(--border)';
+    l.style.background = 'transparent';
+  });
+  label.style.borderColor = 'var(--green)';
+  label.style.background = 'var(--green-dim)';
+  label.querySelector('input[type="radio"]').checked = true;
+}
+
+async function loadPearlSettings() {
+  if (!window.currentPracticeId) return;
+  try {
+    var { data, error } = await pearliqDB.from('ai_config').select('*').eq('practice_id', window.currentPracticeId).maybeSingle();
+    if (error || !data) return;
+    var personality = data.ai_personality || 'warm';
+    var radios = document.querySelectorAll('input[name="pearl-personality"]');
+    radios.forEach(function(r) {
+      r.checked = (r.value === personality);
+      var label = r.closest('label');
+      if (r.checked) { label.style.borderColor = 'var(--green)'; label.style.background = 'var(--green-dim)'; }
+      else { label.style.borderColor = 'var(--border)'; label.style.background = 'transparent'; }
+    });
+    document.getElementById('pearl-can-book').checked = data.ai_can_book_appointments !== false;
+    document.getElementById('pearl-can-review').checked = data.ai_can_send_reviews !== false;
+    document.getElementById('pearl-can-quote').checked = data.ai_can_quote_prices === true;
+    var keywords = data.escalation_keywords;
+    if (Array.isArray(keywords) && keywords.length > 0) {
+      document.getElementById('pearl-escalation').value = keywords.join('\n');
+    }
+  } catch(e) {}
+}
+
+async function savePearlSettings() {
+  if (!window.currentPracticeId) return;
+  var selectedRadio = document.querySelector('input[name="pearl-personality"]:checked');
+  var personality = selectedRadio ? selectedRadio.value : 'warm';
+  var escalationText = document.getElementById('pearl-escalation').value;
+  var keywords = escalationText.split('\n').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; });
+  var aiUpdate = {
+    ai_personality: personality,
+    ai_can_book_appointments: document.getElementById('pearl-can-book').checked,
+    ai_can_send_reviews: document.getElementById('pearl-can-review').checked,
+    ai_can_quote_prices: document.getElementById('pearl-can-quote').checked,
+    escalation_keywords: JSON.stringify(keywords)
+  };
+  await pearliqDB.from('ai_config').update(aiUpdate).eq('practice_id', window.currentPracticeId);
 }
 
 // PASSWORD STRENGTH
@@ -3993,17 +4083,12 @@ async function saveAppointment() {
     </div>
 
     <div id="ob-step-2" class="ob-step" style="display:none;">
-      <div style="font-family:Fraunces,serif;font-size:24px;color:var(--cream);margin-bottom:8px;">Your AI assistant</div>
-      <div style="font-size:13px;color:var(--text-dim);margin-bottom:32px;">Customise how your AI receptionist speaks to patients on WhatsApp.</div>
-      <div style="display:flex;flex-direction:column;gap:18px;">
-        <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">AI name</label><input id="ob-ai-name" class="form-input" value="Pearl" placeholder="e.g. Pearl, Lucy, Alex" style="width:100%;"><div style="font-size:11px;color:var(--text-dim);margin-top:4px;">This is the name patients will see in WhatsApp.</div></div>
-        <div><label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">Personality & tone</label><textarea id="ob-ai-personality" class="form-textarea" rows="3" placeholder="e.g. Warm, professional, helpful. Speaks in a friendly British tone." style="width:100%;">Warm, professional, and helpful. Speaks in a friendly British tone.</textarea></div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <label style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);">AI capabilities</label>
-          <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="ob-can-book" checked> Book appointments automatically</label>
-          <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="ob-can-review" checked> Send review requests after visits</label>
-          <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="ob-can-quote"> Quote treatment prices to patients</label>
-        </div>
+      <div style="font-family:Fraunces,serif;font-size:24px;color:var(--cream);margin-bottom:8px;">Pearl's capabilities</div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:32px;">Pearl is your AI receptionist. Choose what she can do for your practice — you can customize her tone and behavior in Settings later.</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="ob-can-book" checked> Book appointments automatically</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="ob-can-review" checked> Send review requests after visits</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="ob-can-quote"> Quote treatment prices to patients</label>
       </div>
       <div style="display:flex;justify-content:space-between;margin-top:32px;">
         <button class="btn btn-secondary" onclick="onboardingBack(2)">Back</button>
