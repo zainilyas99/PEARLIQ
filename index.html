@@ -3632,11 +3632,18 @@ function clearAllFieldErrors(modalId) {
   modal.querySelectorAll('.form-error').forEach(function(el) { el.classList.remove('visible'); });
 }
 
-function showOnboarding() {
+async function showOnboarding() {
   document.getElementById('onboarding-overlay').style.display = 'block';
   document.getElementById('app').classList.remove('visible');
   document.getElementById('landing-page').style.display = 'none';
   document.body.style.overflow = 'hidden';
+  try {
+    var { data: { user } } = await pearliqDB.auth.getUser();
+    if (user && user.user_metadata && user.user_metadata.practice_name) {
+      var field = document.getElementById('ob-practice-name');
+      if (field && !field.value) field.value = user.user_metadata.practice_name;
+    }
+  } catch(e) {}
 }
 
 function hideOnboarding() {
