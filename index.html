@@ -1565,6 +1565,10 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
             <div id="audit-logins" style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;"></div>
           </div>
         </div>
+        <div style="margin-top:28px;">
+          <div style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);margin-bottom:12px;">Archived Records (GDPR)</div>
+          <div id="archived-patients-container" style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;"></div>
+        </div>
       </div>
 
       <!-- SETTINGS -->
@@ -1597,6 +1601,7 @@ body.dark-mode .search-input { background: #222222; border-color: rgba(255,255,2
                 <div class="form-group"><label class="form-label">City</label><input class="form-input" id="settings-city" value=""></div>
                 <div class="form-group"><label class="form-label">Postcode</label><input class="form-input" id="settings-postcode" value=""></div>
               </div>
+              <div style="padding-top:14px;border-top:1px solid var(--border);"><button class="btn btn-secondary btn-sm" onclick="exportAllPracticeData()">Export All Practice Data</button><div style="font-size:11px;color:var(--text-dim);margin-top:6px;">Download a full JSON export of all practice data (GDPR Right of Access)</div></div>
             </div>
             <div class="settings-section" id="settings-pearl" style="display:none;">
               <div class="settings-section-title">Pearl (AI Receptionist)</div>
@@ -2306,8 +2311,8 @@ async function globalSearch(query) {
   resultsEl.innerHTML = '<div style="padding:12px 16px;font-size:12px;color:#8A8A8A;">Searching...</div>';
   try {
     var [patientsRes, plansRes, staffRes] = await Promise.all([
-      pearliqDB.from('patients').select('name, email, status').ilike('name', '%' + query + '%').limit(4),
-      pearliqDB.from('treatment_plans').select('patient_name, treatment_type, value, status').ilike('patient_name', '%' + query + '%').limit(4),
+      pearliqDB.from('patients').select('name, email, status').ilike('name', '%' + query + '%').is('deleted_at', null).limit(4),
+      pearliqDB.from('treatment_plans').select('patient_name, treatment_type, value, status').ilike('patient_name', '%' + query + '%').is('deleted_at', null).limit(4),
       pearliqDB.from('staff').select('name, role').ilike('name', '%' + query + '%').limit(3)
     ]);
     var html = '';
@@ -2497,7 +2502,7 @@ async function saveTreatmentPlan() {
   var patEmail = null;
   var patPhone = null;
   try {
-    var patRes = await pearliqDB.from('patients').select('email, phone').ilike('name', patientName).limit(1).maybeSingle();
+    var patRes = await pearliqDB.from('patients').select('email, phone').ilike('name', patientName).is('deleted_at', null).limit(1).maybeSingle();
     if (patRes.data) { patEmail = patRes.data.email || null; patPhone = patRes.data.phone || null; }
   } catch(e) {}
   const { data: planData, error } = await pearliqDB.from('treatment_plans').insert([{
@@ -2575,10 +2580,10 @@ async function saveStaff() {
 async function loadDashboardData() {
   try {
     const [patientsRes, activePlansRes, allPlansRes, convertedRes] = await Promise.all([
-      pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active'),
-      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['presented', 'in_nurture']),
-      pearliqDB.from('treatment_plans').select('value, status'),
-      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['booked', 'converted'])
+      pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active').is('deleted_at', null),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['presented', 'in_nurture']).is('deleted_at', null),
+      pearliqDB.from('treatment_plans').select('value, status').is('deleted_at', null),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['booked', 'converted']).is('deleted_at', null)
     ]);
     var patientCount = patientsRes.count || 0;
     document.getElementById('kpi-patients').textContent = patientCount;
@@ -2609,7 +2614,7 @@ async function loadPatients() {
       }
       tbody.innerHTML = skeletonHtml;
     }
-    const { data, error } = await pearliqDB.from('patients').select('*').order('created_at', { ascending: false });
+    const { data, error } = await pearliqDB.from('patients').select('*').is('deleted_at', null).order('created_at', { ascending: false });
     if (error || !data) return;
     if (!tbody) return;
     if (data.length === 0) {
@@ -2695,9 +2700,9 @@ async function animateDashboard() {
   if (!ring || !numEl) return;
   try {
     const [patientsRes, plansRes, convertedRes, reviewsRes, sequenceRes] = await Promise.all([
-      pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active'),
-      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }),
-      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['booked', 'converted']),
+      pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active').is('deleted_at', null),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).is('deleted_at', null),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['booked', 'converted']).is('deleted_at', null),
       pearliqDB.from('reviews').select('rating'),
       pearliqDB.from('sequence_emails').select('status')
     ]);
@@ -2833,8 +2838,8 @@ function initCharts() {
 async function initAnalyticsCharts() {
   try {
     const [plansRes, convertedRes, reviewsRes] = await Promise.all([
-      pearliqDB.from('treatment_plans').select('value, status, treatment_type, created_at'),
-      pearliqDB.from('treatment_plans').select('value').in('status', ['booked', 'converted']),
+      pearliqDB.from('treatment_plans').select('value, status, treatment_type, created_at').is('deleted_at', null),
+      pearliqDB.from('treatment_plans').select('value').in('status', ['booked', 'converted']).is('deleted_at', null),
       pearliqDB.from('reviews').select('rating, platform, created_at')
     ]);
     var allPlans = plansRes.data || [];
@@ -2910,9 +2915,9 @@ async function initHealthChart() {
   ctx.setAttribute('data-init', '1');
   try {
     var [patientsRes, plansRes, convertedRes, reviewsRes, sequenceRes, staffRes] = await Promise.all([
-      pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active'),
-      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }),
-      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['booked', 'converted']),
+      pearliqDB.from('patients').select('id', { count: 'exact', head: true }).eq('status', 'active').is('deleted_at', null),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).is('deleted_at', null),
+      pearliqDB.from('treatment_plans').select('id', { count: 'exact', head: true }).in('status', ['booked', 'converted']).is('deleted_at', null),
       pearliqDB.from('reviews').select('rating'),
       pearliqDB.from('sequence_emails').select('status'),
       pearliqDB.from('staff').select('id', { count: 'exact', head: true }).eq('status', 'active')
@@ -2980,8 +2985,8 @@ async function initConfidenceChart() {
   ctx.setAttribute('data-init', '1');
   try {
     const [plansRes, convertedRes, sequenceRes] = await Promise.all([
-      pearliqDB.from('treatment_plans').select('confidence_score, value, status'),
-      pearliqDB.from('treatment_plans').select('value').in('status', ['booked', 'converted']),
+      pearliqDB.from('treatment_plans').select('confidence_score, value, status').is('deleted_at', null),
+      pearliqDB.from('treatment_plans').select('value').in('status', ['booked', 'converted']).is('deleted_at', null),
       pearliqDB.from('sequence_emails').select('status')
     ]);
     var plans = plansRes.data || [];
@@ -3035,8 +3040,8 @@ async function initForecastChart() {
   ctx.setAttribute('data-init', '1');
   try {
     const [plansRes, convertedRes] = await Promise.all([
-      pearliqDB.from('treatment_plans').select('value, status, created_at'),
-      pearliqDB.from('treatment_plans').select('value, created_at').in('status', ['booked', 'converted'])
+      pearliqDB.from('treatment_plans').select('value, status, created_at').is('deleted_at', null),
+      pearliqDB.from('treatment_plans').select('value, created_at').in('status', ['booked', 'converted']).is('deleted_at', null)
     ]);
     var allPlans = plansRes.data || [];
     var convertedPlans = convertedRes.data || [];
@@ -3114,7 +3119,7 @@ function animateSectionHeading(sectionId) {
 async function sendFollowUpAuto(patientName, dayNumber, treatmentType, value) {
   showToast('Looking up patient...', 'info');
   try {
-    var res = await pearliqDB.from('patients').select('email').ilike('name', patientName).limit(1).maybeSingle();
+    var res = await pearliqDB.from('patients').select('email').ilike('name', patientName).is('deleted_at', null).limit(1).maybeSingle();
     if (!res.data || !res.data.email) {
       showToast('No email found for ' + patientName + ' — please add one to their profile first', 'error');
       return;
@@ -3494,7 +3499,7 @@ async function loadFollowUpData() {
   try {
     var [sequenceRes, plansRes] = await Promise.all([
       pearliqDB.from('sequence_emails').select('*').order('created_at', { ascending: false }),
-      pearliqDB.from('treatment_plans').select('*').eq('sequence_active', true).order('created_at', { ascending: false })
+      pearliqDB.from('treatment_plans').select('*').eq('sequence_active', true).is('deleted_at', null).order('created_at', { ascending: false })
     ]);
     var sequences = sequenceRes.data || [];
     var activePlans = plansRes.data || [];
@@ -3559,7 +3564,7 @@ async function loadFollowUpData() {
 
 async function loadTreatmentPlans() {
   try {
-    var { data, error } = await pearliqDB.from('treatment_plans').select('*').order('created_at', { ascending: false });
+    var { data, error } = await pearliqDB.from('treatment_plans').select('*').is('deleted_at', null).order('created_at', { ascending: false });
     if (error) throw error;
     var plans = data || [];
     var listView = document.getElementById('tp-list-view');
@@ -3949,7 +3954,7 @@ async function loadAppointments() {
   container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);font-size:13px;">Loading appointments...</div>';
 
   try {
-    var { data: appts, error } = await pearliqDB.from('appointments').select('id, patient_name, patient_phone, appointment_date, appointment_time, duration_minutes, treatment_type, treatment_value, status, staff_id, booked_via, notes').eq('practice_id', window.currentPracticeId).order('appointment_date', { ascending: true }).order('appointment_time', { ascending: true });
+    var { data: appts, error } = await pearliqDB.from('appointments').select('id, patient_name, patient_phone, appointment_date, appointment_time, duration_minutes, treatment_type, treatment_value, status, staff_id, booked_via, notes').eq('practice_id', window.currentPracticeId).is('deleted_at', null).order('appointment_date', { ascending: true }).order('appointment_time', { ascending: true });
     if (error) throw error;
     appts = appts || [];
 
@@ -4107,8 +4112,10 @@ async function openPatientDetail(patientId) {
       '<div><div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">DOB</div>' + dob + '</div>' +
       '</div></div>' +
       '<div style="display:flex;gap:8px;">' +
+      '<button class="btn btn-secondary btn-sm" onclick="exportPatientData(\'' + patientId + '\')">Export Data</button>' +
       '<button class="btn btn-secondary btn-sm" onclick="editPatientFromDetail(\'' + patientId + '\')">Edit Patient</button>' +
-      '<button class="btn btn-secondary btn-sm" style="color:var(--rose);" onclick="deletePatientFromDetail(\'' + patientId + '\',\'' + (pat.name || '').replace(/'/g, "\\'") + '\')">Delete</button>' +
+      '<button class="btn btn-secondary btn-sm" style="color:var(--rose);" onclick="deletePatientFromDetail(\'' + patientId + '\',\'' + (pat.name || '').replace(/'/g, "\\'") + '\')">Archive</button>' +
+      '<button class="btn btn-secondary btn-sm" style="color:var(--rose);border-color:var(--rose);" onclick="deletePatientPermanently(\'' + patientId + '\',\'' + (pat.name || '').replace(/'/g, "\\'") + '\')">\u26A0 Permanently Delete</button>' +
       '</div></div>';
 
     // KPIs
@@ -4230,11 +4237,11 @@ function editPatientFromDetail(patientId) {
 
 function deletePatientFromDetail(patientId, patientName) {
   closePatientDetail();
-  showConfirm('Delete patient ' + patientName + '?', 'This action cannot be undone.', 'Delete', async function() {
-    var { error } = await pearliqDB.from('patients').delete().eq('id', patientId);
+  showConfirm('Archive patient ' + patientName + '?', 'Their record will be hidden but recoverable for compliance. Use "Permanently Delete" for a full GDPR erasure.', 'Archive', async function() {
+    var { error } = await pearliqDB.from('patients').update({ deleted_at: new Date().toISOString() }).eq('id', patientId);
     if (error) { showToast('Error: ' + error.message, 'error'); return; }
-    logAuditEvent('patient_deleted', 'patient', patientId, patientName, null);
-    showToast(patientName + ' deleted', 'success');
+    logAuditEvent('patient_archived', 'patient', patientId, patientName, null);
+    showToast(patientName + ' archived', 'success');
     loadPatients();
     loadDashboardData();
   });
@@ -4252,7 +4259,7 @@ document.addEventListener('DOMContentLoaded', function() {
     clearTimeout(apptAutoTimeout);
     apptAutoTimeout = setTimeout(async function() {
       try {
-        var { data } = await pearliqDB.from('patients').select('id, name, phone').eq('practice_id', window.currentPracticeId).or('name.ilike.%' + query + '%,phone.ilike.%' + query + '%').limit(8);
+        var { data } = await pearliqDB.from('patients').select('id, name, phone').eq('practice_id', window.currentPracticeId).is('deleted_at', null).or('name.ilike.%' + query + '%,phone.ilike.%' + query + '%').limit(8);
         var dd = document.getElementById('appt-patient-suggestions');
         if (!data || data.length === 0) { dd.style.display = 'none'; return; }
         dd.innerHTML = data.map(function(p) {
@@ -4279,6 +4286,115 @@ function selectApptPatient(id, name, phone) {
   document.getElementById('appt-patient-suggestions').style.display = 'none';
 }
 
+// GDPR FUNCTIONS
+function deletePatientPermanently(patientId, patientName) {
+  closePatientDetail();
+  showConfirm('Permanent GDPR Erasure', 'This will PERMANENTLY delete ' + patientName + ' and anonymise all their appointment records. This cannot be undone and satisfies a GDPR erasure request. Continue?', 'Erase Permanently', async function() {
+    await pearliqDB.from('appointments').update({ patient_id: null, patient_name: 'Erased', patient_phone: null, patient_email: null }).eq('patient_id', patientId);
+    var { error } = await pearliqDB.from('patients').delete().eq('id', patientId);
+    if (error) { showToast('Error: ' + error.message, 'error'); return; }
+    logAuditEvent('patient_erased_gdpr', 'patient', patientId, patientName, null);
+    showToast(patientName + ' permanently erased (GDPR)', 'success');
+    loadPatients();
+    loadDashboardData();
+  });
+}
+
+async function exportPatientData(patientId) {
+  try {
+    showToast('Preparing export...', 'info');
+    var { data: pat } = await pearliqDB.from('patients').select('*').eq('id', patientId).single();
+    if (!pat) { showToast('Patient not found', 'error'); return; }
+    var { data: appts } = await pearliqDB.from('appointments').select('*').eq('practice_id', window.currentPracticeId).or('patient_id.eq.' + patientId + (pat.name ? ',patient_name.ilike.' + pat.name : '')).order('appointment_date', { ascending: false });
+    var { data: plans } = await pearliqDB.from('treatment_plans').select('*').eq('practice_id', window.currentPracticeId).or('patient_id.eq.' + patientId + (pat.name ? ',patient_name.ilike.' + pat.name : '')).order('created_at', { ascending: false });
+    var { data: { user } } = await pearliqDB.auth.getUser();
+    var exportObj = {
+      patient: pat,
+      appointments: appts || [],
+      treatment_plans: plans || [],
+      exported_at: new Date().toISOString(),
+      exported_by: user ? user.email : null
+    };
+    var slug = (pat.name || 'unknown').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    var blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url;
+    a.download = 'patient-data-' + slug + '-' + new Date().toISOString().split('T')[0] + '.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    logAuditEvent('patient_data_exported', 'patient', patientId, pat.name, null);
+    showToast('Patient data exported', 'success');
+  } catch(e) { showToast('Export failed: ' + (e.message || 'unknown'), 'error'); }
+}
+
+async function loadArchivedPatients() {
+  var container = document.getElementById('archived-patients-container');
+  if (!container) return;
+  try {
+    var { data, error } = await pearliqDB.from('patients').select('id, name, email, deleted_at').eq('practice_id', window.currentPracticeId).not('deleted_at', 'is', null).order('deleted_at', { ascending: false });
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:13px;">No archived records</div>';
+      return;
+    }
+    var html = '<table><thead><tr><th>Name</th><th>Email</th><th>Archived</th><th>Actions</th></tr></thead><tbody>';
+    data.forEach(function(p) {
+      var archivedDate = p.deleted_at ? new Date(p.deleted_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+      html += '<tr><td style="color:var(--cream);font-weight:500;">' + (p.name || '—') + '</td>' +
+        '<td>' + (p.email || '—') + '</td>' +
+        '<td style="font-size:12px;">' + archivedDate + '</td>' +
+        '<td style="display:flex;gap:6px;"><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();restorePatient(\'' + p.id + '\',\'' + (p.name || '').replace(/'/g, "\\'") + '\')">Restore</button>' +
+        '<button class="btn btn-secondary btn-sm" style="color:var(--rose);" onclick="event.stopPropagation();deletePatientPermanently(\'' + p.id + '\',\'' + (p.name || '').replace(/'/g, "\\'") + '\')">Delete Permanently</button></td></tr>';
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  } catch(e) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--rose);font-size:13px;">Error loading archived records</div>';
+  }
+}
+
+async function restorePatient(patientId, patientName) {
+  var { error } = await pearliqDB.from('patients').update({ deleted_at: null }).eq('id', patientId);
+  if (error) { showToast('Error: ' + error.message, 'error'); return; }
+  logAuditEvent('patient_restored', 'patient', patientId, patientName, null);
+  showToast(patientName + ' restored', 'success');
+  loadArchivedPatients();
+  loadPatients();
+}
+
+async function exportAllPracticeData() {
+  try {
+    showToast('Preparing full export...', 'info');
+    var { data: practice } = await pearliqDB.from('practices').select('*').eq('id', window.currentPracticeId).single();
+    var [patientsRes, apptsRes, plansRes, reviewsRes, staffRes] = await Promise.all([
+      pearliqDB.from('patients').select('*').eq('practice_id', window.currentPracticeId),
+      pearliqDB.from('appointments').select('*').eq('practice_id', window.currentPracticeId),
+      pearliqDB.from('treatment_plans').select('*').eq('practice_id', window.currentPracticeId),
+      pearliqDB.from('reviews').select('*').eq('practice_id', window.currentPracticeId),
+      pearliqDB.from('staff').select('*').eq('practice_id', window.currentPracticeId)
+    ]);
+    var { data: { user } } = await pearliqDB.auth.getUser();
+    var exportObj = {
+      practice: practice,
+      patients: patientsRes.data || [],
+      appointments: apptsRes.data || [],
+      treatment_plans: plansRes.data || [],
+      reviews: reviewsRes.data || [],
+      staff: staffRes.data || [],
+      exported_at: new Date().toISOString(),
+      exported_by: user ? user.email : null
+    };
+    var blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url;
+    a.download = 'pearliq-full-export-' + new Date().toISOString().split('T')[0] + '.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    logAuditEvent('full_data_exported', 'practice', window.currentPracticeId, 'Full practice data', { patient_count: (patientsRes.data || []).length });
+    showToast('Full practice data exported', 'success');
+  } catch(e) { showToast('Export failed: ' + (e.message || 'unknown'), 'error'); }
+}
+
 // AUDIT LOG
 var auditLogCache = [];
 
@@ -4298,6 +4414,11 @@ function humanizeAuditEvent(evt) {
     'patient_created': 'Patient created',
     'patient_updated': 'Patient updated',
     'patient_deleted': 'Patient deleted',
+    'patient_archived': 'Patient archived',
+    'patient_erased_gdpr': 'Patient permanently erased (GDPR)',
+    'patient_restored': 'Patient restored',
+    'patient_data_exported': 'Patient data exported',
+    'full_data_exported': 'Full practice data exported',
     'appointment_created': 'Appointment booked',
     'treatment_plan_created': 'Treatment plan created',
     'settings_changed': 'Practice settings updated',
@@ -4396,6 +4517,7 @@ async function loadAuditLog() {
 
     // Reset filter
     document.getElementById('audit-filter').value = 'all';
+    loadArchivedPatients();
   } catch(e) {
     if (feed) feed.innerHTML = '<div style="padding:32px;text-align:center;color:var(--rose);font-size:13px;">Error: ' + (e.message || 'unknown') + '</div>';
   }
