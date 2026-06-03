@@ -1954,6 +1954,9 @@ window.addEventListener('DOMContentLoaded', async () => {
       window.currentPracticeId = practiceData.id;
       window.currentUserId = session.user.id;
       window.onboardingCompleted = practiceData.onboarding_completed;
+    } else {
+      window.currentUserId = session.user.id;
+      window.onboardingCompleted = false;
     }
     if (!window.onboardingCompleted) {
       showOnboarding();
@@ -1982,6 +1985,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 // AUTO-REDIRECT ON SESSION EXPIRY
 pearliqDB.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_OUT') {
+    window.currentPracticeId = null;
+    window.currentUserId = null;
+    window.onboardingCompleted = false;
     document.getElementById('app').classList.remove('visible');
     document.getElementById('landing-page').style.display = 'block';
   }
@@ -2169,6 +2175,9 @@ async function doLogin() {
       window.currentPracticeId = practiceData.id;
       window.currentUserId = authUser.id;
       window.onboardingCompleted = practiceData.onboarding_completed;
+    } else {
+      window.currentUserId = authUser.id;
+      window.onboardingCompleted = false;
     }
   }
   await updateUserPill();
@@ -2488,7 +2497,7 @@ async function saveTreatmentPlan() {
   var patEmail = null;
   var patPhone = null;
   try {
-    var patRes = await pearliqDB.from('patients').select('email, phone').eq('name', patientName).limit(1).maybeSingle();
+    var patRes = await pearliqDB.from('patients').select('email, phone').ilike('name', patientName).limit(1).maybeSingle();
     if (patRes.data) { patEmail = patRes.data.email || null; patPhone = patRes.data.phone || null; }
   } catch(e) {}
   const { data: planData, error } = await pearliqDB.from('treatment_plans').insert([{
@@ -3708,7 +3717,7 @@ async function completeOnboarding() {
         window.currentPracticeId = newPractice.id;
         window.currentUserId = user.id;
         // Also ensure ai_config exists
-        await pearliqDB.from('ai_config').insert([{ practice_id: newPractice.id }]).select();
+        await pearliqDB.from('ai_config').upsert([{ practice_id: newPractice.id }], { onConflict: 'practice_id' });
       }
     }
 
