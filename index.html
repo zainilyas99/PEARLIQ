@@ -1909,6 +1909,47 @@ window.currentPracticeId = null;
 window.currentUserId = null;
 window.onboardingCompleted = false;
 
+const INACTIVITY_WARNING_MS = 28 * 60 * 1000;
+const INACTIVITY_LOGOUT_MS = 30 * 60 * 1000;
+var inactivityWarningTimer = null;
+var inactivityLogoutTimer = null;
+var inactivityTrackingActive = false;
+
+function resetInactivityTimers() {
+  if (!window.currentUserId) return;
+  clearTimeout(inactivityWarningTimer);
+  clearTimeout(inactivityLogoutTimer);
+  inactivityWarningTimer = setTimeout(function() {
+    showToast("You'll be signed out in 2 minutes due to inactivity", 'info');
+  }, INACTIVITY_WARNING_MS);
+  inactivityLogoutTimer = setTimeout(function() {
+    logout();
+    showToast('Signed out due to inactivity', 'info');
+  }, INACTIVITY_LOGOUT_MS);
+}
+
+function startInactivityTracking() {
+  if (inactivityTrackingActive) return;
+  inactivityTrackingActive = true;
+  var lastReset = 0;
+  var throttledReset = function() {
+    var now = Date.now();
+    if (now - lastReset < 1000) return;
+    lastReset = now;
+    resetInactivityTimers();
+  };
+  ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function(evt) {
+    document.addEventListener(evt, throttledReset, { passive: true });
+  });
+  resetInactivityTimers();
+}
+
+function stopInactivityTracking() {
+  clearTimeout(inactivityWarningTimer);
+  clearTimeout(inactivityLogoutTimer);
+  inactivityTrackingActive = false;
+}
+
 async function logAuditEvent(eventType, entityType, entityId, entityLabel, metadata) {
   if (!window.currentPracticeId || !window.currentUserId) return;
   try {
@@ -1978,6 +2019,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     animateDashboard();
     loadDashboardData();
     showMorningCard();
+    startInactivityTracking();
     var hash = window.location.hash.replace('#', '');
     if (hash && hash !== 'dashboard') {
       navigateTo(hash);
@@ -2093,8 +2135,27 @@ async function doSignUp() {
   if (!practice || !email || !password) { showToast('Please fill in all fields', 'error'); return; }
   if (!updatePasswordUI()) { showToast("Password doesn't meet requirements", 'error'); return; }
   if (signupBtn) { signupBtn.disabled = true; signupBtn.textContent = 'Creating account...'; }
-  var { data, error } = await pearliqDB.auth.signUp({ email: email, password: password, options: { data: { practice_name: practice } } });
+  var { data, error } = await pearliqDB.auth.signUp({ email: email, password: password, options: { data: { practice_name: practice }, emailRedirectTo: 'https://pearliq.app' } });
   if (error) { if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = 'Start Free Trial'; } showToast(error.message, 'error'); return; }
+
+  if (!data.session) {
+    // Email confirmation required — show "check your email" screen
+    if (signupBtn) { signupBtn.disabled = false; signupBtn.textContent = 'Start Free Trial'; }
+    closeAuthModal();
+    var successDiv = document.getElementById('signup-success-overlay');
+    if (!successDiv) {
+      successDiv = document.createElement('div');
+      successDiv.id = 'signup-success-overlay';
+      successDiv.style.cssText = 'position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
+      successDiv.innerHTML = '<div style="background:white;width:440px;border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2);text-align:center;padding:48px 32px;"><div style="width:56px;height:56px;background:#E8F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-family:Fraunces,serif;font-size:24px;color:#1C1C1C;margin-bottom:12px;">Check your email</div><div style="font-size:13px;color:#4A4A4A;line-height:1.8;margin-bottom:28px;">We have sent a confirmation link to your email address. Click the link to activate your account and start your 14-day free trial.</div><button onclick="this.closest(\'#signup-success-overlay\').remove()" style="background:#1A3D2E;color:white;border:none;padding:13px 32px;font-family:Figtree,sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;">Got it</button></div>';
+      document.body.appendChild(successDiv);
+    } else {
+      successDiv.style.display = 'flex';
+    }
+    return;
+  }
+
+  // Session exists (confirmation disabled fallback)
   const { data: { user: signedUpUser } } = await pearliqDB.auth.getUser();
   if (signedUpUser) {
     const { data: practiceData } = await pearliqDB.from('practices').select('id, onboarding_completed').eq('owner_id', signedUpUser.id).maybeSingle();
@@ -2102,25 +2163,14 @@ async function doSignUp() {
       window.currentPracticeId = practiceData.id;
       window.currentUserId = signedUpUser.id;
       window.onboardingCompleted = practiceData.onboarding_completed;
+    } else {
+      window.currentUserId = signedUpUser.id;
+      window.onboardingCompleted = false;
     }
   }
   logAuditEvent('signup', 'auth', null, null, null);
-  if (!window.onboardingCompleted) {
-    closeAuthModal();
-    showOnboarding();
-    return;
-  }
   closeAuthModal();
-  var successDiv = document.getElementById('signup-success-overlay');
-  if (!successDiv) {
-    successDiv = document.createElement('div');
-    successDiv.id = 'signup-success-overlay';
-    successDiv.style.cssText = 'position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
-    successDiv.innerHTML = '<div style="background:white;width:440px;border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.2);text-align:center;padding:48px 32px;"><div style="width:56px;height:56px;background:#E8F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A3D2E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-family:Fraunces,serif;font-size:24px;color:#1C1C1C;margin-bottom:12px;">Check your email</div><div style="font-size:13px;color:#4A4A4A;line-height:1.8;margin-bottom:28px;">We have sent a confirmation link to your email address. Click the link to activate your account and start your 14-day free trial.</div><button onclick="this.closest(\'#signup-success-overlay\').remove()" style="background:#1A3D2E;color:white;border:none;padding:13px 32px;font-family:Figtree,sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;">Got it</button></div>';
-    document.body.appendChild(successDiv);
-  } else {
-    successDiv.style.display = 'flex';
-  }
+  showOnboarding();
 }
 
 function calculateROI() {
@@ -2207,6 +2257,7 @@ async function doLogin() {
     showToast('Welcome back!', 'success');
     setTimeout(() => { document.getElementById('main-content').scrollTop = 0; }, 50);
     showMorningCard();
+    startInactivityTracking();
   }, 300);
 }
 
@@ -2274,6 +2325,7 @@ document.addEventListener('click', e => { if (!e.target.closest('.header-user'))
 // LOGOUT
 async function logout() {
   closeUserMenu();
+  stopInactivityTracking();
   await logAuditEvent('logout', 'auth', null, null, null);
   await pearliqDB.auth.signOut();
   window.currentPracticeId = null;
@@ -3761,6 +3813,7 @@ async function completeOnboarding() {
     document.getElementById('app').classList.add('visible');
     showToast('Welcome to PEARLIQ', 'success');
     if (typeof loadDashboardData === 'function') loadDashboardData();
+    startInactivityTracking();
   } catch (e) {
     showToast('Unexpected error: ' + (e.message || 'unknown'), 'error');
     btn.disabled = false;
