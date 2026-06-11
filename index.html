@@ -2473,9 +2473,10 @@ async function saveFinancingOption() {
   var treatment_types = document.getElementById('fin-treatment-types').value.trim();
   if (!name) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; } showToast('Please enter a name for this financing option', 'error'); return; }
   if (!max_amount) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; } showToast('Please enter a maximum treatment amount', 'error'); return; }
-  var { error } = await pearliqDB.from('financing_options').insert([{ name: name, description: description, max_amount: max_amount, interest_rate: interest_rate, min_term: min_term, max_term: max_term, treatment_types: treatment_types, practice_id: window.currentPracticeId }]);
+  var { data: finData, error } = await pearliqDB.from('financing_options').insert([{ name: name, description: description, max_amount: max_amount, interest_rate: interest_rate, min_term: min_term, max_term: max_term, treatment_types: treatment_types, practice_id: window.currentPracticeId }]).select('id').single();
   if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; } showToast('Error saving: ' + error.message, 'error'); return; }
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Option'; }
+  logAuditEvent('financing_created', 'financing', finData ? finData.id : null, name, null);
   closeModal('financing-modal');
   showToast('Financing option added', 'success');
   document.getElementById('fin-name').value = '';
@@ -2492,6 +2493,7 @@ async function deleteFinancingOption(id) {
   showConfirm('Delete financing option?', 'This will permanently remove this option. This action cannot be undone.', 'Delete', async function() {
     var { error } = await pearliqDB.from('financing_options').delete().eq('id', id);
     if (error) { showToast('Error deleting', 'error'); return; }
+    logAuditEvent('financing_deleted', 'financing', id, null, null);
     showToast('Deleted', 'success');
     loadFinancingOptions();
   });
@@ -2611,7 +2613,7 @@ async function saveStaff() {
   const gdcNumber = document.getElementById('staff-gdc').value.trim() || null;
   if (!first || !last) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Team Member'; } showToast('Please enter staff name', 'error'); return; }
   if (!role) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Team Member'; } showToast('Please select a role', 'error'); return; }
-  const { error } = await pearliqDB.from('staff').insert([{
+  const { data: staffData, error } = await pearliqDB.from('staff').insert([{
     name: first + ' ' + last,
     email: email,
     role: role,
@@ -2620,9 +2622,10 @@ async function saveStaff() {
     gdc_number: gdcNumber,
     status: 'active',
     practice_id: window.currentPracticeId
-  }]);
+  }]).select('id').single();
   if (error) { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Team Member'; } showToast('Error: ' + error.message, 'error'); return; }
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Add Team Member'; }
+  logAuditEvent('staff_created', 'staff', staffData ? staffData.id : null, first + ' ' + last, null);
   closeModal('invite-staff-modal');
   showToast(first + ' ' + last + ' added to the team', 'success');
   loadStaffData();
@@ -4476,6 +4479,8 @@ var auditLogCache = [];
 function auditEventIcon(eventType) {
   if (eventType === 'login' || eventType === 'logout' || eventType === 'signup') return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>';
   if (eventType.startsWith('patient_')) return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+  if (eventType.startsWith('staff_')) return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>';
+  if (eventType.startsWith('financing_')) return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>';
   if (eventType.startsWith('appointment_')) return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
   if (eventType.startsWith('treatment_plan_')) return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
   return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>';
@@ -4499,7 +4504,10 @@ function humanizeAuditEvent(evt) {
     'settings_changed': 'Practice settings updated',
     'pearl_settings_changed': 'Pearl AI settings updated',
     'onboarding_completed': 'Onboarding completed',
-    'audit_log_exported': 'Audit log exported'
+    'audit_log_exported': 'Audit log exported',
+    'staff_created': 'Staff member added',
+    'financing_created': 'Financing option added',
+    'financing_deleted': 'Financing option deleted'
   };
   var desc = map[evt.event_type] || evt.event_type.replace(/_/g, ' ');
   if (evt.entity_label) desc += ': ' + evt.entity_label;
