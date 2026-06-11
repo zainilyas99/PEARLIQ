@@ -1993,6 +1993,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('signup-email').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSignUp(); });
   document.getElementById('signup-pw').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSignUp(); });
   document.querySelectorAll('.form-input').forEach(function(input) { if (input.id) input.addEventListener('input', function() { clearFieldError(input.id); }); });
+  var hashParams = new URLSearchParams(window.location.hash.replace('#', ''));
+  if (hashParams.get('type') === 'recovery') {
+    showPasswordResetModal();
+    return;
+  }
   const { data: { session } } = await pearliqDB.auth.getSession();
   if (session) {
     const { data: practiceData } = await pearliqDB.from('practices').select('id, onboarding_completed').eq('owner_id', session.user.id).maybeSingle();
