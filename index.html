@@ -1909,6 +1909,16 @@ window.currentPracticeId = null;
 window.currentUserId = null;
 window.onboardingCompleted = false;
 
+function escapeHtml(value) {
+  if (value === null || value === undefined) return '';
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 const INACTIVITY_WARNING_MS = 28 * 60 * 1000;
 const INACTIVITY_LOGOUT_MS = 30 * 60 * 1000;
 var inactivityWarningTimer = null;
@@ -2379,19 +2389,19 @@ async function globalSearch(query) {
     if (patientsRes.data && patientsRes.data.length > 0) {
       html += '<div style="padding:8px 16px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Patients</div>';
       patientsRes.data.forEach(function(p) {
-        html += '<div onclick="navigateTo(\'patients\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,0.04);" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="width:28px;height:28px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;flex-shrink:0;">' + p.name.split(' ').map(function(n){return n[0]}).join('').substring(0,2) + '</div><div><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + p.name + '</div><div style="font-size:11px;color:#8A8A8A;">Patient · ' + (p.email || 'No email') + '</div></div></div>';
+        html += '<div onclick="navigateTo(\'patients\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,0.04);" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="width:28px;height:28px;background:#1A3D2E;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;flex-shrink:0;">' + escapeHtml(p.name.split(' ').map(function(n){return n[0]}).join('').substring(0,2)) + '</div><div><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + escapeHtml(p.name) + '</div><div style="font-size:11px;color:#8A8A8A;">Patient · ' + escapeHtml(p.email || 'No email') + '</div></div></div>';
       });
     }
     if (plansRes.data && plansRes.data.length > 0) {
       html += '<div style="padding:8px 16px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Treatment Plans</div>';
       plansRes.data.forEach(function(p) {
-        html += '<div onclick="navigateTo(\'treatment-plans\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,0.04);" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + p.patient_name + '</div><div style="font-size:11px;color:#8A8A8A;margin-left:auto;">\u00A3' + (p.value || 0).toLocaleString() + ' \u00B7 ' + (p.treatment_type || '') + '</div></div>';
+        html += '<div onclick="navigateTo(\'treatment-plans\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(0,0,0,0.04);" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + escapeHtml(p.patient_name) + '</div><div style="font-size:11px;color:#8A8A8A;margin-left:auto;">\u00A3' + (p.value || 0).toLocaleString() + ' \u00B7 ' + escapeHtml(p.treatment_type || '') + '</div></div>';
       });
     }
     if (staffRes.data && staffRes.data.length > 0) {
       html += '<div style="padding:8px 16px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#8A8A8A;border-bottom:1px solid rgba(0,0,0,0.06);">Staff</div>';
       staffRes.data.forEach(function(s) {
-        html += '<div onclick="navigateTo(\'staff\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + s.name + '</div><div style="font-size:11px;color:#8A8A8A;margin-left:auto;">' + (s.role || '') + '</div></div>';
+        html += '<div onclick="navigateTo(\'staff\');document.getElementById(\'search-results\').style.display=\'none\';document.getElementById(\'global-search\').value=\'\'" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;" onmouseover="this.style.background=\'#F5F3EF\'" onmouseout="this.style.background=\'\'"><div style="font-size:13px;color:#1C1C1C;font-weight:500;">' + escapeHtml(s.name) + '</div><div style="font-size:11px;color:#8A8A8A;margin-left:auto;">' + escapeHtml(s.role || '') + '</div></div>';
       });
     }
     if (!html) {
@@ -2445,11 +2455,11 @@ function renderFinancingOptions(options) {
     return;
   }
   container.innerHTML = options.map(function(opt) {
-    var treatments = opt.treatment_types ? opt.treatment_types.split(',').map(function(t) { return '<span style="font-size:11px;background:var(--green-glow);color:var(--green);padding:3px 10px;border-radius:20px;">' + t.trim() + '</span>'; }).join('') : '';
+    var treatments = opt.treatment_types ? opt.treatment_types.split(',').map(function(t) { return '<span style="font-size:11px;background:var(--green-glow);color:var(--green);padding:3px 10px;border-radius:20px;">' + escapeHtml(t.trim()) + '</span>'; }).join('') : '';
     return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:20px 24px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 4px rgba(0,0,0,0.04);">' +
       '<div style="flex:1;">' +
-      '<div style="font-family:Fraunces,serif;font-size:18px;color:var(--cream);margin-bottom:4px;">' + opt.name + '</div>' +
-      '<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">' + (opt.description || '') + '</div>' +
+      '<div style="font-family:Fraunces,serif;font-size:18px;color:var(--cream);margin-bottom:4px;">' + escapeHtml(opt.name) + '</div>' +
+      '<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">' + escapeHtml(opt.description || '') + '</div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
       '<span style="font-size:11px;background:var(--emerald-dim);color:var(--green);padding:3px 10px;border-radius:20px;">Up to \u00A3' + parseInt(opt.max_amount || 0).toLocaleString() + '</span>' +
       '<span style="font-size:11px;background:var(--bg-3);color:var(--text);padding:3px 10px;border-radius:20px;">' + (opt.interest_rate === 0 ? '0% Interest' : opt.interest_rate + '% APR') + '</span>' +
@@ -2690,11 +2700,11 @@ async function loadPatients() {
       const statusClass = p.status === 'active' ? 'badge-good' : p.status === 'lapsed' ? 'badge-hot' : 'badge-neutral';
       const statusText = p.status ? p.status.charAt(0).toUpperCase() + p.status.slice(1) : 'Unknown';
       rows += '<tr onclick="openPatientDetail(\'' + p.id + '\')" style="cursor:pointer;transition:background 0.15s;" onmouseenter="this.style.background=\'var(--bg-3)\'" onmouseleave="this.style.background=\'\'">' +
-        '<td><div style="color:var(--cream);font-weight:500;">' + (p.name || '') + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.email || '') + '</div></td>' +
-        '<td>' + (p.phone || '—') + '</td>' +
+        '<td><div style="color:var(--cream);font-weight:500;">' + escapeHtml(p.name) + '</div><div style="font-size:11px;color:var(--text-dim);">' + escapeHtml(p.email) + '</div></td>' +
+        '<td>' + escapeHtml(p.phone || '—') + '</td>' +
         '<td>—</td>' +
         '<td style="font-size:11px;font-weight:500;">' + date + '</td>' +
-        '<td><span class="badge ' + statusClass + '">' + statusText + '</span></td>' +
+        '<td><span class="badge ' + statusClass + '">' + escapeHtml(statusText) + '</span></td>' +
         '<td>—</td>' +
         '<td><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();openPatientDetail(\'' + p.id + '\')">View</button></td>' +
         '</tr>';
@@ -2709,15 +2719,15 @@ async function loadPatients() {
 
 function openPatientPanel(name, treatment, value, status, days, lastContact, finance) {
   var statusClass = status === 'Lapsed' ? 'badge-hot' : status === 'Warm' ? 'badge-warm' : 'badge-good';
-  var html = '<div style="margin-bottom:16px;"><span class="badge ' + statusClass + '">' + status + '</span></div>' +
-    '<div style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">' + treatment + '</div>' +
+  var html = '<div style="margin-bottom:16px;"><span class="badge ' + statusClass + '">' + escapeHtml(status) + '</span></div>' +
+    '<div style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">' + escapeHtml(treatment) + '</div>' +
     '<div style="font-family:Fraunces,serif;font-size:32px;color:var(--green);margin-bottom:20px;">£' + parseInt(value).toLocaleString() + '</div>' +
     '<div style="font-size:12px;color:var(--text-dim);line-height:2.2;">' +
-    '<strong style="color:var(--text-bright);">Last contact:</strong> ' + lastContact + '<br>' +
-    '<strong style="color:var(--text-bright);">Finance:</strong> ' + finance + '<br>' +
-    '<strong style="color:var(--text-bright);">Days since plan:</strong> ' + days +
+    '<strong style="color:var(--text-bright);">Last contact:</strong> ' + escapeHtml(lastContact) + '<br>' +
+    '<strong style="color:var(--text-bright);">Finance:</strong> ' + escapeHtml(finance) + '<br>' +
+    '<strong style="color:var(--text-bright);">Days since plan:</strong> ' + escapeHtml(days) +
     '</div>';
-  openDetailPanel(name, html);
+  openDetailPanel(escapeHtml(name), html);
 }
 
 function openDetailPanel(title, content) {
@@ -3408,11 +3418,11 @@ async function loadReviewsData() {
           var date = r.created_at ? new Date(r.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
           return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:20px 24px;">' +
             '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
-            '<div style="font-weight:600;color:var(--cream);font-size:13px;">' + (r.patient_name || 'Patient') + '</div>' +
+            '<div style="font-weight:600;color:var(--cream);font-size:13px;">' + escapeHtml(r.patient_name || 'Patient') + '</div>' +
             '<div style="font-size:11px;color:var(--text-dim);">' + date + '</div></div>' +
             '<div style="margin-bottom:8px;">' + stars + '</div>' +
-            '<div style="font-size:12px;color:var(--text-dim);line-height:1.7;">' + (r.review_text || '') + '</div>' +
-            '<div style="margin-top:10px;font-size:11px;color:var(--green);letter-spacing:0.08em;text-transform:uppercase;">' + (r.platform || '') + '</div></div>';
+            '<div style="font-size:12px;color:var(--text-dim);line-height:1.7;">' + escapeHtml(r.review_text || '') + '</div>' +
+            '<div style="margin-top:10px;font-size:11px;color:var(--green);letter-spacing:0.08em;text-transform:uppercase;">' + escapeHtml(r.platform || '') + '</div></div>';
         }).join('');
       }
     }
@@ -3449,7 +3459,7 @@ async function loadReputationData() {
         tbody.innerHTML = todaySequences.map(function(s) {
           var time = s.created_at ? new Date(s.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '\u2014';
           var statusClass = s.status === 'sent' ? 'badge-good' : 'badge-neutral';
-          return '<tr><td><div style="font-weight:500;color:var(--cream);">' + (s.patient_name || '\u2014') + '</div></td><td>' + (s.treatment_type || '\u2014') + '</td><td>' + time + '</td><td>Email</td><td>\u2014</td><td><span class="badge ' + statusClass + '">' + (s.status || 'pending') + '</span></td></tr>';
+          return '<tr><td><div style="font-weight:500;color:var(--cream);">' + escapeHtml(s.patient_name || '\u2014') + '</div></td><td>' + escapeHtml(s.treatment_type || '\u2014') + '</td><td>' + time + '</td><td>Email</td><td>\u2014</td><td><span class="badge ' + statusClass + '">' + escapeHtml(s.status || 'pending') + '</span></td></tr>';
         }).join('');
       }
     }
@@ -3531,15 +3541,15 @@ async function loadStaffData() {
           var gdcText = s.gdc_number ? 'GDC: ' + s.gdc_number + ' \u00B7 Valid' : 'No GDC number';
           return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:24px;box-shadow:var(--shadow-sm);">' +
             '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">' +
-            '<div style="width:44px;height:44px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:white;flex-shrink:0;">' + initials + '</div>' +
-            '<div><div style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">' + (s.name || '') + '</div>' +
-            '<div style="font-size:11px;color:var(--text-dim);">' + (s.role || '') + ' \u00B7 ' + (s.contract_type || '') + '</div>' +
+            '<div style="width:44px;height:44px;border-radius:50%;background:' + color + ';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:white;flex-shrink:0;">' + escapeHtml(initials) + '</div>' +
+            '<div><div style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">' + escapeHtml(s.name || '') + '</div>' +
+            '<div style="font-size:11px;color:var(--text-dim);">' + escapeHtml(s.role || '') + ' \u00B7 ' + escapeHtml(s.contract_type || '') + '</div>' +
             '<div style="display:flex;align-items:center;gap:4px;margin-top:2px;"><div style="width:6px;height:6px;border-radius:50%;background:#2D9B4E;"></div><div style="font-size:11px;color:var(--text-dim);">On duty</div></div></div></div>' +
             '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;">' +
             '<div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Hourly Rate</div><div style="font-size:14px;font-weight:600;color:var(--cream);">\u00A3' + (s.hourly_rate || 0).toFixed(2) + '</div></div>' +
             '<div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Schedule</div><div style="font-size:14px;font-weight:600;color:var(--cream);">Mon-Fri</div></div>' +
             '<div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Annual</div><div style="font-size:14px;font-weight:600;color:var(--cream);">\u00A3' + (annualSalary/1000).toFixed(0) + 'K</div></div></div>' +
-            '<div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;">' + gdcText + '</div>' +
+            '<div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;">' + escapeHtml(gdcText) + '</div>' +
             '<div style="display:flex;gap:8px;"><button class="btn btn-secondary btn-sm" style="flex:1;">Message</button><button class="btn btn-ghost btn-sm">\u2699</button></div></div>';
         }).join('');
         cardsContainer.innerHTML += '<div onclick="openModal(\'invite-staff-modal\')" style="background:var(--bg-3);border:2px dashed var(--border);border-radius:10px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;min-height:200px;transition:border-color 0.2s;" onmouseover="this.style.borderColor=\'var(--green)\'" onmouseout="this.style.borderColor=\'var(--border)\'">' +
@@ -3557,7 +3567,7 @@ async function loadStaffData() {
             var content = i >= 5 ? '<span style="color:var(--text-dim);font-size:11px;">OFF</span>' : '<div style="background:var(--green-glow);border:1px solid var(--border-green);border-radius:4px;padding:4px 8px;font-size:11px;text-align:center;color:var(--green);">09:00-17:30</div>';
             return '<td style="padding:8px;">' + content + '</td>';
           }).join('');
-          return '<tr><td style="padding:8px 12px;font-size:13px;font-weight:500;color:var(--cream);white-space:nowrap;">' + (s.name || '') + '</td>' + cells + '</tr>';
+          return '<tr><td style="padding:8px 12px;font-size:13px;font-weight:500;color:var(--cream);white-space:nowrap;">' + escapeHtml(s.name || '') + '</td>' + cells + '</tr>';
         }).join('');
       }
     }
@@ -3607,8 +3617,8 @@ async function loadFollowUpData() {
             return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div style="width:28px;height:28px;border-radius:50%;background:' + dotColor + ';display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><div style="font-size:11px;color:var(--text-dim);">Day ' + day + '</div></div>';
           }).join('<div style="flex:1;height:1px;background:var(--border);margin-top:14px;"></div>');
           return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:12px;">' +
-            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;"><div><div style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);margin-bottom:2px;">' + (plan.patient_name || '\u2014') + '</div>' +
-            '<div style="font-size:12px;color:var(--text-dim);">' + (plan.treatment_type || '\u2014') + ' \u00B7 \u00A3' + parseInt(plan.value || 0).toLocaleString() + '</div></div>' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;"><div><div style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);margin-bottom:2px;">' + escapeHtml(plan.patient_name || '\u2014') + '</div>' +
+            '<div style="font-size:12px;color:var(--text-dim);">' + escapeHtml(plan.treatment_type || '\u2014') + ' \u00B7 \u00A3' + parseInt(plan.value || 0).toLocaleString() + '</div></div>' +
             '<span class="badge ' + statusClass + '">' + statusText + '</span></div>' +
             '<div style="display:flex;align-items:center;gap:0;margin-bottom:14px;">' + progressDots + '</div>' +
             '<div style="display:flex;justify-content:space-between;align-items:center;">' +
@@ -3626,9 +3636,9 @@ async function loadFollowUpData() {
         logContainer.innerHTML = sequences.slice(0, 20).map(function(s) {
           var date = s.sent_at ? new Date(s.sent_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '\u2014';
           var statusClass = s.status === 'sent' ? 'badge-good' : s.status === 'opened' ? 'badge-warm' : 'badge-neutral';
-          return '<tr><td style="padding:10px 12px;font-size:13px;color:var(--cream);font-weight:500;">' + (s.patient_name || '\u2014') + '</td>' +
+          return '<tr><td style="padding:10px 12px;font-size:13px;color:var(--cream);font-weight:500;">' + escapeHtml(s.patient_name || '\u2014') + '</td>' +
             '<td style="padding:10px 12px;font-size:12px;color:var(--text-dim);">Day ' + (s.day_number || '\u2014') + '</td>' +
-            '<td style="padding:10px 12px;font-size:12px;color:var(--text-dim);">' + (s.patient_email || '\u2014') + '</td>' +
+            '<td style="padding:10px 12px;font-size:12px;color:var(--text-dim);">' + escapeHtml(s.patient_email || '\u2014') + '</td>' +
             '<td style="padding:10px 12px;">' + date + '</td>' +
             '<td style="padding:10px 12px;"><span class="badge ' + statusClass + '">' + (s.status || 'pending') + '</span></td></tr>';
         }).join('');
@@ -3659,7 +3669,7 @@ async function loadTreatmentPlans() {
           var circumference = 125.6;
           var offset = circumference - (circumference * score / 100);
           return '<div class="tp-card" onclick="openPatientPanel(\'' + (p.patient_name||'').replace(/'/g,"\\'") + '\',\'' + (p.treatment_type||'').replace(/'/g,"\\'") + '\',\'' + (p.value||0) + '\',\'' + statusText + '\',\'' + daysSince + ' days\',\'' + (p.status||'presented') + '\',\'' + (p.notes||'').replace(/'/g,"\\'") + '\')">' +
-            '<div class="tp-card-header"><div style="flex:1;"><div class="tp-patient">' + (p.patient_name||'\u2014') + '</div><div class="tp-treatment">' + (p.treatment_type||'\u2014') + '</div></div>' +
+            '<div class="tp-card-header"><div style="flex:1;"><div class="tp-patient">' + escapeHtml(p.patient_name||'\u2014') + '</div><div class="tp-treatment">' + escapeHtml(p.treatment_type||'\u2014') + '</div></div>' +
             '<div style="display:flex;align-items:center;gap:10px;"><div class="confidence-ring"><svg viewBox="0 0 48 48"><circle class="ring-bg" cx="24" cy="24" r="20"/><circle class="ring-fill" cx="24" cy="24" r="20" stroke="' + ringColor + '" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '" transform="rotate(-90 24 24)"/></svg><div class="ring-text">' + score + '</div></div>' +
             '<span class="badge ' + statusClass + '">' + statusText + '</span></div></div>' +
             '<div class="tp-card-body"><div class="tp-meta">' +
@@ -3678,7 +3688,7 @@ async function loadTreatmentPlans() {
       var converted = plans.filter(function(p) { return p.status === 'converted'; });
       function boardCol(title, items, badgeClass) {
         var cards = items.length > 0 ? items.map(function(p) {
-          return '<div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;" onclick="openPatientPanel(\'' + (p.patient_name||'').replace(/'/g,"\\'") + '\',\'' + (p.treatment_type||'').replace(/'/g,"\\'") + '\',\'' + (p.value||0) + '\',\'' + (p.status||'') + '\',\'\',\'\',\'\')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">' + (p.patient_name||'\u2014') + '</div><div style="font-size:11px;color:var(--text-dim);">' + (p.treatment_type||'') + '</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">\u00A3' + parseInt(p.value||0).toLocaleString() + '</div></div>';
+          return '<div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;" onclick="openPatientPanel(\'' + (p.patient_name||'').replace(/'/g,"\\'") + '\',\'' + (p.treatment_type||'').replace(/'/g,"\\'") + '\',\'' + (p.value||0) + '\',\'' + (p.status||'') + '\',\'\',\'\',\'\')"><div style="font-size:13px;font-weight:500;color:var(--cream);margin-bottom:4px;">' + escapeHtml(p.patient_name||'\u2014') + '</div><div style="font-size:11px;color:var(--text-dim);">' + escapeHtml(p.treatment_type||'') + '</div><div style="font-size:13px;color:var(--green);font-family:Fraunces,serif;margin-top:6px;">\u00A3' + parseInt(p.value||0).toLocaleString() + '</div></div>';
         }).join('') : '<div style="text-align:center;padding:24px;color:var(--text-dim);font-size:11px;">None</div>';
         return '<div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:200px;"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:Fraunces,serif;font-size:14px;color:var(--cream);">' + title + '</span><span class="badge ' + badgeClass + '">' + items.length + '</span></div><div style="display:flex;flex-direction:column;gap:10px;">' + cards + '</div></div>';
       }
@@ -4079,8 +4089,8 @@ async function loadAppointments() {
       grouped[date].forEach(function(a) {
         html += '<tr>';
         html += '<td style="font-size:12px;color:var(--green);font-weight:600;">' + formatApptTime(a.appointment_time) + '</td>';
-        html += '<td><div style="color:var(--cream);font-weight:500;">' + (a.patient_name || 'Walk-in') + '</div>' + (a.patient_phone ? '<div style="font-size:11px;color:var(--text-dim);">' + a.patient_phone + '</div>' : '') + '</td>';
-        html += '<td>' + (a.treatment_type || '-') + '</td>';
+        html += '<td><div style="color:var(--cream);font-weight:500;">' + escapeHtml(a.patient_name || 'Walk-in') + '</div>' + (a.patient_phone ? '<div style="font-size:11px;color:var(--text-dim);">' + escapeHtml(a.patient_phone) + '</div>' : '') + '</td>';
+        html += '<td>' + escapeHtml(a.treatment_type || '-') + '</td>';
         html += '<td>' + (a.duration_minutes || 30) + ' min</td>';
         html += '<td>' + apptStatusBadge(a.status) + '</td>';
         html += '<td>' + apptBookedBadge(a.booked_via) + '</td>';
@@ -4090,7 +4100,7 @@ async function loadAppointments() {
     });
     container.innerHTML = html;
   } catch(e) {
-    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--rose);font-size:13px;">Error loading appointments: ' + (e.message || 'unknown') + '</div>';
+    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--rose);font-size:13px;">Error loading appointments: ' + escapeHtml(e.message || 'unknown') + '</div>';
   }
 }
 
@@ -4183,10 +4193,10 @@ async function openPatientDetail(patientId) {
     var dob = pat.date_of_birth ? new Date(pat.date_of_birth + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—';
 
     var html = '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;">' +
-      '<div><div style="font-family:Fraunces,serif;font-size:28px;color:var(--cream);margin-bottom:8px;">' + (pat.name || 'Unknown') + '</div>' +
+      '<div><div style="font-family:Fraunces,serif;font-size:28px;color:var(--cream);margin-bottom:8px;">' + escapeHtml(pat.name || 'Unknown') + '</div>' +
       '<div style="display:flex;gap:24px;font-size:12px;color:var(--text-dim);">' +
-      '<div><div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Phone</div>' + (pat.phone || '—') + '</div>' +
-      '<div><div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Email</div>' + (pat.email || '—') + '</div>' +
+      '<div><div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Phone</div>' + escapeHtml(pat.phone || '—') + '</div>' +
+      '<div><div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">Email</div>' + escapeHtml(pat.email || '—') + '</div>' +
       '<div><div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px;">DOB</div>' + dob + '</div>' +
       '</div></div>' +
       '<div style="display:flex;gap:8px;">' +
@@ -4220,7 +4230,7 @@ async function openPatientDetail(patientId) {
       appts.forEach(function(a) {
         html += '<tr><td style="font-size:12px;">' + (a.appointment_date ? new Date(a.appointment_date + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—') + '</td>' +
           '<td style="font-size:12px;color:var(--green);font-weight:600;">' + formatApptTime(a.appointment_time) + '</td>' +
-          '<td>' + (a.treatment_type || '—') + '</td>' +
+          '<td>' + escapeHtml(a.treatment_type || '—') + '</td>' +
           '<td>' + (a.duration_minutes || 30) + ' min</td>' +
           '<td>' + apptStatusBadge(a.status) + '</td>' +
           '<td>' + apptBookedBadge(a.booked_via) + '</td></tr>';
@@ -4241,14 +4251,14 @@ async function openPatientDetail(patientId) {
         var planDate = p.created_at ? new Date(p.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
         html += '<div style="background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:10px;">' +
           '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
-          '<div style="font-weight:600;color:var(--cream);">' + (p.treatment_type || p.patient_name || 'Plan') + '</div>' +
-          '<span class="badge ' + planBadge + '"' + planBadgeStyle + '>' + planStatus.charAt(0).toUpperCase() + planStatus.slice(1) + '</span>' +
+          '<div style="font-weight:600;color:var(--cream);">' + escapeHtml(p.treatment_type || p.patient_name || 'Plan') + '</div>' +
+          '<span class="badge ' + planBadge + '"' + planBadgeStyle + '>' + escapeHtml(planStatus.charAt(0).toUpperCase() + planStatus.slice(1)) + '</span>' +
           '</div>' +
           '<div style="display:flex;gap:16px;font-size:12px;color:var(--text-dim);">' +
           '<span>\u00A3' + (parseFloat(p.value) || 0).toLocaleString() + '</span>' +
           '<span>' + planDate + '</span>' +
           '</div>' +
-          (p.notes ? '<div style="font-size:12px;color:var(--text-dim);margin-top:6px;line-height:1.5;">' + p.notes.substring(0, 120) + (p.notes.length > 120 ? '...' : '') + '</div>' : '') +
+          (p.notes ? '<div style="font-size:12px;color:var(--text-dim);margin-top:6px;line-height:1.5;">' + escapeHtml(p.notes.substring(0, 120)) + (p.notes.length > 120 ? '...' : '') + '</div>' : '') +
           '</div>';
       });
     }
@@ -4256,13 +4266,13 @@ async function openPatientDetail(patientId) {
 
     // Notes tab
     html += '<div id="pd-tab-notes" class="pd-tab-panel" style="display:none;">' +
-      '<textarea class="form-input" id="pd-notes-textarea" rows="8" style="width:100%;resize:vertical;font-size:13px;line-height:1.6;" placeholder="Add notes about this patient...">' + (pat.notes || '') + '</textarea>' +
+      '<textarea class="form-input" id="pd-notes-textarea" rows="8" style="width:100%;resize:vertical;font-size:13px;line-height:1.6;" placeholder="Add notes about this patient...">' + escapeHtml(pat.notes || '') + '</textarea>' +
       '<div style="margin-top:12px;"><button class="btn btn-primary btn-sm" onclick="savePatientNotes()">Save Notes</button></div>' +
       '</div>';
 
     document.getElementById('pd-content').innerHTML = html;
   } catch(e) {
-    document.getElementById('pd-content').innerHTML = '<div style="padding:60px;text-align:center;color:var(--rose);">Error loading patient: ' + (e.message || 'unknown') + '</div>';
+    document.getElementById('pd-content').innerHTML = '<div style="padding:60px;text-align:center;color:var(--rose);">Error loading patient: ' + escapeHtml(e.message || 'unknown') + '</div>';
   }
 }
 
@@ -4342,8 +4352,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!data || data.length === 0) { dd.style.display = 'none'; return; }
         dd.innerHTML = data.map(function(p) {
           return '<div style="padding:10px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);transition:background 0.1s;" onmouseenter="this.style.background=\'var(--bg-3)\'" onmouseleave="this.style.background=\'\'" onclick="selectApptPatient(\'' + p.id + '\',\'' + (p.name || '').replace(/'/g, "\\'") + '\',\'' + (p.phone || '').replace(/'/g, "\\'") + '\')">' +
-            '<div style="color:var(--cream);font-weight:500;">' + (p.name || '') + '</div>' +
-            (p.phone ? '<div style="font-size:11px;color:var(--text-dim);">' + p.phone + '</div>' : '') +
+            '<div style="color:var(--cream);font-weight:500;">' + escapeHtml(p.name || '') + '</div>' +
+            (p.phone ? '<div style="font-size:11px;color:var(--text-dim);">' + escapeHtml(p.phone) + '</div>' : '') +
             '</div>';
         }).join('');
         dd.style.display = 'block';
@@ -4418,8 +4428,8 @@ async function loadArchivedPatients() {
     var html = '<table><thead><tr><th>Name</th><th>Email</th><th>Archived</th><th>Actions</th></tr></thead><tbody>';
     data.forEach(function(p) {
       var archivedDate = p.deleted_at ? new Date(p.deleted_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
-      html += '<tr><td style="color:var(--cream);font-weight:500;">' + (p.name || '—') + '</td>' +
-        '<td>' + (p.email || '—') + '</td>' +
+      html += '<tr><td style="color:var(--cream);font-weight:500;">' + escapeHtml(p.name || '—') + '</td>' +
+        '<td>' + escapeHtml(p.email || '—') + '</td>' +
         '<td style="font-size:12px;">' + archivedDate + '</td>' +
         '<td style="display:flex;gap:6px;"><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();restorePatient(\'' + p.id + '\',\'' + (p.name || '').replace(/'/g, "\\'") + '\')">Restore</button>' +
         '<button class="btn btn-secondary btn-sm" style="color:var(--rose);" onclick="event.stopPropagation();deletePatientPermanently(\'' + p.id + '\',\'' + (p.name || '').replace(/'/g, "\\'") + '\')">Delete Permanently</button></td></tr>';
@@ -4510,7 +4520,7 @@ function humanizeAuditEvent(evt) {
     'financing_deleted': 'Financing option deleted'
   };
   var desc = map[evt.event_type] || evt.event_type.replace(/_/g, ' ');
-  if (evt.entity_label) desc += ': ' + evt.entity_label;
+  if (evt.entity_label) desc += ': ' + escapeHtml(evt.entity_label);
   return desc;
 }
 
@@ -4546,7 +4556,7 @@ function renderAuditFeed(events) {
       '<div style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;color:var(--green);">' + auditEventIcon(evt.event_type) + '</div>' +
       '<div style="flex:1;min-width:0;">' +
       '<div style="font-size:13px;color:var(--cream);font-weight:500;">' + humanizeAuditEvent(evt) + '</div>' +
-      '<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">' + (evt.user_email || '') + ' &middot; ' + relativeTime(evt.created_at) + '</div>' +
+      '<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">' + escapeHtml(evt.user_email || '') + ' &middot; ' + relativeTime(evt.created_at) + '</div>' +
       '</div></div>';
   });
   feed.innerHTML = html;
@@ -4592,7 +4602,7 @@ async function loadAuditLog() {
         var icon = e.event_type === 'login' ? '<span style="color:var(--green);">&#8594;</span>' : '<span style="color:var(--text-dim);">&#8592;</span>';
         lhtml += '<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:12px;">' +
           icon +
-          '<div style="flex:1;min-width:0;"><div style="color:var(--cream);font-weight:500;">' + (e.user_email || 'Unknown') + '</div>' +
+          '<div style="flex:1;min-width:0;"><div style="color:var(--cream);font-weight:500;">' + escapeHtml(e.user_email || 'Unknown') + '</div>' +
           '<div style="color:var(--text-dim);font-size:11px;">' + relativeTime(e.created_at) + '</div></div></div>';
       });
       loginsEl.innerHTML = lhtml;
@@ -4602,7 +4612,7 @@ async function loadAuditLog() {
     document.getElementById('audit-filter').value = 'all';
     loadArchivedPatients();
   } catch(e) {
-    if (feed) feed.innerHTML = '<div style="padding:32px;text-align:center;color:var(--rose);font-size:13px;">Error: ' + (e.message || 'unknown') + '</div>';
+    if (feed) feed.innerHTML = '<div style="padding:32px;text-align:center;color:var(--rose);font-size:13px;">Error: ' + escapeHtml(e.message || 'unknown') + '</div>';
   }
 }
 
